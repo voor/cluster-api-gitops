@@ -7,3 +7,17 @@ kind: ConfigMap
 metadata:
   name: config-network
   namespace: knative-serving
+---
+apiVersion: v1
+data:
+  visibility: |
+    ExternalIP:
+      class: contour-external
+      service: contour-external/envoy
+    ClusterLocal:
+      class: contour-internal
+      service: contour-internal/envoy
+kind: ConfigMap
+metadata:
+  name: config-contour
+  namespace: knative-serving

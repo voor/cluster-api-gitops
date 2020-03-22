@@ -10,8 +10,5 @@ data:
     name: letsencrypt-issuer
 kind: ConfigMap
 metadata:
-  labels:
-    networking.knative.dev/certificate-provider: cert-manager
-    serving.knative.dev/release: "v0.12.1"
   name: config-certmanager
   namespace: knative-serving

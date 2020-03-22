@@ -4,5 +4,5 @@ bases:
 - ../../base
 patchesStrategicMerge:
 - domain.yaml
-- nlb.yaml
 - config-network.yaml
+- config-certmanager.yaml

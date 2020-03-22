@@ -68,11 +68,20 @@ kapp deploy -a external-dns -f external-dns -c
 These are the files you'll need to edit for your cluster's variables.  Edit the values in these files accordingly.
 
 * `workload/knative/overlays/dev/domain.yaml` 
-* `workload/unique/cluster-issuer.yaml`
+* `workload/unique/letsencrypt-issuer.yaml`
 
 Install everything after modifying those files:
 
 ```
+kapp deploy -a letsencrypt-issuer -f unique/letsencrypt-issuer.yaml
 kustomize build knative/overlays/dev | kapp -y deploy -a knative-serving -f -
-kapp deploy -a letsencrypt-issuer -f unique/cluster-issuer.yaml
+
+```
+
+## Install Apps
+
+Now you just go ahead and build your apps.
+
+```
+kapp deploy -a sample-app -f apps/sample.yaml
 ```
