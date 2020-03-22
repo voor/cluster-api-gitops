@@ -1,0 +1,211 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Cluster
+metadata:
+  name: duke
+  namespace: default
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks:
+      - 100.96.0.0/11
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: duke
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: VSphereCluster
+    name: duke
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: HAProxyLoadBalancer
+metadata:
+  labels:
+    cluster.x-k8s.io/cluster-name: duke
+  name: duke
+  namespace: default
+spec:
+  user:
+    authorizedKeys:
+    - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC4b37heVuc0s+fkkXC6xJI+Fx7haGvu9GgaqHMMYtcggxpPvKz9jWjmZCv7UusgTWSkwdD2E0LF97w8jB2QDtKOz25QqXHLCtCAQPIt5Aq84Jz8hTKUg/mXTizQG6Ryh+SBgWnhLwxaO5k89DkS3V+iVl6+Lu0tchIaqiN44GEEGdBAiYOyjgcH2HEJrm4uuO8DsOFOHJEP0NTc6AMOsD/AJO13bwVQc6NjJa/FfmYlxutFjycG/TKw6Op/dP3NuElBJElcr54BPseqXcGwb0j0Taf9wS4Vk61Jhnq9KRt4/kcY97RSHa42upBftvusLJ1QBqtR4wrNyErG7g4C7uoq3cnqML01I5LIRAcYwpooiCVWpYyVKWzi9GMHdK4XaFDjOW4a1d8xyOBFcVn5KsSdM06FtedXP0VswubyuKNLLOv5Jo0p02zNpfNBcqIuVoJ6CPtvKDxfoehgp0t0Uatxgx49n8OKmEhsRwfqrvVqyOJJu+D1Tnq1tm6eScTkwc+m/scSe+DfcZt00uMdNMXgeQ6WWOH33+SYGIQ22TP+krYxxWg71j39BR7Gf67w0lDtdRSuhq+fgPmmzvvsiyVZYi27RZgydV1KbTLmP35mh3X8/zTt8m+JBNZqA9cWWhZFRvKkX6irKFfqGbLp7qrnoMu67OJtPgH0cD/yAf9IQ==
+      rcvanvo@gmail.com
+    name: capv
+  virtualMachineConfiguration:
+    cloneMode: linkedClone
+    datacenter: Datacenter
+    datastore: ssd01
+    diskGiB: 25
+    folder: k8s
+    memoryMiB: 8192
+    network:
+      devices:
+      - dhcp4: true
+        networkName: VM Network
+    numCPUs: 2
+    resourcePool: CAPV
+    server: vsphere.planetvoor.com
+    template: capv-haproxy
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: VSphereCluster
+metadata:
+  name: duke
+  namespace: default
+spec:
+  cloudProviderConfiguration:
+    global:
+      insecure: true
+      secretName: cloud-provider-vsphere-credentials
+      secretNamespace: kube-system
+    network:
+      name: VM Network
+    providerConfig:
+      cloud:
+        controllerImage: gcr.io/cloud-provider-vsphere/cpi/release/manager:v1.0.0
+      storage:
+        attacherImage: quay.io/k8scsi/csi-attacher:v1.1.1
+        controllerImage: gcr.io/cloud-provider-vsphere/csi/release/syncer:v1.0.2
+        livenessProbeImage: quay.io/k8scsi/livenessprobe:v1.1.0
+        metadataSyncerImage: gcr.io/cloud-provider-vsphere/csi/release/syncer:v1.0.2
+        nodeDriverImage: gcr.io/cloud-provider-vsphere/csi/release/driver:v1.0.2
+        provisionerImage: quay.io/k8scsi/csi-provisioner:v1.2.1
+        registrarImage: quay.io/k8scsi/csi-node-driver-registrar:v1.1.0
+    virtualCenter:
+      vsphere.planetvoor.com:
+        datacenters: Datacenter
+    workspace:
+      datacenter: Datacenter
+      datastore: ssd01
+      folder: k8s
+      resourcePool: CAPV
+      server: vsphere.planetvoor.com
+  loadBalancerRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: HAProxyLoadBalancer
+    name: duke
+  server: vsphere.planetvoor.com
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: VSphereMachineTemplate
+metadata:
+  name: duke
+  namespace: default
+spec:
+  template:
+    spec:
+      cloneMode: linkedClone
+      datacenter: Datacenter
+      datastore: ssd01
+      diskGiB: 25
+      folder: k8s
+      memoryMiB: 8192
+      network:
+        devices:
+        - dhcp4: true
+          networkName: VM Network
+      numCPUs: 2
+      resourcePool: CAPV
+      server: vsphere.planetvoor.com
+      template: photon-3-kube-v1.17.3
+---
+apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+kind: KubeadmControlPlane
+metadata:
+  name: duke
+  namespace: default
+spec:
+  infrastructureTemplate:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: VSphereMachineTemplate
+    name: duke
+  kubeadmConfigSpec:
+    clusterConfiguration:
+      apiServer:
+        extraArgs:
+          cloud-provider: external
+      controllerManager:
+        extraArgs:
+          cloud-provider: external
+    initConfiguration:
+      nodeRegistration:
+        criSocket: /var/run/containerd/containerd.sock
+        kubeletExtraArgs:
+          cloud-provider: external
+        name: '{{ ds.meta_data.hostname }}'
+    joinConfiguration:
+      nodeRegistration:
+        criSocket: /var/run/containerd/containerd.sock
+        kubeletExtraArgs:
+          cloud-provider: external
+        name: '{{ ds.meta_data.hostname }}'
+    preKubeadmCommands:
+    - hostname "{{ ds.meta_data.hostname }}"
+    - echo "::1         ipv6-localhost ipv6-loopback" >/etc/hosts
+    - echo "127.0.0.1   localhost" >>/etc/hosts
+    - echo "127.0.0.1   {{ ds.meta_data.hostname }}" >>/etc/hosts
+    - echo "{{ ds.meta_data.hostname }}" >/etc/hostname
+    users:
+    - name: capv
+      sshAuthorizedKeys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC4b37heVuc0s+fkkXC6xJI+Fx7haGvu9GgaqHMMYtcggxpPvKz9jWjmZCv7UusgTWSkwdD2E0LF97w8jB2QDtKOz25QqXHLCtCAQPIt5Aq84Jz8hTKUg/mXTizQG6Ryh+SBgWnhLwxaO5k89DkS3V+iVl6+Lu0tchIaqiN44GEEGdBAiYOyjgcH2HEJrm4uuO8DsOFOHJEP0NTc6AMOsD/AJO13bwVQc6NjJa/FfmYlxutFjycG/TKw6Op/dP3NuElBJElcr54BPseqXcGwb0j0Taf9wS4Vk61Jhnq9KRt4/kcY97RSHa42upBftvusLJ1QBqtR4wrNyErG7g4C7uoq3cnqML01I5LIRAcYwpooiCVWpYyVKWzi9GMHdK4XaFDjOW4a1d8xyOBFcVn5KsSdM06FtedXP0VswubyuKNLLOv5Jo0p02zNpfNBcqIuVoJ6CPtvKDxfoehgp0t0Uatxgx49n8OKmEhsRwfqrvVqyOJJu+D1Tnq1tm6eScTkwc+m/scSe+DfcZt00uMdNMXgeQ6WWOH33+SYGIQ22TP+krYxxWg71j39BR7Gf67w0lDtdRSuhq+fgPmmzvvsiyVZYi27RZgydV1KbTLmP35mh3X8/zTt8m+JBNZqA9cWWhZFRvKkX6irKFfqGbLp7qrnoMu67OJtPgH0cD/yAf9IQ==
+        rcvanvo@gmail.com
+      sudo: ALL=(ALL) NOPASSWD:ALL
+  replicas: 3
+  version: v1.17.3
+---
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfigTemplate
+metadata:
+  name: duke-md-0
+  namespace: default
+spec:
+  template:
+    spec:
+      joinConfiguration:
+        nodeRegistration:
+          criSocket: /var/run/containerd/containerd.sock
+          kubeletExtraArgs:
+            cloud-provider: external
+          name: '{{ ds.meta_data.hostname }}'
+      preKubeadmCommands:
+      - hostname "{{ ds.meta_data.hostname }}"
+      - echo "::1         ipv6-localhost ipv6-loopback" >/etc/hosts
+      - echo "127.0.0.1   localhost" >>/etc/hosts
+      - echo "127.0.0.1   {{ ds.meta_data.hostname }}" >>/etc/hosts
+      - echo "{{ ds.meta_data.hostname }}" >/etc/hostname
+      users:
+      - name: capv
+        sshAuthorizedKeys:
+        - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC4b37heVuc0s+fkkXC6xJI+Fx7haGvu9GgaqHMMYtcggxpPvKz9jWjmZCv7UusgTWSkwdD2E0LF97w8jB2QDtKOz25QqXHLCtCAQPIt5Aq84Jz8hTKUg/mXTizQG6Ryh+SBgWnhLwxaO5k89DkS3V+iVl6+Lu0tchIaqiN44GEEGdBAiYOyjgcH2HEJrm4uuO8DsOFOHJEP0NTc6AMOsD/AJO13bwVQc6NjJa/FfmYlxutFjycG/TKw6Op/dP3NuElBJElcr54BPseqXcGwb0j0Taf9wS4Vk61Jhnq9KRt4/kcY97RSHa42upBftvusLJ1QBqtR4wrNyErG7g4C7uoq3cnqML01I5LIRAcYwpooiCVWpYyVKWzi9GMHdK4XaFDjOW4a1d8xyOBFcVn5KsSdM06FtedXP0VswubyuKNLLOv5Jo0p02zNpfNBcqIuVoJ6CPtvKDxfoehgp0t0Uatxgx49n8OKmEhsRwfqrvVqyOJJu+D1Tnq1tm6eScTkwc+m/scSe+DfcZt00uMdNMXgeQ6WWOH33+SYGIQ22TP+krYxxWg71j39BR7Gf67w0lDtdRSuhq+fgPmmzvvsiyVZYi27RZgydV1KbTLmP35mh3X8/zTt8m+JBNZqA9cWWhZFRvKkX6irKFfqGbLp7qrnoMu67OJtPgH0cD/yAf9IQ==
+          rcvanvo@gmail.com
+        sudo: ALL=(ALL) NOPASSWD:ALL
+---
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineDeployment
+metadata:
+  labels:
+    cluster.x-k8s.io/cluster-name: duke
+  name: duke-md-0
+  namespace: default
+spec:
+  clusterName: duke
+  replicas: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: duke
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: duke
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: duke-md-0
+      clusterName: duke
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: VSphereMachineTemplate
+        name: duke
+      version: v1.17.3

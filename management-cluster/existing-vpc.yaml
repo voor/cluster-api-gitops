@@ -1,0 +1,152 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Cluster
+metadata:
+  name: existing
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks: ["192.168.0.0/16"]
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: AWSCluster
+    name: existing
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: AWSCluster
+metadata:
+  name: existing
+spec:
+  # Change this value to the region you want to deploy the cluster in.
+  region: us-gov-east-1
+  # Change this value to a valid SSH Key Pair present in your AWS Account.
+  sshKeyName: cluster-api-provider-aws
+  additionalTags:
+    another: additionalTags
+    that-can-be: added
+  networkSpec:
+    vpc:
+      id: vpc-0c4d0713daeeac435
+    subnets:
+      - id: subnet-08ed93b32c2ea031b
+---
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  name: existing-controlplane-0
+  labels:
+    cluster.x-k8s.io/control-plane: "true"
+    cluster.x-k8s.io/cluster-name: "existing"
+spec:
+  clusterName: existing
+  version: v1.17.3
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: existing-controlplane-0
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: AWSMachine
+    name: existing-controlplane-0
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: AWSMachine
+metadata:
+  name: existing-controlplane-0
+spec:
+  instanceType: m5.large
+  # This IAM profile is part of the pre-requisites.
+  iamInstanceProfile: "control-plane.cluster-api-provider-aws.sigs.k8s.io"
+  # Change this value to a valid SSH Key Pair present in your AWS Account.
+  sshKeyName: cluster-api-provider-aws
+  imageLookupOrg: "894844345642"
+  imageLookupBaseOS: "amazon-2"
+  ami:
+    id: "ami-04a643ba08fe85d62"
+---
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  name: existing-controlplane-0
+spec:
+  # For more information about these values,
+  # refer to the Kubeadm Bootstrap Provider documentation.
+  initConfiguration:
+    nodeRegistration:
+      name: '{{ ds.meta_data.local_hostname }}'
+      kubeletExtraArgs:
+        cloud-provider: aws
+  clusterConfiguration:
+    apiServer:
+      extraArgs:
+        cloud-provider: aws
+    controllerManager:
+      extraArgs:
+        cloud-provider: aws
+---
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineDeployment
+metadata:
+  name: existing-worker
+  labels:
+    cluster.x-k8s.io/cluster-name: existing
+    # Labels beyond this point are for example purposes,
+    # feel free to add more or change with something more meaningful.
+    # Sync these values with spec.selector.matchLabels and spec.template.metadata.labels.
+    nodepool: nodepool-0
+spec:
+  clusterName: existing
+  replicas: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: existing
+      nodepool: nodepool-0
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: existing
+        nodepool: nodepool-0
+    spec:
+      clusterName: existing
+      version: v1.17.3
+      bootstrap:
+        configRef:
+          name: existing-worker
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+      infrastructureRef:
+        name: existing-worker
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: AWSMachineTemplate
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: AWSMachineTemplate
+metadata:
+  name: existing-worker
+spec:
+  template:
+    spec:
+      instanceType: t3.large
+      # This IAM profile is part of the pre-requisites.
+      iamInstanceProfile: "nodes.cluster-api-provider-aws.sigs.k8s.io"
+      # Change this value to a valid SSH Key Pair present in your AWS Account.
+      sshKeyName: cluster-api-provider-aws
+      imageLookupOrg: "894844345642"
+      imageLookupBaseOS: "amazon-2"
+      ami:
+        id: "ami-04a643ba08fe85d62"
+---
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfigTemplate
+metadata:
+  name: existing-worker
+spec:
+  template:
+    spec:
+      # For more information about these values,
+      # refer to the Kubeadm Bootstrap Provider documentation.
+      joinConfiguration:
+        nodeRegistration:
+          name: '{{ ds.meta_data.local_hostname }}'
+          kubeletExtraArgs:
+            cloud-provider: aws

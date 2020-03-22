@@ -1,0 +1,327 @@
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Cluster
+metadata:
+  name: workload
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks: ["192.168.0.0/16"]
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: AWSCluster
+    name: workload
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: AWSCluster
+metadata:
+  name: workload
+spec:
+  # Change this value to the region you want to deploy the cluster in.
+  region: us-gov-east-1
+  # Change this value to a valid SSH Key Pair present in your AWS Account.
+  sshKeyName: cluster-api-provider-aws
+  additionalTags:
+    another: additionalTags
+    that-can-be: added
+---
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Machine
+metadata:
+  name: workload-controlplane-0
+  labels:
+    cluster.x-k8s.io/control-plane: "true"
+    cluster.x-k8s.io/cluster-name: "workload"
+spec:
+  clusterName: workload
+  version: v1.17.3
+  bootstrap:
+    configRef:
+      apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+      kind: KubeadmConfig
+      name: workload-controlplane-0
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: AWSMachine
+    name: workload-controlplane-0
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: AWSMachine
+metadata:
+  name: workload-controlplane-0
+spec:
+  instanceType: m5.large
+  # This IAM profile is part of the pre-requisites.
+  iamInstanceProfile: "control-plane.cluster-api-provider-aws.sigs.k8s.io"
+  # Change this value to a valid SSH Key Pair present in your AWS Account.
+  sshKeyName: cluster-api-provider-aws
+  imageLookupOrg: "894844345642"
+  imageLookupBaseOS: "amazon-2"
+  ami:
+    id: "ami-04a643ba08fe85d62"
+---
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfig
+metadata:
+  name: workload-controlplane-0
+spec:
+  # For more information about these values,
+  # refer to the Kubeadm Bootstrap Provider documentation.
+  initConfiguration:
+    nodeRegistration:
+      name: '{{ ds.meta_data.local_hostname }}'
+      kubeletExtraArgs:
+        cloud-provider: aws
+  clusterConfiguration:
+    apiServer:
+      extraArgs:
+        cloud-provider: aws
+        # anonymous-auth: "false"
+        # profiling: "false"
+        # # Deprecated and removed, server will error out if present.
+        # # repair-malformed-updates: "false"
+        # enable-admission-plugins: AlwaysPullImages,PodSecurityPolicy,ServiceAccount,EventRateLimit,NamespaceLifecycle
+        # admission-control-config-file: /etc/kubernetes/admission-control-config.yaml
+        # audit-log-path: /var/log/kube-apiserver/kube-apiserver.log
+        # audit-policy-file: /etc/kubernetes/audit-policy.yaml
+        # audit-log-maxage: "30"
+        # audit-log-maxbackup: "10"
+        # audit-log-maxsize: "100"
+        # tls-cipher-suites: "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_GCM_SHA256"
+        # tls-min-version: VersionTLS12
+        # service-account-lookup: "true"
+        # encryption-provider-config: /etc/kubernetes/encryption-provider.yaml
+      # extraVolumes:
+      # - name: audit-policy
+      #   hostPath: /etc/kubernetes/audit-policy.yaml
+      #   mountPath: /etc/kubernetes/audit-policy.yaml
+      # - name: audit-logs
+      #   hostPath: /var/log/kube-apiserver
+      #   mountPath: /var/log/kube-apiserver
+      # - name: encryption-provider
+      #   hostPath: /etc/kubernetes/encryption-provider.yaml
+      #   mountPath: /etc/kubernetes/encryption-provider.yaml
+      # - name: admission-control-config
+      #   hostPath: /etc/kubernetes/admission-control-config.yaml
+      #   mountPath: /etc/kubernetes/admission-control-config.yaml
+      # - name: event-rate-limit-config
+      #   hostPath: /etc/kubernetes/event-rate-limit-config.yaml
+      #   mountPath: /etc/kubernetes/event-rate-limit-config.yaml
+    controllerManager:
+      extraArgs:
+        cloud-provider: aws
+        # terminated-pod-gc-threshold: "10"
+        # profiling: "false"
+    # scheduler:
+    #   extraArgs:
+    #     profiling: "false"
+      
+  # files:
+  # - path: /etc/kubernetes/encryption-provider.yaml
+  #   owner: "root:root"
+  #   permissions: "0600"
+  #   content: |
+  #     apiVersion: apiserver.config.k8s.io/v1
+  #     kind: EncryptionConfiguration
+  #     resources:
+  #       - resources:
+  #         - secrets
+  #         providers:
+  #         - aescbc:
+  #             keys:
+  #             - name: key1
+  #               # TODO Generate this on the system
+  #               secret: a4Cw/2z/q/dYB18WlzxZelwFimzY9Nq1RHvSKL8vITQ=
+  #         - identity: {}
+  # - path: /etc/kubernetes/admission-control-config.yaml
+  #   owner: "root:root"
+  #   permissions: "0600"
+  #   content: |
+  #     apiVersion: apiserver.config.k8s.io/v1
+  #     kind: AdmissionConfiguration
+  #     plugins:
+  #     - name: EventRateLimit
+  #       path: /etc/kubernetes/event-rate-limit-config.yaml
+  # - path: /etc/kubernetes/event-rate-limit-config.yaml
+  #   owner: "root:root"
+  #   permissions: "0600"
+  #   content: |
+  #     apiVersion: eventratelimit.admission.k8s.io/v1alpha1
+  #     kind: Configuration
+  #     limits:
+  #     - type: Namespace
+  #       qps: 50
+  #       burst: 100
+  #       cacheSize: 2000
+  #     - type: User
+  #       qps: 10
+  #       burst: 50
+  # - path: /etc/kubernetes/audit-policy.yaml
+  #   owner: "root:root"
+  #   permissions: "0600"
+  #   encoding: base64
+  #   content: |
+  #     ICAjIFRoZSBmb2xsb3dpbmcgYXVkaXQgcG9saWN5IGlzIGJhc2VkIG9uIHRocmVlIHNvdXJjZXMg
+  #     ZnJvbSB1cHN0cmVhbToKICAjICAgLSB0aGUga3ViZXJuZXRlcyBkb2NzIGV4YW1wbGU6IGh0dHBz
+  #     Oi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9rdWJlcm5ldGVzL3dlYnNpdGUvbWFzdGVyL2Nv
+  #     bnRlbnQvZW4vZXhhbXBsZXMvYXVkaXQvYXVkaXQtcG9saWN5LnlhbWwKICAjICAgLSB0aGUgR0NF
+  #     IHJlZmVyZW5jZSBwb2xpY3k6IGh0dHBzOi8vZ2l0aHViLmNvbS9rdWJlcm5ldGVzL2t1YmVybmV0
+  #     ZXMvYmxvYi9tYXN0ZXIvY2x1c3Rlci9nY2UvZ2NpL2NvbmZpZ3VyZS1oZWxwZXIuc2gjTDc4NAog
+  #     ICMgICAtIFVLIE1pbmlzdHJ5IG9mIEp1c3RpY2UgcG9saWN5OiBodHRwczovL2dpdGh1Yi5jb20v
+  #     bWluaXN0cnlvZmp1c3RpY2UvY2xvdWQtcGxhdGZvcm0taW5mcmFzdHJ1Y3R1cmUvYmxvYi9tYXN0
+  #     ZXIva29wcy9saXZlLTEueWFtbCAKICAjCiAgYXBpVmVyc2lvbjogYXVkaXQuazhzLmlvL3YxYmV0
+  #     YTEKICBraW5kOiBQb2xpY3kKICBvbWl0U3RhZ2VzOgogICAgLSAiUmVxdWVzdFJlY2VpdmVkIgog
+  #     IHJ1bGVzOgogICAgIyBUaGUgZm9sbG93aW5nIHJlcXVlc3RzIHdlcmUgbWFudWFsbHkgaWRlbnRp
+  #     ZmllZCBhcyBoaWdoLXZvbHVtZSBhbmQgbG93LXJpc2ssCiAgICAjIHNvIGRyb3AgdGhlbS4KICAg
+  #     IC0gbGV2ZWw6IE5vbmUKICAgICAgdXNlcnM6IFsic3lzdGVtOmt1YmUtcHJveHkiXQogICAgICB2
+  #     ZXJiczogWyJ3YXRjaCJdCiAgICAgIHJlc291cmNlczoKICAgICAgICAtIGdyb3VwOiAiIiAjIGNv
+  #     cmUKICAgICAgICAgIHJlc291cmNlczogWyJlbmRwb2ludHMiLCAic2VydmljZXMiLCAic2Vydmlj
+  #     ZXMvc3RhdHVzIl0KICAgIC0gbGV2ZWw6IE5vbmUKICAgICAgbmFtZXNwYWNlczogWyJpbmdyZXNz
+  #     LWNvbnRyb2xsZXJzIl0KICAgICAgdmVyYnM6IFsiZ2V0Il0KICAgICAgcmVzb3VyY2VzOgogICAg
+  #     ICAgIC0gZ3JvdXA6ICIiICMgY29yZQogICAgICAgICAgcmVzb3VyY2VzOiBbImNvbmZpZ21hcHMi
+  #     XQogICAgICAgICAgcmVzb3VyY2VOYW1lczogWyJpbmdyZXNzLWNvbnRyb2xsZXItbGVhZGVyLW5n
+  #     aW54Il0KICAgIC0gbGV2ZWw6IE5vbmUKICAgICAgdXNlcnM6IFsia3ViZWxldCJdICMgbGVnYWN5
+  #     IGt1YmVsZXQgaWRlbnRpdHkKICAgICAgdmVyYnM6IFsiZ2V0Il0KICAgICAgcmVzb3VyY2VzOgog
+  #     ICAgICAgIC0gZ3JvdXA6ICIiICMgY29yZQogICAgICAgICAgcmVzb3VyY2VzOiBbIm5vZGVzIiwg
+  #     Im5vZGVzL3N0YXR1cyJdCiAgICAtIGxldmVsOiBOb25lCiAgICAgIHVzZXJHcm91cHM6IFsic3lz
+  #     dGVtOm5vZGVzIl0KICAgICAgdmVyYnM6IFsiZ2V0Il0KICAgICAgcmVzb3VyY2VzOgogICAgICAg
+  #     IC0gZ3JvdXA6ICIiICMgY29yZQogICAgICAgICAgcmVzb3VyY2VzOiBbIm5vZGVzIiwgIm5vZGVz
+  #     L3N0YXR1cyJdCiAgICAtIGxldmVsOiBOb25lCiAgICAgIHVzZXJzOgogICAgICAgIC0gc3lzdGVt
+  #     Omt1YmUtY29udHJvbGxlci1tYW5hZ2VyCiAgICAgICAgLSBzeXN0ZW06a3ViZS1zY2hlZHVsZXIK
+  #     ICAgICAgICAtIHN5c3RlbTpzZXJ2aWNlYWNjb3VudDprdWJlLXN5c3RlbTplbmRwb2ludC1jb250
+  #     cm9sbGVyCiAgICAgIHZlcmJzOiBbImdldCIsICJ1cGRhdGUiXQogICAgICBuYW1lc3BhY2VzOiBb
+  #     Imt1YmUtc3lzdGVtIl0KICAgICAgcmVzb3VyY2VzOgogICAgICAgIC0gZ3JvdXA6ICIiICMgY29y
+  #     ZQogICAgICAgICAgcmVzb3VyY2VzOiBbImVuZHBvaW50cyJdCiAgICAtIGxldmVsOiBOb25lCiAg
+  #     ICAgIHVzZXJzOiBbInN5c3RlbTphcGlzZXJ2ZXIiXQogICAgICB2ZXJiczogWyJnZXQiXQogICAg
+  #     ICByZXNvdXJjZXM6CiAgICAgICAgLSBncm91cDogIiIgIyBjb3JlCiAgICAgICAgICByZXNvdXJj
+  #     ZXM6IFsibmFtZXNwYWNlcyIsICJuYW1lc3BhY2VzL3N0YXR1cyIsICJuYW1lc3BhY2VzL2ZpbmFs
+  #     aXplIl0KICAgICMgRG9uJ3QgbG9nIEhQQSBmZXRjaGluZyBtZXRyaWNzLgogICAgLSBsZXZlbDog
+  #     Tm9uZQogICAgICB1c2VyczoKICAgICAgICAtIHN5c3RlbTprdWJlLWNvbnRyb2xsZXItbWFuYWdl
+  #     cgogICAgICB2ZXJiczogWyJnZXQiLCAibGlzdCJdCiAgICAgIHJlc291cmNlczoKICAgICAgICAt
+  #     IGdyb3VwOiAibWV0cmljcy5rOHMuaW8iCiAgICAjIERvbid0IGxvZyB0aGVzZSByZWFkLW9ubHkg
+  #     VVJMcy4KICAgIC0gbGV2ZWw6IE5vbmUKICAgICAgbm9uUmVzb3VyY2VVUkxzOgogICAgICAgIC0g
+  #     L2hlYWx0aHoqCiAgICAgICAgLSAvdmVyc2lvbgogICAgICAgIC0gL3N3YWdnZXIqCiAgICAjIERv
+  #     bid0IGxvZyBhdXRoZW50aWNhdGVkIHJlcXVlc3RzIHRvIGNlcnRhaW4gbm9uLXJlc291cmNlIFVS
+  #     TCBwYXRocy4KICAgIC0gbGV2ZWw6IE5vbmUKICAgICAgdXNlckdyb3VwczogWyJzeXN0ZW06YXV0
+  #     aGVudGljYXRlZCJdCiAgICAgIG5vblJlc291cmNlVVJMczoKICAgICAgLSAiL2FwaSoiCiAgICAj
+  #     IERvbid0IGxvZyBldmVudHMgcmVxdWVzdHMuCiAgICAtIGxldmVsOiBOb25lCiAgICAgIHJlc291
+  #     cmNlczoKICAgICAgICAtIGdyb3VwOiAiIiAjIGNvcmUKICAgICAgICAgIHJlc291cmNlczogWyJl
+  #     dmVudHMiXQogICAgIyBMb2cgInBvZHMvbG9nIiwgInBvZHMvc3RhdHVzIiBhdCBNZXRhZGF0YSBs
+  #     ZXZlbAogICAgLSBsZXZlbDogTWV0YWRhdGEKICAgICAgcmVzb3VyY2VzOgogICAgICAtIGdyb3Vw
+  #     OiAiIgogICAgICAgIHJlc291cmNlczogWyJwb2RzL2xvZyIsICJwb2RzL3N0YXR1cyJdCiAgICAj
+  #     IG5vZGUgYW5kIHBvZCBzdGF0dXMgY2FsbHMgZnJvbSBub2RlcyBhcmUgaGlnaC12b2x1bWUgYW5k
+  #     IGNhbiBiZSBsYXJnZSwgZG9uJ3QgbG9nIHJlc3BvbnNlcyBmb3IgZXhwZWN0ZWQgdXBkYXRlcyBm
+  #     cm9tIG5vZGVzCiAgICAtIGxldmVsOiBSZXF1ZXN0CiAgICAgIHVzZXJzOiBbImt1YmVsZXQiLCAi
+  #     c3lzdGVtOm5vZGUtcHJvYmxlbS1kZXRlY3RvciIsICJzeXN0ZW06c2VydmljZWFjY291bnQ6a3Vi
+  #     ZS1zeXN0ZW06bm9kZS1wcm9ibGVtLWRldGVjdG9yIl0KICAgICAgdmVyYnM6IFsidXBkYXRlIiwi
+  #     cGF0Y2giXQogICAgICByZXNvdXJjZXM6CiAgICAgICAgLSBncm91cDogIiIgIyBjb3JlCiAgICAg
+  #     ICAgICByZXNvdXJjZXM6IFsibm9kZXMvc3RhdHVzIiwgInBvZHMvc3RhdHVzIl0KICAgIC0gbGV2
+  #     ZWw6IFJlcXVlc3QKICAgICAgdXNlckdyb3VwczogWyJzeXN0ZW06bm9kZXMiXQogICAgICB2ZXJi
+  #     czogWyJ1cGRhdGUiLCJwYXRjaCJdCiAgICAgIHJlc291cmNlczoKICAgICAgICAtIGdyb3VwOiAi
+  #     IiAjIGNvcmUKICAgICAgICAgIHJlc291cmNlczogWyJub2Rlcy9zdGF0dXMiLCAicG9kcy9zdGF0
+  #     dXMiXQogICAgIyBkZWxldGVjb2xsZWN0aW9uIGNhbGxzIGNhbiBiZSBsYXJnZSwgZG9uJ3QgbG9n
+  #     IHJlc3BvbnNlcyBmb3IgZXhwZWN0ZWQgbmFtZXNwYWNlIGRlbGV0aW9ucwogICAgLSBsZXZlbDog
+  #     UmVxdWVzdAogICAgICB1c2VyczogWyJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZS1zeXN0ZW06
+  #     bmFtZXNwYWNlLWNvbnRyb2xsZXIiXQogICAgICB2ZXJiczogWyJkZWxldGVjb2xsZWN0aW9uIl0K
+  #     ICAgICMgU2VjcmV0cywgQ29uZmlnTWFwcywgYW5kIFRva2VuUmV2aWV3cyBjYW4gY29udGFpbiBz
+  #     ZW5zaXRpdmUgJiBiaW5hcnkgZGF0YSwKICAgICMgc28gb25seSBsb2cgYXQgdGhlIE1ldGFkYXRh
+  #     IGxldmVsLgogICAgLSBsZXZlbDogTWV0YWRhdGEKICAgICAgcmVzb3VyY2VzOgogICAgICAgIC0g
+  #     Z3JvdXA6ICIiICMgY29yZQogICAgICAgICAgcmVzb3VyY2VzOiBbInNlY3JldHMiLCAiY29uZmln
+  #     bWFwcyJdCiAgICAgICAgLSBncm91cDogYXV0aGVudGljYXRpb24uazhzLmlvCiAgICAgICAgICBy
+  #     ZXNvdXJjZXM6IFsidG9rZW5yZXZpZXdzIl0KICAgICMgR2V0IHJlcHNvbnNlcyBjYW4gYmUgbGFy
+  #     Z2U7IHNraXAgdGhlbS4KICAgIC0gbGV2ZWw6IFJlcXVlc3QKICAgICAgdmVyYnM6IFsiZ2V0Iiwg
+  #     Imxpc3QiLCAid2F0Y2giXQogICAgICByZXNvdXJjZXM6CiAgICAgIC0gZ3JvdXA6ICIiICMgY29y
+  #     ZQogICAgICAtIGdyb3VwOiAiYWRtaXNzaW9ucmVnaXN0cmF0aW9uLms4cy5pbyIKICAgICAgLSBn
+  #     cm91cDogImFwaWV4dGVuc2lvbnMuazhzLmlvIgogICAgICAtIGdyb3VwOiAiYXBpcmVnaXN0cmF0
+  #     aW9uLms4cy5pbyIKICAgICAgLSBncm91cDogImFwcHMiCiAgICAgIC0gZ3JvdXA6ICJhdXRoZW50
+  #     aWNhdGlvbi5rOHMuaW8iCiAgICAgIC0gZ3JvdXA6ICJhdXRob3JpemF0aW9uLms4cy5pbyIKICAg
+  #     ICAgLSBncm91cDogImF1dG9zY2FsaW5nIgogICAgICAtIGdyb3VwOiAiYmF0Y2giCiAgICAgIC0g
+  #     Z3JvdXA6ICJjZXJ0aWZpY2F0ZXMuazhzLmlvIgogICAgICAtIGdyb3VwOiAiZXh0ZW5zaW9ucyIK
+  #     ICAgICAgLSBncm91cDogIm1ldHJpY3MuazhzLmlvIgogICAgICAtIGdyb3VwOiAibmV0d29ya2lu
+  #     Zy5rOHMuaW8iCiAgICAgIC0gZ3JvdXA6ICJwb2xpY3kiCiAgICAgIC0gZ3JvdXA6ICJyYmFjLmF1
+  #     dGhvcml6YXRpb24uazhzLmlvIgogICAgICAtIGdyb3VwOiAic2NoZWR1bGluZy5rOHMuaW8iCiAg
+  #     ICAgIC0gZ3JvdXA6ICJzZXR0aW5ncy5rOHMuaW8iCiAgICAgIC0gZ3JvdXA6ICJzdG9yYWdlLms4
+  #     cy5pbyIKICAgICMgRGVmYXVsdCBsZXZlbCBmb3Iga25vd24gQVBJcwogICAgLSBsZXZlbDogUmVx
+  #     dWVzdFJlc3BvbnNlCiAgICAgIHJlc291cmNlczoKICAgICAgLSBncm91cDogIiIgIyBjb3JlCiAg
+  #     ICAgIC0gZ3JvdXA6ICJhZG1pc3Npb25yZWdpc3RyYXRpb24uazhzLmlvIgogICAgICAtIGdyb3Vw
+  #     OiAiYXBpZXh0ZW5zaW9ucy5rOHMuaW8iCiAgICAgIC0gZ3JvdXA6ICJhcGlyZWdpc3RyYXRpb24u
+  #     azhzLmlvIgogICAgICAtIGdyb3VwOiAiYXBwcyIKICAgICAgLSBncm91cDogImF1dGhlbnRpY2F0
+  #     aW9uLms4cy5pbyIKICAgICAgLSBncm91cDogImF1dGhvcml6YXRpb24uazhzLmlvIgogICAgICAt
+  #     IGdyb3VwOiAiYXV0b3NjYWxpbmciCiAgICAgIC0gZ3JvdXA6ICJiYXRjaCIKICAgICAgLSBncm91
+  #     cDogImNlcnRpZmljYXRlcy5rOHMuaW8iCiAgICAgIC0gZ3JvdXA6ICJleHRlbnNpb25zIgogICAg
+  #     ICAtIGdyb3VwOiAibWV0cmljcy5rOHMuaW8iCiAgICAgIC0gZ3JvdXA6ICJuZXR3b3JraW5nLms4
+  #     cy5pbyIKICAgICAgLSBncm91cDogInBvbGljeSIKICAgICAgLSBncm91cDogInJiYWMuYXV0aG9y
+  #     aXphdGlvbi5rOHMuaW8iCiAgICAgIC0gZ3JvdXA6ICJzY2hlZHVsaW5nLms4cy5pbyIKICAgICAg
+  #     LSBncm91cDogInNldHRpbmdzLms4cy5pbyIKICAgICAgLSBncm91cDogInN0b3JhZ2UuazhzLmlv
+  #     IgogICAgIyBEZWZhdWx0IGxldmVsIGZvciBhbGwgb3RoZXIgcmVxdWVzdHMuCiAgICAtIGxldmVs
+  #     OiBNZXRhZGF0YQogICAgICBvbWl0U3RhZ2VzOgogICAgICAgIC0gIlJlcXVlc3RSZWNlaXZlZCIK
+
+---
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineDeployment
+metadata:
+  name: workload-worker
+  labels:
+    cluster.x-k8s.io/cluster-name: workload
+    # Labels beyond this point are for example purposes,
+    # feel free to add more or change with something more meaningful.
+    # Sync these values with spec.selector.matchLabels and spec.template.metadata.labels.
+    nodepool: nodepool-0
+spec:
+  clusterName: workload
+  replicas: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: workload
+      nodepool: nodepool-0
+  template:
+    metadata:
+      labels:
+        cluster.x-k8s.io/cluster-name: workload
+        nodepool: nodepool-0
+    spec:
+      clusterName: workload
+      version: v1.17.3
+      bootstrap:
+        configRef:
+          name: workload-worker
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+      infrastructureRef:
+        name: workload-worker
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: AWSMachineTemplate
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: AWSMachineTemplate
+metadata:
+  name: workload-worker
+spec:
+  template:
+    spec:
+      instanceType: t3.large
+      # This IAM profile is part of the pre-requisites.
+      iamInstanceProfile: "nodes.cluster-api-provider-aws.sigs.k8s.io"
+      # Change this value to a valid SSH Key Pair present in your AWS Account.
+      sshKeyName: cluster-api-provider-aws
+      imageLookupOrg: "894844345642"
+      imageLookupBaseOS: "amazon-2"
+      ami:
+        id: "ami-04a643ba08fe85d62"
+---
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfigTemplate
+metadata:
+  name: workload-worker
+spec:
+  template:
+    spec:
+      # For more information about these values,
+      # refer to the Kubeadm Bootstrap Provider documentation.
+      joinConfiguration:
+        nodeRegistration:
+          name: '{{ ds.meta_data.local_hostname }}'
+          kubeletExtraArgs:
+            cloud-provider: aws
+            # read-only-port: "0"
+            # allow-privileged: "false"
+            # event-qps: "0"

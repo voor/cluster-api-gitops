@@ -1,0 +1,8 @@
+commonLabels:
+  variant: dev
+bases:
+- ../../base
+patchesStrategicMerge:
+- domain.yaml
+- nlb.yaml
+- config-network.yaml

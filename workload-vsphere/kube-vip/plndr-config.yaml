@@ -1,0 +1,7 @@
+apiVersion: v1
+data:
+  cidr-default: 192.168.10.0/24
+kind: ConfigMap
+metadata:
+  name: plndr
+  namespace: kube-system

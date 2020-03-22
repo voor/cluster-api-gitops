@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+data:
+  # issuerRef is a reference to the issuer for this certificate.
+  # IssuerRef should be either `ClusterIssuer` or `Issuer`.
+  # Please refer `IssuerRef` in https://github.com/jetstack/cert-manager/blob/master/pkg/apis/certmanager/v1alpha1/types_certificate.go
+  # for more details about IssuerRef configuration.
+  issuerRef: |
+    kind: ClusterIssuer
+    name: letsencrypt-issuer
+kind: ConfigMap
+metadata:
+  labels:
+    networking.knative.dev/certificate-provider: cert-manager
+    serving.knative.dev/release: "v0.12.1"
+  name: config-certmanager
+  namespace: knative-serving

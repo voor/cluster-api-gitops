@@ -1,0 +1,6 @@
+bases:
+- base/
+
+patchesStrategicMerge:
+- overlays/nlb.yaml
+- overlays/domain.yaml
