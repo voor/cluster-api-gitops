@@ -16,4 +16,4 @@ spec:
         - image: gcr.io/knative-samples/helloworld-go
           env:
             - name: TARGET
-              value: Go Sample v1
+              value: Hello from CAPZ!

@@ -30,11 +30,13 @@ These are generic installs that don't have specific configuration required befor
 ```
 # Calico is the CNI for the workload cluster
 # Skip this if using TKG as the CNI is already done for you
-kapp deploy -a calico -f calico -c
+kapp -y deploy -a calico -f calico -c
 # cert-manager helps with issuing certs internally
-kapp deploy -a cert-manager -f cert-manager -c
+kapp -y deploy -a cert-manager -f cert-manager -c
+# If you are recovering from another cluster, apply your master.key here:
+# kubectl apply -f master.key
 # Sealed Secrets is how you securely add secrets into the cluster that can still be stored in a git repository
-kapp deploy -a sealed-secrets -f sealed-secrets -c
+kapp -y deploy -a sealed-secrets -f sealed-secrets -c
 ```
 
 ## Adding Secrets
@@ -51,16 +53,24 @@ kubectl create -f secrets/external-dns-config.yaml --dry-run -o json | kubeseal 
 
 # Now we can apply the safely sealed secrets
 kubectl create ns external-dns
-kapp deploy -a external-dns-config -f secrets/external-dns-config-sealed.yaml
-kapp deploy -a cert-manager-config -f secrets/cert-manager-config-sealed.yaml
+kapp -y deploy -a external-dns-config -f secrets/external-dns-config-sealed.yaml
+kapp -y deploy -a cert-manager-config -f secrets/cert-manager-config-sealed.yaml
 ```
+
+### Backup Secrets
+
+```
+# DO NOT COMMIT THIS IS A PRIVATE KEY
+kubectl get secret -n kube-system -l sealedsecrets.bitnami.com/sealed-secrets-key -o yaml >master.key
+```
+
 
 ## Post-Secrets Installs
 
 Now that the secrets are properly populated, we can install tooling that was dependent on them:
 
 ```
-kapp deploy -a external-dns -f external-dns -c
+kapp -y deploy -a external-dns -f external-dns -c
 ```
 
 ## Adding Unique Config
@@ -73,7 +83,7 @@ These are the files you'll need to edit for your cluster's variables.  Edit the 
 Install everything after modifying those files:
 
 ```
-kapp deploy -a letsencrypt-issuer -f unique/letsencrypt-issuer.yaml
+kapp -y deploy -a letsencrypt-issuer -f unique/letsencrypt-issuer.yaml
 kustomize build knative/overlays/dev | kapp -y deploy -a knative-serving -f -
 
 ```
