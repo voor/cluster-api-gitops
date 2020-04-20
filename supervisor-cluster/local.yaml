@@ -1,0 +1,24 @@
+apiVersion: run.tanzu.vmware.com/v1alpha1      #TKG API endpoint
+kind: TanzuKubernetesCluster                   #required parameter
+metadata:
+  name: local                          #cluster name, user defined
+  namespace: main                       #supervisor namespace
+spec:
+  distribution:
+    version: v1.16                             #resolved kubernetes version
+  settings:
+    network:
+      pods:
+        cidrBlocks:
+        - "100.96.0.0/11" # CIDR block used by Calico
+    storage:
+      defaultClass: "tkc-storage-policy"
+  topology:
+    controlPlane:
+      count: 1                                 #number of control plane nodes
+      class: best-effort-small                 #vmclass for control plane nodes
+      storageClass: tkc-storage-policy         #storageclass for control plane
+    workers:
+      count: 2                                 #number of worker nodes
+      class: best-effort-medium                 #vmclass for worker nodes
+      storageClass: tkc-storage-policy         #storageclass for worker nodes
