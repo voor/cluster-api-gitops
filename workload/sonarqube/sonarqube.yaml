@@ -1,0 +1,497 @@
+---
+# Source: postgresql/templates/podsecuritypolicy.yaml
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: sonarqube-db-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-8.9.3
+    release: "sonarqube-db"
+    heritage: "Helm"
+spec:
+  privileged: false
+  volumes:
+    - 'configMap'
+    - 'secret'
+    - 'persistentVolumeClaim'
+    - 'emptyDir'
+    - 'projected'
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    rule: 'MustRunAsNonRoot'
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1
+        max: 65535
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1
+        max: 65535
+  readOnlyRootFilesystem: false
+---
+# Source: postgresql/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: postgresql
+    chart: postgresql-8.9.3
+    release: "sonarqube-db"
+    heritage: "Helm"
+  name: sonarqube-db-postgresql
+---
+# Source: postgresql/templates/secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sonarqube-db-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-8.9.3
+    release: "sonarqube-db"
+    heritage: "Helm"
+type: Opaque
+data:
+  postgresql-password: "aEJUcW1XMld4ag=="
+---
+# Source: postgresql/templates/role.yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: sonarqube-db-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-8.9.3
+    release: "sonarqube-db"
+    heritage: "Helm"
+rules:
+  - apiGroups: ["extensions"]
+    resources: ["podsecuritypolicies"]
+    verbs: ["use"]
+    resourceNames:
+      - sonarqube-db-postgresql
+---
+# Source: postgresql/templates/rolebinding.yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: sonarqube-db-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-8.9.3
+    release: "sonarqube-db"
+    heritage: "Helm"
+roleRef:
+  kind: Role
+  name: sonarqube-db-postgresql
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: ServiceAccount
+    name: sonarqube-db-postgresql
+    namespace: sonarqube
+---
+# Source: postgresql/templates/svc-headless.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarqube-db-postgresql-headless
+  labels:
+    app: postgresql
+    chart: postgresql-8.9.3
+    release: "sonarqube-db"
+    heritage: "Helm"
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+    - name: tcp-postgresql
+      port: 5432
+      targetPort: tcp-postgresql
+  selector:
+    app: postgresql
+    release: "sonarqube-db"
+---
+# Source: postgresql/templates/svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarqube-db-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-8.9.3
+    release: "sonarqube-db"
+    heritage: "Helm"
+  annotations:
+spec:
+  type: ClusterIP
+  ports:
+    - name: tcp-postgresql
+      port: 5432
+      targetPort: tcp-postgresql
+  selector:
+    app: postgresql
+    release: "sonarqube-db"
+    role: master
+---
+# Source: postgresql/templates/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: sonarqube-db-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-8.9.3
+    release: "sonarqube-db"
+    heritage: "Helm"
+  annotations:
+spec:
+  serviceName: sonarqube-db-postgresql-headless
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: postgresql
+      release: "sonarqube-db"
+      role: master
+  template:
+    metadata:
+      name: sonarqube-db-postgresql
+      labels:
+        app: postgresql
+        chart: postgresql-8.9.3
+        release: "sonarqube-db"
+        heritage: "Helm"
+        role: master
+    spec:      
+      securityContext:
+        fsGroup: 1001
+      serviceAccountName: sonarqube-db-postgresql
+      containers:
+        - name: sonarqube-db-postgresql
+          image: docker.io/bitnami/postgresql:11.7.0-debian-10-r87
+          imagePullPolicy: "IfNotPresent"
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+          securityContext:
+            runAsUser: 1001
+          env:
+            - name: BITNAMI_DEBUG
+              value: "false"
+            - name: POSTGRESQL_PORT_NUMBER
+              value: "5432"
+            - name: POSTGRESQL_VOLUME_DIR
+              value: "/bitnami/postgresql"
+            - name: PGDATA
+              value: "/bitnami/postgresql/data"
+            - name: POSTGRES_USER
+              value: "sonarUser"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sonarqube-db-postgresql
+                  key: postgresql-password
+            - name: POSTGRES_DB
+              value: "sonarDB"
+            - name: POSTGRESQL_ENABLE_LDAP
+              value: "no"
+          ports:
+            - name: tcp-postgresql
+              containerPort: 5432
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - exec pg_isready -U "sonarUser" -d "sonarDB" -h 127.0.0.1 -p 5432
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 6
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - -e
+                - |
+                  exec pg_isready -U "sonarUser" -d "sonarDB" -h 127.0.0.1 -p 5432
+                  [ -f /opt/bitnami/postgresql/tmp/.initialized ] || [ -f /bitnami/postgresql/.initialized ]
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 6
+          volumeMounts:
+            - name: dshm
+              mountPath: /dev/shm
+            - name: data
+              mountPath: /bitnami/postgresql
+              subPath: 
+      volumes:
+        - name: dshm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: "8Gi"
+        storageClassName: generic
+---
+# Source: sonarqube/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sonarqube-sonarqube
+---
+# Source: sonarqube/templates/config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonarqube-sonarqube-config
+  labels:
+    app: sonarqube
+    chart: sonarqube-6.1.0
+    release: sonarqube
+    heritage: Helm
+data:
+---
+# Source: sonarqube/templates/copy-plugins.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonarqube-sonarqube-copy-plugins
+  labels:
+    app: sonarqube
+    chart: sonarqube-6.1.0
+    release: sonarqube
+    heritage: Helm
+data:
+  copy_plugins.sh: |-
+      #!/bin/bash
+      for f in /opt/sonarqube/extensions/plugins/tmp/*.jar
+      do
+        file=${f##*/} && file=${file%-[0-9]*}
+        for original in /opt/sonarqube/extensions/plugins/*.jar
+        do
+          originalfile=${original##*/} && originalfile=${originalfile%-[0-9]*}
+          if [ "$originalfile" == "$file" ]; then
+            rm -f "$original"
+          fi
+        done
+      done
+      cp /opt/sonarqube/extensions/plugins/tmp/*.jar /opt/sonarqube/extensions/plugins/
+      /opt/sonarqube/bin/run.sh
+---
+# Source: sonarqube/templates/install-plugins.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonarqube-sonarqube-install-plugins
+  labels:
+    app: sonarqube
+    chart: sonarqube-6.1.0
+    release: sonarqube
+    heritage: Helm
+data:
+  install_plugins.sh: |-
+    cd /opt/sonarqube/extensions/plugins/tmp
+---
+# Source: sonarqube/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarqube-sonarqube
+  labels:
+    app: sonarqube
+    chart: sonarqube-6.1.0
+    release: sonarqube
+    heritage: Helm
+
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9000
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: sonarqube
+    release: sonarqube
+---
+# Source: sonarqube/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarqube-sonarqube
+  labels:
+    app: sonarqube
+    chart: sonarqube-6.1.0
+    release: sonarqube
+    heritage: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonarqube
+      release: sonarqube
+  template:
+    metadata:
+      labels:
+        app: sonarqube
+        release: sonarqube
+
+    spec:
+      serviceAccountName: sonarqube-sonarqube
+      securityContext:
+        fsGroup: 999
+      initContainers:
+        - name: chmod-volume-mounts
+          image: busybox:1.31
+          command:
+            - "sh"
+            - "-c"
+            - 'mkdir -p $(printf "/opt/sonarqube/${1-%s\n}" temp logs data extensions/downloads extensions/plugins/tmp extensions/plugins certs) &&
+               chown 999:999 -R $(printf "/opt/sonarqube/${1-%s\n}" temp logs data extensions/downloads extensions/plugins/tmp extensions/plugins certs)'
+          volumeMounts:
+          - mountPath: /opt/sonarqube/temp
+            name: sonarqube
+            subPath: temp
+          - mountPath: /opt/sonarqube/logs
+            name: sonarqube
+            subPath: logs
+          - mountPath: /opt/sonarqube/data
+            name: sonarqube
+            subPath: data
+          - mountPath: /opt/sonarqube/extensions/plugins/tmp
+            name: sonarqube
+            subPath: tmp
+          - mountPath: /opt/sonarqube/extensions/downloads
+            name: sonarqube
+            subPath: downloads
+          - mountPath: /opt/sonarqube/extensions/plugins
+            name: sonarqube
+            subPath: plugins
+          - mountPath: /opt/sonarqube/certs
+            name: sonarqube
+            subPath: certs
+        - name: init-sysctl
+          image: busybox:1.31
+          securityContext:
+            privileged: true
+          command:
+          - /bin/sh
+          - -c
+          - 'if [[ "$(sysctl -n vm.max_map_count)" -lt 262144 ]]; then sysctl -w vm.max_map_count=262144; fi'
+      containers:
+        - name: sonarqube
+          image: "sonarqube:8.2-community"
+          imagePullPolicy: 
+          ports:
+            - name: http
+              containerPort: 9000
+              protocol: TCP
+          env:
+            - name: SONARQUBE_WEB_JVM_OPTS
+              value: ""
+            - name: SONARQUBE_JDBC_USERNAME
+              value: "sonarUser"
+            - name: SONARQUBE_JDBC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sonarqube-db-postgresql
+                  key: postgresql-password
+            - name: SONARQUBE_JDBC_URL
+              value: "jdbc:postgresql://sonarqube-db-postgresql:5432/sonarDB"
+          livenessProbe:
+            httpGet:
+              path: /sessions/new
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /sessions/new
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            failureThreshold: 6
+          volumeMounts:
+            - mountPath: /opt/sonarqube/data
+              name: sonarqube
+              subPath: data
+            - mountPath: /opt/sonarqube/extensions/plugins/tmp
+              name: sonarqube
+              subPath: tmp
+            - mountPath: /opt/sonarqube/extensions/downloads
+              name: sonarqube
+              subPath: downloads
+            - mountPath: /opt/sonarqube/extensions/plugins
+              name: sonarqube
+              subPath: plugins
+            - mountPath: /opt/sonarqube/temp
+              name: sonarqube
+              subPath: temp
+            - mountPath: /opt/sonarqube/logs
+              name: sonarqube
+              subPath: logs
+            - mountPath: /tmp
+              name: tmp-dir
+            - name: copy-plugins
+              mountPath: /tmp/scripts
+          resources:
+            {}
+      volumes:
+      - name: install-plugins
+        configMap:
+          name: sonarqube-sonarqube-install-plugins
+          items:
+            - key: install_plugins.sh
+              path: install_plugins.sh
+      - name: copy-plugins
+        configMap:
+          name: sonarqube-sonarqube-copy-plugins
+          defaultMode: 0755
+          items:
+            - key: copy_plugins.sh
+              path: copy_plugins.sh
+      - name: sonarqube
+        emptyDir: {}
+      - name : tmp-dir
+        emptyDir: {}
+---
+# Source: sonarqube/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: sonarqube-sonarqube
+  labels:
+    app: sonarqube
+    chart: sonarqube-6.1.0
+    release: sonarqube
+    heritage: Helm
+spec:
+  rules:
+    - host: sonar.organization.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: sonarqube-sonarqube
+              servicePort: 9000

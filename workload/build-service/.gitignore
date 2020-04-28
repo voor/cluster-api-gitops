@@ -1,0 +1,8 @@
+artifacts/
+*.tgz
+bundle.json
+ca.crt
+credentials.yaml
+kubeconfig.yml
+relocated.json
+gcr.io.creds.json
