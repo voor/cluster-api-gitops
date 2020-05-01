@@ -1,0 +1,20 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sonar 
+---
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: sonarqube-sonarqube
+  namespace: sonar
+spec:
+  virtualhost:
+    fqdn: foo2.bar.com
+    tls:
+      secretName: testsecret
+  routes:
+    - services:
+        - name: sonarqube-sonarqube
+          port: 9000

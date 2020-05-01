@@ -17,3 +17,29 @@ spec:
           apiTokenSecretRef:
             name: cloudflare-api-token-secret
             key: api-token
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: default.tanzu.world
+  namespace: projectcontour
+spec:
+  secretName: default.tanzu.world
+  issuerRef:
+    name: letsencrypt-issuer
+    kind: ClusterIssuer
+  dnsNames:
+  - '*.default.tanzu.world'
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: apps.tanzu.world
+  namespace: projectcontour
+spec:
+  secretName: apps.tanzu.world
+  issuerRef:
+    name: letsencrypt-issuer
+    kind: ClusterIssuer
+  dnsNames:
+  - '*.apps.tanzu.world'

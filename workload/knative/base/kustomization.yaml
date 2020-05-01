@@ -1,7 +1,0 @@
-resources:
-- serving-cert-manager.yaml
-- serving-contour-external.yaml
-- serving-contour-internal.yaml
-- serving-net-contour.yaml
-- serving-core.yaml
-- serving-nscert.yaml

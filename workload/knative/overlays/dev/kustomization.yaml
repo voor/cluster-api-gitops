@@ -1,8 +1,0 @@
-commonLabels:
-  variant: dev
-bases:
-- ../../base
-patchesStrategicMerge:
-- domain.yaml
-- config-network.yaml
-- config-certmanager.yaml

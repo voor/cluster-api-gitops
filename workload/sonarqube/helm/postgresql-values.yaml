@@ -1,0 +1,30 @@
+
+## Bitnami PostgreSQL image version
+## ref: https://hub.docker.com/r/bitnami/postgresql/tags/
+##
+image:
+  registry: docker.io
+  repository: bitnami/postgresql
+  tag: 11.7.0-debian-10-r87
+
+## PostgreSQL user (has superuser privileges if username is `postgres`)
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#setting-the-root-password-on-first-run
+postgresqlUsername: sonarUser
+
+## Create a database
+## ref: https://github.com/bitnami/bitnami-docker-postgresql/blob/master/README.md#creating-a-database-on-first-run
+##
+postgresqlDatabase: sonarDB
+
+## PostgreSQL data Persistent Volume Storage Class
+## If defined, storageClassName: <storageClass>
+## If set to "-", storageClassName: "", which disables dynamic provisioning
+## If undefined (the default) or set to null, no storageClassName spec is
+##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+##   GKE, AWS & OpenStack)
+##
+persistence:
+  storageClass: "generic"
+  accessModes:
+    - ReadWriteOnce
+  size: 8Gi

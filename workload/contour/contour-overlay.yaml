@@ -1,0 +1,15 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"Service", "metadata":{"name":"envoy"}})
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: envoy
+  namespace: projectcontour
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    #@overlay/match missing_ok=True
+    external-dns.alpha.kubernetes.io/hostname: "*.apps.tanzu.world,*.default.tanzu.world"

@@ -5,30 +5,8 @@ image:
   # pullSecret: my-repo-secret
 
 ingress:
-  enabled: true
-  # Used to create an Ingress record.
-  hosts:
-    - name: sonar.organization.com
-      # Different clouds or configurations might need /* as the default path
-      path: /
-      # For additional control over serviceName and servicePort
-      # serviceName: someService
-      # servicePort: somePort
-  annotations: {}
-  # kubernetes.io/ingress.class: nginx
-  # kubernetes.io/tls-acme: "true"
-  # This property allows for reports up to a certain size to be uploaded to SonarQube
-  # nginx.ingress.kubernetes.io/proxy-body-size: "8m"
-
-# Additional labels for Ingress manifest file
-  # labels:
-  #  traffic-type: external
-  #  traffic-type: internal
-  tls: []
-  # Secrets must be manually created in the namespace.
-  # - secretName: chart-example-tls
-  #   hosts:
-  #     - chart-example.local
+  # Not using this, using Contour HTTP Proxy
+  enabled: false
 
 # hostAliases allows the modification of the hosts file inside a container
 hostAliases: []

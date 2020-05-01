@@ -1,0 +1,57 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"metadata":{"name":"config-certmanager"}})
+---
+apiVersion: v1
+data:
+  #! issuerRef is a reference to the issuer for this certificate.
+  #! IssuerRef should be either `ClusterIssuer` or `Issuer`.
+  #! Please refer `IssuerRef` in https://github.com/jetstack/cert-manager/blob/master/pkg/apis/certmanager/v1alpha1/types_certificate.go
+  #! for more details about IssuerRef configuration.
+  issuerRef: |
+    kind: ClusterIssuer
+    name: letsencrypt-issuer
+kind: ConfigMap
+metadata:
+  name: config-certmanager
+  namespace: knative-serving
+
+#@overlay/match by=overlay.subset({"metadata":{"name":"config-network"}})
+---
+apiVersion: v1
+data:
+  #@overlay/match missing_ok=True
+  autoTLS: "Enabled"
+  #@overlay/match missing_ok=True
+  ingress.class: contour.ingress.networking.knative.dev
+  #@overlay/match missing_ok=True
+  httpProtocol: "Redirected"
+kind: ConfigMap
+metadata:
+  name: config-network
+  namespace: knative-serving
+
+#@overlay/match by=overlay.subset({"metadata":{"name":"config-contour"}})
+---
+apiVersion: v1
+data:
+  #@overlay/match missing_ok=True
+  visibility: |
+    ExternalIP:
+      class: contour
+      service: contour/envoy
+kind: ConfigMap
+metadata:
+  name: config-contour
+  namespace: knative-serving
+
+#@overlay/match by=overlay.subset({"metadata":{"name":"config-domain"}})
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-domain
+  namespace: knative-serving
+data:
+  #@overlay/match missing_ok=True
+  tanzu.world: ""

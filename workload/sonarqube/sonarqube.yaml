@@ -1,52 +1,4 @@
 ---
-# Source: postgresql/templates/podsecuritypolicy.yaml
-apiVersion: policy/v1beta1
-kind: PodSecurityPolicy
-metadata:
-  name: sonarqube-db-postgresql
-  labels:
-    app: postgresql
-    chart: postgresql-8.9.3
-    release: "sonarqube-db"
-    heritage: "Helm"
-spec:
-  privileged: false
-  volumes:
-    - 'configMap'
-    - 'secret'
-    - 'persistentVolumeClaim'
-    - 'emptyDir'
-    - 'projected'
-  hostNetwork: false
-  hostIPC: false
-  hostPID: false
-  runAsUser:
-    rule: 'MustRunAsNonRoot'
-  seLinux:
-    rule: 'RunAsAny'
-  supplementalGroups:
-    rule: 'MustRunAs'
-    ranges:
-      - min: 1
-        max: 65535
-  fsGroup:
-    rule: 'MustRunAs'
-    ranges:
-      - min: 1
-        max: 65535
-  readOnlyRootFilesystem: false
----
-# Source: postgresql/templates/serviceaccount.yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  labels:
-    app: postgresql
-    chart: postgresql-8.9.3
-    release: "sonarqube-db"
-    heritage: "Helm"
-  name: sonarqube-db-postgresql
----
 # Source: postgresql/templates/secrets.yaml
 apiVersion: v1
 kind: Secret
@@ -54,48 +6,12 @@ metadata:
   name: sonarqube-db-postgresql
   labels:
     app: postgresql
-    chart: postgresql-8.9.3
+    chart: postgresql-8.9.4
     release: "sonarqube-db"
     heritage: "Helm"
 type: Opaque
 data:
-  postgresql-password: "aEJUcW1XMld4ag=="
----
-# Source: postgresql/templates/role.yaml
-kind: Role
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: sonarqube-db-postgresql
-  labels:
-    app: postgresql
-    chart: postgresql-8.9.3
-    release: "sonarqube-db"
-    heritage: "Helm"
-rules:
-  - apiGroups: ["extensions"]
-    resources: ["podsecuritypolicies"]
-    verbs: ["use"]
-    resourceNames:
-      - sonarqube-db-postgresql
----
-# Source: postgresql/templates/rolebinding.yaml
-kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
-metadata:
-  name: sonarqube-db-postgresql
-  labels:
-    app: postgresql
-    chart: postgresql-8.9.3
-    release: "sonarqube-db"
-    heritage: "Helm"
-roleRef:
-  kind: Role
-  name: sonarqube-db-postgresql
-  apiGroup: rbac.authorization.k8s.io
-subjects:
-  - kind: ServiceAccount
-    name: sonarqube-db-postgresql
-    namespace: sonarqube
+  postgresql-password: "cHlQRzVub0tuVw=="
 ---
 # Source: postgresql/templates/svc-headless.yaml
 apiVersion: v1
@@ -104,7 +20,7 @@ metadata:
   name: sonarqube-db-postgresql-headless
   labels:
     app: postgresql
-    chart: postgresql-8.9.3
+    chart: postgresql-8.9.4
     release: "sonarqube-db"
     heritage: "Helm"
 spec:
@@ -125,7 +41,7 @@ metadata:
   name: sonarqube-db-postgresql
   labels:
     app: postgresql
-    chart: postgresql-8.9.3
+    chart: postgresql-8.9.4
     release: "sonarqube-db"
     heritage: "Helm"
   annotations:
@@ -147,7 +63,7 @@ metadata:
   name: sonarqube-db-postgresql
   labels:
     app: postgresql
-    chart: postgresql-8.9.3
+    chart: postgresql-8.9.4
     release: "sonarqube-db"
     heritage: "Helm"
   annotations:
@@ -166,14 +82,13 @@ spec:
       name: sonarqube-db-postgresql
       labels:
         app: postgresql
-        chart: postgresql-8.9.3
+        chart: postgresql-8.9.4
         release: "sonarqube-db"
         heritage: "Helm"
         role: master
     spec:      
       securityContext:
         fsGroup: 1001
-      serviceAccountName: sonarqube-db-postgresql
       containers:
         - name: sonarqube-db-postgresql
           image: docker.io/bitnami/postgresql:11.7.0-debian-10-r87
@@ -475,23 +390,3 @@ spec:
         emptyDir: {}
       - name : tmp-dir
         emptyDir: {}
----
-# Source: sonarqube/templates/ingress.yaml
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
-metadata:
-  name: sonarqube-sonarqube
-  labels:
-    app: sonarqube
-    chart: sonarqube-6.1.0
-    release: sonarqube
-    heritage: Helm
-spec:
-  rules:
-    - host: sonar.organization.com
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: sonarqube-sonarqube
-              servicePort: 9000

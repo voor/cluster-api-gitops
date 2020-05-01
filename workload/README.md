@@ -57,6 +57,12 @@ kapp -y deploy -a external-dns-config -f secrets/external-dns-config-sealed.yaml
 kapp -y deploy -a cert-manager-config -f secrets/cert-manager-config-sealed.yaml
 ```
 
+## Contour
+
+```
+ytt --ignore-unknown-comments -f contour-quickstart.yaml -f contour-overlay.yaml | kapp -y deploy -a contour -f -
+```
+
 ### Backup Secrets
 
 ```
@@ -70,7 +76,7 @@ kubectl get secret -n kube-system -l sealedsecrets.bitnami.com/sealed-secrets-ke
 Now that the secrets are properly populated, we can install tooling that was dependent on them:
 
 ```
-kapp -y deploy -a external-dns -f external-dns -c
+kapp -y deploy -a external-dns -f external-dns
 ```
 
 ## Adding Unique Config
