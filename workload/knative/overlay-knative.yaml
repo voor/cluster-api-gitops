@@ -4,10 +4,8 @@
 ---
 apiVersion: v1
 data:
-  #! issuerRef is a reference to the issuer for this certificate.
-  #! IssuerRef should be either `ClusterIssuer` or `Issuer`.
-  #! Please refer `IssuerRef` in https://github.com/jetstack/cert-manager/blob/master/pkg/apis/certmanager/v1alpha1/types_certificate.go
-  #! for more details about IssuerRef configuration.
+  #@overlay/remove missing_ok=True
+  _example:
   #@overlay/match missing_ok=True
   issuerRef: |
     kind: ClusterIssuer
@@ -21,6 +19,8 @@ metadata:
 ---
 apiVersion: v1
 data:
+  #@overlay/remove missing_ok=True
+  _example:
   #@overlay/match missing_ok=True
   autoTLS: "Enabled"
   #@overlay/match missing_ok=True
@@ -36,9 +36,14 @@ metadata:
 ---
 apiVersion: v1
 data:
+  #@overlay/remove missing_ok=True
+  _example:
   #@overlay/match missing_ok=True
   visibility: |
     ExternalIP:
+      class: contour
+      service: contour/envoy
+    ClusterLocal:
       class: contour
       service: contour/envoy
 kind: ConfigMap
@@ -54,5 +59,7 @@ metadata:
   name: config-domain
   namespace: knative-serving
 data:
+  #@overlay/remove missing_ok=True
+  _example:
   #@overlay/match missing_ok=True
   tanzu.world: ""
