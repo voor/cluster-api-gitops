@@ -8,6 +8,7 @@ data:
   #! IssuerRef should be either `ClusterIssuer` or `Issuer`.
   #! Please refer `IssuerRef` in https://github.com/jetstack/cert-manager/blob/master/pkg/apis/certmanager/v1alpha1/types_certificate.go
   #! for more details about IssuerRef configuration.
+  #@overlay/match missing_ok=True
   issuerRef: |
     kind: ClusterIssuer
     name: letsencrypt-issuer
