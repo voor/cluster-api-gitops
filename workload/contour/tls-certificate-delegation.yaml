@@ -5,9 +5,9 @@ metadata:
   namespace: projectcontour
 spec:
   delegations:
-  - secretName: default.tanzu.world
+  - secretName: default/default.tanzu.world
     targetNamespaces:
     - default
-  - secretName: apps.tanzu.world
+  - secretName: apps/apps.tanzu.world
     targetNamespaces:
-    - apps
+    - '*'

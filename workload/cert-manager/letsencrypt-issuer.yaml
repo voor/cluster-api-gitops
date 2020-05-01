@@ -22,7 +22,7 @@ apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
   name: default.tanzu.world
-  namespace: projectcontour
+  namespace: default
 spec:
   secretName: default.tanzu.world
   issuerRef:
@@ -35,7 +35,7 @@ apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
   name: apps.tanzu.world
-  namespace: projectcontour
+  namespace: apps
 spec:
   secretName: apps.tanzu.world
   issuerRef:

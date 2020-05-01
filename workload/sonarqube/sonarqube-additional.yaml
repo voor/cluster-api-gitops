@@ -11,9 +11,9 @@ metadata:
   namespace: sonar
 spec:
   virtualhost:
-    fqdn: foo2.bar.com
+    fqdn: sonar.sonar.tanzu.world
     tls:
-      secretName: testsecret
+      secretName: sonar.apps.tanzu.world
   routes:
     - services:
         - name: sonarqube-sonarqube
