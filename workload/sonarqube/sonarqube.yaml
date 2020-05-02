@@ -14,7 +14,8 @@ metadata:
     release: sonarqube
     heritage: Helm
   namespace: sonar
-data: null
+data:
+  sonar.properties: sonar.core.serverBaseURL=sonar.apps.tanzu.world
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -55,6 +56,24 @@ metadata:
   namespace: sonar
 data:
   install_plugins.sh: cd /opt/sonarqube/extensions/plugins/tmp
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: sonarqube-sonarqube
+  labels:
+    app: sonarqube
+    chart: sonarqube-6.1.0
+    release: sonarqube
+    heritage: Helm
+  namespace: sonar
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: generic
 ---
 apiVersion: v1
 kind: Service
@@ -177,6 +196,8 @@ spec:
           periodSeconds: 30
           failureThreshold: 6
         volumeMounts:
+        - mountPath: /opt/sonarqube/conf/
+          name: config
         - mountPath: /opt/sonarqube/data
           name: sonarqube
           subPath: data
@@ -201,6 +222,12 @@ spec:
           mountPath: /tmp/scripts
         resources: {}
       volumes:
+      - name: config
+        configMap:
+          name: sonarqube-sonarqube-config
+          items:
+          - key: sonar.properties
+            path: sonar.properties
       - name: install-plugins
         configMap:
           name: sonarqube-sonarqube-install-plugins
@@ -215,6 +242,7 @@ spec:
           - key: copy_plugins.sh
             path: copy_plugins.sh
       - name: sonarqube
-        emptyDir: {}
+        persistentVolumeClaim:
+          claimName: sonarqube-sonarqube
       - name: tmp-dir
         emptyDir: {}

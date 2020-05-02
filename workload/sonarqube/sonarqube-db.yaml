@@ -10,7 +10,7 @@ metadata:
   namespace: sonar
 type: Opaque
 data:
-  postgresql-password: b3RTM3hmRExaaw==
+  postgresql-password: NGdhWXNTTWlVQg==
 ---
 apiVersion: v1
 kind: Service
