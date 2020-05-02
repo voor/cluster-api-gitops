@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -eux
 
-for secret in secrets/*.yaml
+secret_files="${1:-secrets/*.yaml}"
+
+for secret in $secret_files
 do
     nopath=${secret:8}
     sealed=${nopath%.yaml}
