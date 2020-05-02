@@ -2,12 +2,20 @@ apiVersion: projectcontour.io/v1
 kind: TLSCertificateDelegation
 metadata:
   name: wildcards
-  namespace: projectcontour
+  namespace: apps
 spec:
   delegations:
-  - secretName: default/default.tanzu.world
-    targetNamespaces:
-    - default
-  - secretName: apps/apps.tanzu.world
-    targetNamespaces:
-    - '*'
+    - secretName: apps.tanzu.world
+      targetNamespaces:
+        - "*"
+---
+apiVersion: projectcontour.io/v1
+kind: TLSCertificateDelegation
+metadata:
+  name: wildcards
+  namespace: default
+spec:
+  delegations:
+    - secretName: default.tanzu.world
+      targetNamespaces:
+        - "*"

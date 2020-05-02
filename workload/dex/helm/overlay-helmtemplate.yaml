@@ -1,0 +1,11 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.all,expects="0+"
+---
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: sso
+
+#!@overlay/match by=overlay.subset({"kind": "Secret", "metadata":{"name":"dex", "labels": { "app.kubernetes.io/managed-by": "Helm" }}})
+#!---
+#!@overlay/remove

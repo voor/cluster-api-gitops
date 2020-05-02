@@ -1,0 +1,169 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sonarqube-db-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-8.9.4
+    release: sonarqube-db
+    heritage: Helm
+  namespace: sonar
+type: Opaque
+data:
+  postgresql-password: b3RTM3hmRExaaw==
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarqube-db-postgresql-headless
+  labels:
+    app: postgresql
+    chart: postgresql-8.9.4
+    release: sonarqube-db
+    heritage: Helm
+  namespace: sonar
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: tcp-postgresql
+    port: 5432
+    targetPort: tcp-postgresql
+  selector:
+    app: postgresql
+    release: sonarqube-db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarqube-db-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-8.9.4
+    release: sonarqube-db
+    heritage: Helm
+  annotations: null
+  namespace: sonar
+spec:
+  type: ClusterIP
+  ports:
+  - name: tcp-postgresql
+    port: 5432
+    targetPort: tcp-postgresql
+  selector:
+    app: postgresql
+    release: sonarqube-db
+    role: master
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: sonarqube-db-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-8.9.4
+    release: sonarqube-db
+    heritage: Helm
+  annotations: null
+  namespace: sonar
+spec:
+  serviceName: sonarqube-db-postgresql-headless
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: postgresql
+      release: sonarqube-db
+      role: master
+  template:
+    metadata:
+      name: sonarqube-db-postgresql
+      labels:
+        app: postgresql
+        chart: postgresql-8.9.4
+        release: sonarqube-db
+        heritage: Helm
+        role: master
+    spec:
+      securityContext:
+        fsGroup: 1001
+      containers:
+      - name: sonarqube-db-postgresql
+        image: docker.io/bitnami/postgresql:11.7.0-debian-10-r87
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 250m
+            memory: 256Mi
+        securityContext:
+          runAsUser: 1001
+        env:
+        - name: BITNAMI_DEBUG
+          value: "false"
+        - name: POSTGRESQL_PORT_NUMBER
+          value: "5432"
+        - name: POSTGRESQL_VOLUME_DIR
+          value: /bitnami/postgresql
+        - name: PGDATA
+          value: /bitnami/postgresql/data
+        - name: POSTGRES_USER
+          value: sonarUser
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sonarqube-db-postgresql
+              key: postgresql-password
+        - name: POSTGRES_DB
+          value: sonarDB
+        - name: POSTGRESQL_ENABLE_LDAP
+          value: "no"
+        ports:
+        - name: tcp-postgresql
+          containerPort: 5432
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - exec pg_isready -U "sonarUser" -d "sonarDB" -h 127.0.0.1 -p 5432
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 6
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - -e
+            - |
+              exec pg_isready -U "sonarUser" -d "sonarDB" -h 127.0.0.1 -p 5432
+              [ -f /opt/bitnami/postgresql/tmp/.initialized ] || [ -f /bitnami/postgresql/.initialized ]
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 6
+        volumeMounts:
+        - name: dshm
+          mountPath: /dev/shm
+        - name: data
+          mountPath: /bitnami/postgresql
+          subPath: null
+      volumes:
+      - name: dshm
+        emptyDir:
+          medium: Memory
+          sizeLimit: 1Gi
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 8Gi
+      storageClassName: generic

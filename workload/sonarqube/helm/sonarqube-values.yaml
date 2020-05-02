@@ -47,7 +47,7 @@ resources: {}
 #  cpu: 100m
 #  memory: 128Mi
 persistence:
-  enabled: false
+  enabled: true
   ## Set annotations on pvc
   annotations: {}
 
@@ -61,7 +61,7 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  storageClass:
+  storageClass: "generic"
   accessMode: ReadWriteOnce
   size: 10Gi
 
@@ -96,10 +96,11 @@ plugins:
 
 # A custom sonar.properties file can be provided via dictionary.
 # For example:
-# sonarProperties:
+sonarProperties:
 #   sonar.forceAuthentication: true
 #   sonar.security.realm: LDAP
 #   ldap.url: ldaps://organization.com
+  sonar.core.serverBaseURL: sonar.apps.tanzu.world
 
 # Additional sonar properties to load from a secret with a key "secret.properties" (must be a string)
 # sonarSecretProperties:
