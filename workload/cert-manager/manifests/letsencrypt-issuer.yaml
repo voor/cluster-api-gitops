@@ -9,13 +9,13 @@ metadata:
 spec:
   acme:
     email: rcvanvo@gmail.com
-    server: https://acme-staging-v02.api.letsencrypt.org/directory #@ data.values.acme_server
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: letsencrypt-issuer-account-key
     solvers:
     - dns01:
         cloudflare:
-          email: rcvanvo@gmail.com #@ data.values.acme_server
+          email: rcvanvo@gmail.com
           apiTokenSecretRef:
             name: cloudflare-api-token-secret
             key: api-token
