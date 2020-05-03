@@ -20,9 +20,11 @@ metadata:
   name: sonarqube-proxy-oauth2-proxy
   namespace: sonar
 data:
-  oauth2_proxy.cfg: "redirect_url = \"https://login.sso.tanzu.world/callback\"\nupstreams
-    = [ \"http://sonarqube-sonarqube:9000\" ]\npass_basic_auth = true\npass_user_headers
-    = true\npass_host_header = true \nemail_domains = [\n    \"*\"\n]"
+  oauth2_proxy.cfg: "provider = \"oidc\"\nprovider_display_name = \"Dex\"\nredirect_url
+    = \"https://sonar.apps.tanzu.world/oauth2/callback\"\nupstreams = [ \"http://sonarqube-sonarqube:9000\"
+    ]\noidc_issuer_url = \"https://login.sso.tanzu.world\"\npass_basic_auth = true\npass_user_headers
+    = true\npass_host_header = true \nssl_insecure_skip_verify = true\nemail_domains
+    = [\n    \"*\"\n]"
 ---
 apiVersion: v1
 kind: Service
@@ -64,7 +66,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 2e8a8fb9cd8277bc2a1ab869610cdc3d143ddde1f8a6e43a6b3c86b47e43c552
+        checksum/config: b2141f0aee774b340e405d062c2298cd1f9ef35c1cc9ea1715f94fa3ab49a4d6
         checksum/config-emails: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
         checksum/secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
         checksum/google-secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855

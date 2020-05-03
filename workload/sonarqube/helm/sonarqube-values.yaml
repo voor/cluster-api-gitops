@@ -101,6 +101,9 @@ sonarProperties:
 #   sonar.security.realm: LDAP
 #   ldap.url: ldaps://organization.com
   sonar.core.serverBaseURL: sonar.apps.tanzu.world
+  sonar.web.sso.enable: true
+  sonar.web.sso.loginHeader: X-Forwarded-Email
+  sonar.web.sso.nameHeader: X-Forwarded-Preferred-Username
 
 # Additional sonar properties to load from a secret with a key "secret.properties" (must be a string)
 # sonarSecretProperties:

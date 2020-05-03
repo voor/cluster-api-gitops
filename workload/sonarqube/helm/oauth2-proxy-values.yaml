@@ -2,11 +2,15 @@ config:
   existingSecret: sonarqube-passwords
 
   configFile: |-
-    redirect_url = "https://login.sso.tanzu.world/callback"
+    provider = "oidc"
+    provider_display_name = "Dex"
+    redirect_url = "https://sonar.apps.tanzu.world/oauth2/callback"
     upstreams = [ "http://sonarqube-sonarqube:9000" ]
+    oidc_issuer_url = "https://login.sso.tanzu.world"
     pass_basic_auth = true
     pass_user_headers = true
     pass_host_header = true 
+    ssl_insecure_skip_verify = true
     email_domains = [
         "*"
     ]

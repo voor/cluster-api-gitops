@@ -21,3 +21,13 @@ subjects:
 - kind: ServiceAccount
   name: dex
   namespace: sso
+
+#@overlay/match by=overlay.subset({"kind": "RoleBinding", "metadata":{"name":"dex", "labels": { "app.kubernetes.io/managed-by": "Helm" }}})
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+subjects:
+#@overlay/match by=overlay.all,expects="1+"
+- kind: ServiceAccount
+  name: dex
+  namespace: sso

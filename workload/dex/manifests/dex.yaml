@@ -94,7 +94,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: dex
-  namespace: default
+  namespace: sso
 ---
 apiVersion: v1
 kind: Service

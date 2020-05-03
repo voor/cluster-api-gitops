@@ -15,7 +15,11 @@ metadata:
     heritage: Helm
   namespace: sonar
 data:
-  sonar.properties: sonar.core.serverBaseURL=sonar.apps.tanzu.world
+  sonar.properties: |-
+    sonar.core.serverBaseURL=sonar.apps.tanzu.world
+    sonar.web.sso.enable=true
+    sonar.web.sso.loginHeader=X-Forwarded-Email
+    sonar.web.sso.nameHeader=X-Forwarded-Preferred-Username
 ---
 apiVersion: v1
 kind: ConfigMap
