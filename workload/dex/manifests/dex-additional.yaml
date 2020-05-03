@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sso
+---
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: dex
+  namespace: sso
+spec:
+  virtualhost:
+    fqdn: login.sso.tanzu.world
+    tls:
+      secretName: sso/sso.tanzu.world
+  routes:
+    - services:
+        - name: dex
+          port: 32000

@@ -6,6 +6,18 @@ metadata:
   #@overlay/match missing_ok=True
   namespace: sso
 
-#!@overlay/match by=overlay.subset({"kind": "Secret", "metadata":{"name":"dex", "labels": { "app.kubernetes.io/managed-by": "Helm" }}})
-#!---
-#!@overlay/remove
+#@overlay/match by=overlay.subset({"kind": "Secret", "metadata":{"name":"dex", "labels": { "app.kubernetes.io/managed-by": "Helm" }}})
+---
+#@overlay/remove
+
+---
+
+#@overlay/match by=overlay.subset({"kind": "ClusterRoleBinding", "metadata":{"name":"dex", "labels": { "app.kubernetes.io/managed-by": "Helm" }}})
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+subjects:
+#@overlay/match by=overlay.all,expects="1+"
+- kind: ServiceAccount
+  name: dex
+  namespace: sso

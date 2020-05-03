@@ -1,0 +1,15 @@
+apiVersion: kappctrl.k14s.io/v1alpha1
+kind: App
+metadata:
+  name: external-dns
+spec:
+  fetch:
+  - git:
+      url: https://github.com/voor/cluster-api-gitops
+      ref: origin/master
+      subPath: workload/external-dns/manifests
+  template:
+  - ytt:
+      ignoreUnknownComments: true
+  deploy:
+  - kapp: {}

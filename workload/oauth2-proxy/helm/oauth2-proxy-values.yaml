@@ -1,0 +1,131 @@
+image:
+  repository: sonarqube
+  tag: 8.2-community
+  # If using a private repository, the name of the imagePullSecret to use
+  # pullSecret: my-repo-secret
+
+ingress:
+  # Not using this, using Contour HTTP Proxy
+  enabled: false
+
+# hostAliases allows the modification of the hosts file inside a container
+hostAliases: []
+# - ip: "192.168.1.10"
+#   hostnames:
+#   - "example.com"
+#   - "www.example.com"
+
+## Provide a secret containing one or more certificate files in the keys that will be added to cacerts
+## The cacerts file will be set via SONARQUBE_WEB_JVM_OPTS
+##
+# caCerts:
+#   secret: my-secret
+
+## Values to add to SONARQUBE_WEB_JVM_OPTS
+##
+# jvmOpts: "-Djava.net.preferIPv4Stack=true"
+jvmOpts: ""
+
+## Environment variables to attach to the pods
+##
+# env:
+#   - name: VARIABLE
+#     value: my-value
+
+# Set annotations for pods
+annotations: {}
+
+resources: {}
+# We usually recommend not to specify default resources and to leave this as a conscious
+# choice for the user. This also increases chances charts run on environments with little
+# resources, such as Minikube. If you do want to specify resources, uncomment the following
+# lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+# limits:
+#  cpu: 100m
+#  memory: 128Mi
+# requests:
+#  cpu: 100m
+#  memory: 128Mi
+persistence:
+  enabled: true
+  ## Set annotations on pvc
+  annotations: {}
+
+  ## Specify an existing volume claim instead of creating a new one.
+  ## When using this option all following options like storageClass, accessMode and size are ignored.
+  # existingClaim:
+
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClass: "generic"
+  accessMode: ReadWriteOnce
+  size: 10Gi
+
+  ## Specify extra volumes. Refer to ".spec.volumes" specification : https://kubernetes.io/fr/docs/concepts/storage/volumes/
+  volumes: []
+  ## Specify extra mounts. Refer to ".spec.containers.volumeMounts" specification : https://kubernetes.io/fr/docs/concepts/storage/volumes/
+  mounts: []
+
+# List of plugins to install.
+# For example:
+# plugins:
+#  install:
+#    - "https://github.com/AmadeusITGroup/sonar-stash/releases/download/1.3.0/sonar-stash-plugin-1.3.0.jar"
+#    - "https://github.com/SonarSource/sonar-ldap/releases/download/2.2-RC3/sonar-ldap-plugin-2.2.0.601.jar"
+plugins:
+  install: []
+  lib: []
+
+  # For use behind a corporate proxy when downloading plugins
+  # httpProxy: ""
+  # httpsProxy: ""
+
+  # initContainerImage: rjkernick/alpine-wget:latest
+  # initSysctlContainerImage: busybox:1.31
+  # initVolumesContainerImage: busybox:1.31
+  # initCertsContainerImage: adoptopenjdk/openjdk11:alpine
+  # initTestContainerImage: dduportal/bats:0.4.0
+  # deleteDefaultPlugins: true
+  resources: {}
+  # We allow the plugins init container to have a separate resources declaration because
+  # the initContainer does not take as much resources.
+
+# A custom sonar.properties file can be provided via dictionary.
+# For example:
+sonarProperties:
+#   sonar.forceAuthentication: true
+#   sonar.security.realm: LDAP
+#   ldap.url: ldaps://organization.com
+  sonar.core.serverBaseURL: sonar.apps.tanzu.world
+
+# Additional sonar properties to load from a secret with a key "secret.properties" (must be a string)
+# sonarSecretProperties:
+
+# Kubernetes secret that contains the encryption key for the sonarqube instance.
+# The secret must contain the key 'sonar-secret.txt'.
+# The 'sonar.secretKeyPath' property will be set automatically.
+# sonarSecretKey: "settings-encryption-secret"
+
+## Configuration values for postgresql dependency
+## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
+postgresql:
+  # Enable to deploy the PostgreSQL chart
+  enabled: false
+  # To use an external PostgreSQL instance, set enabled to false and uncomment
+  # the line below:
+  postgresqlServer: "sonarqube-db-postgresql"
+  # To use an external secret for the password for an external PostgreSQL
+  # instance, set enabled to false and provide the name of the secret on the
+  # line below:
+  existingSecret: "sonarqube-db-postgresql"
+  postgresqlUsername: "sonarUser"
+  postgresqlDatabase: "sonarDB"
+
+enableTests: false
+
+serviceAccount:
+  create: true

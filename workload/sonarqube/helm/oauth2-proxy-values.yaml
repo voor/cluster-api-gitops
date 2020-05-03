@@ -1,0 +1,13 @@
+config:
+  # OAuth client ID
+  clientID: "XXXXXXX"
+  # OAuth client secret
+  clientSecret: "XXXXXXXX"
+
+image:
+  repository: "quay.io/pusher/oauth2_proxy"
+  tag: "v5.1.0"
+  pullPolicy: "Always"
+
+securityContext:
+  enabled: true

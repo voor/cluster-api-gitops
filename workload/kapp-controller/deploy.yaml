@@ -1,0 +1,15 @@
+apiVersion: kappctrl.k14s.io/v1alpha1
+kind: App
+metadata:
+  name: deploy
+  namespace: kapp-controller
+spec:
+  fetch:
+  - git:
+      url: https://github.com/voor/cluster-api-gitops
+      ref: origin/master
+      subPath: workload/deploy
+  template:
+  - ytt: {}
+  deploy:
+  - kapp: {}

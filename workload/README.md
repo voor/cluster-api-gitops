@@ -30,13 +30,11 @@ These are generic installs that don't have specific configuration required befor
 ```
 # Calico is the CNI for the workload cluster
 # Skip this if using TKG as the CNI is already done for you
-kapp -y deploy -a calico -f calico -c
-# cert-manager helps with issuing certs internally
-kapp -y deploy -a cert-manager -f cert-manager -c
+kapp -y deploy -a calico -f calico/manifests
 # If you are recovering from another cluster, apply your master.key here:
 # kubectl apply -f master.key
 # Sealed Secrets is how you securely add secrets into the cluster that can still be stored in a git repository
-kapp -y deploy -a sealed-secrets -f sealed-secrets -c
+kapp -y deploy -a sealed-secrets -f sealed-secrets/manifests -c
 ```
 
 ## Adding Secrets
@@ -46,21 +44,14 @@ Next we need to "seal" the secrets so they're safe to store in git.  This is spe
 ```
 # This is a PUBLIC cert so it's safe to commit!  We grab the public cert so we don't need connectivity to the cluster for generating secrets.
 kubeseal --fetch-cert > workload-secrets.pem 
-# First edit secrets/cert-manager-config.yaml to contain your secret
-kubectl create -f secrets/cert-manager-config.yaml --dry-run -o json | kubeseal --cert workload-secrets.pem -o yaml > secrets/cert-manager-config-sealed.yaml
-# First edit the file
-kubectl create -f secrets/external-dns-config.yaml --dry-run -o json | kubeseal --cert workload-secrets.pem -o yaml > secrets/external-dns-config-sealed.yaml
-
-# Now we can apply the safely sealed secrets
-kubectl create ns external-dns
-kapp -y deploy -a external-dns-config -f secrets/external-dns-config-sealed.yaml
-kapp -y deploy -a cert-manager-config -f secrets/cert-manager-config-sealed.yaml
+# Each of the files in the secrets/ folder needs to be modified to contain your configuration secrets.
+./secrets/seal.sh # By default will take everything in the secrets folder and seal it.
 ```
 
-## Contour
+## Install Everything Else
 
 ```
-ytt --ignore-unknown-comments -f contour-quickstart.yaml -f contour-overlay.yaml | kapp -y deploy -a contour -f -
+
 ```
 
 ### Backup Secrets

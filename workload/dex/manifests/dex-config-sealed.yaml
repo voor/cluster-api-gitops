@@ -1,0 +1,22 @@
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: dex
+  namespace: sso
+spec:
+  encryptedData:
+    config.yaml: AgApOAmWLivNnJ9HTNjgg+YfQ1CP+fy2T0IhWHJfVsx0rw5bf+yI+stIM04rq+TxsbF+m787cjTrXljdRS5Nib+cNjyyPA73bszj1Mv3I7F3fNaq888ZI2sIiwqikHIGDzXrP6ENQodm4G3AXI1oxReFn4kIyIyLTRvGuqBVxz3LatCsj1fzU1rknYAP70VERSDw2R2y0Lk8l2UYMyZsRx00FrutYrH/JT8EEpoA7CiYZgQCOPblG/LoJdVQrOS2MWCzr+5nvFweAU9bI/mPRIlDMasbVaM/JaEO6sJTZVNMJAcT/du3RozRTTN5iVNNluNGGOOxPz+Z/JJIrB2Rm+iCw2BTlc/2GOolJQ/D13ZMu30h4nPSl2pv6dY9wOtYD78k37ENp5s/zegLsfibnLc4mr7CKKjkMZhQ6eFNLceg0GtJ5Gb9J6j/NhbU1pNP5RvOL1pGF2cgHUmy3wiaBAwlLnd7BEioTv+ufm1hniubfuZ222bk7039njYQx5kdmmwU3NM6QgWj5Uv4iYcuFBepbTZro7Fo+eBngZ0Mkaoe7MLfTvKUlxVdVkk4fM/gxYwOMPnL2ImpYRmVFfaPW7TonaJ0W+DNE0Osa1V/5xEJWgnXaBTLDuBe9NuCFboP1vOmASBtYQ0pkXyyz1obahJZp8zXidsxENLWfbcHUE8AIbCYKLXtxJ9bA8/T01o5IgEfwZtGz6jObH/3lWac0wXZCMTobDSaoJ5R1Sx82+hnTTlFpRCSeWMAwZ4sDTOK1/gBlMcz4C8TYGOtM7aZd/PDlxSX5v0c497g9l8sVeJ2NyxsNnGBMkhWnKfvflS1tM+hYzrWQeoUYtSqbDKBVo7USCA4HGkKK9fNgliMFX5seevLcp35tjvXBJS8hCnf2KsqjsMWn60sqhAYuFlgzCvyE7f7PjW/aspo8uu6jjR2y5e5pJ6XVs+AbVBHo+JyeDNrrEoKXRM5Gabv9PYrD8lSIvqBGR2Q84wluhnLewwU8P3QtOJkrZ9JG0C/iUKJ7G1UrMVrjUlbfY1ZgNMxj7DtmSxKBYoA53x0NHistwaIJ6bvKIUDICxX33xTZ4Cw4woCBJ2nqQ1KuXLW1qdYNcuuGRZfR4dkrRH5Q54fwEw7HPV6v9vI1zcuL60Y9GGol46IctNNbP+Q1kWzBnY425KlQWLg/oXmLv2i4qjfVbQqAwnQKMDUP5S4NkmNR5gqTzXWci8CDIqXj+BHrF38ntqHp3qDmMAaV//p/sljbKZTTSRWzCB/XSNvWK5q/FbokiJ9wJ9/XG2UvuWWKhxBo1CsOUwQJOlzDJPNtPiOhmxMRt9A6uE8A9Y/kFGDTjkNiAZy332O9ibdw5Y2rHbrlIzN53HxOFSRaremZftYloRZU9xSqY/u15d1k+MrcmijXzLWWqvvOzF636MW+DS4uDvysw==
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/instance: dex
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: dex
+        app.kubernetes.io/version: 2.23.0
+        helm.sh/chart: dex-2.10.0
+      name: dex
+      namespace: sso
+status: {}
+

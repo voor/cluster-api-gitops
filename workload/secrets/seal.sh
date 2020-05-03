@@ -8,5 +8,5 @@ do
     nopath=${secret:8}
     sealed=${nopath%.yaml}
     output=${sealed%-config}
-    kubectl create -f ${secret} --dry-run=client -o json | kubeseal --cert workload-secrets.pem -o yaml > ${output}/${sealed}-sealed.yaml
+    kubectl create -f ${secret} --dry-run=client -o json | kubeseal --cert workload-secrets.pem -o yaml > ${output}/manifests/${sealed}-sealed.yaml
 done
