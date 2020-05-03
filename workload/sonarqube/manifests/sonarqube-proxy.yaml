@@ -20,7 +20,7 @@ metadata:
   name: sonarqube-proxy-oauth2-proxy
   namespace: sonar
 data:
-  oauth2_proxy.cfg: "redirect_url = https://login.sso.tanzu.world/callback\nupstreams
+  oauth2_proxy.cfg: "redirect_url = \"https://login.sso.tanzu.world/callback\"\nupstreams
     = [ \"http://sonarqube-sonarqube:9000\" ]\npass_basic_auth = true\npass_user_headers
     = true\npass_host_header = true \nemail_domains = [\n    \"*\"\n]"
 ---
@@ -64,7 +64,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: e1a94844cd294b41770cb7232058773950fb276bbb60360d0ebee568b82c6481
+        checksum/config: 2e8a8fb9cd8277bc2a1ab869610cdc3d143ddde1f8a6e43a6b3c86b47e43c552
         checksum/config-emails: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
         checksum/secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
         checksum/google-secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855

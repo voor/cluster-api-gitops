@@ -2,7 +2,7 @@ config:
   existingSecret: sonarqube-passwords
 
   configFile: |-
-    redirect_url = https://login.sso.tanzu.world/callback
+    redirect_url = "https://login.sso.tanzu.world/callback"
     upstreams = [ "http://sonarqube-sonarqube:9000" ]
     pass_basic_auth = true
     pass_user_headers = true
