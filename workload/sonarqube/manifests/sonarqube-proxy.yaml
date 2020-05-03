@@ -66,7 +66,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: b2141f0aee774b340e405d062c2298cd1f9ef35c1cc9ea1715f94fa3ab49a4d6
+        checksum/config: 22ae6e28373cc89b36f39dacecc61c3fb96967ecefa1051deb89386514d1e583
         checksum/config-emails: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
         checksum/secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
         checksum/google-secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
