@@ -1,11 +1,18 @@
 config:
-  # OAuth client ID
-  clientID: "XXXXXXX"
-  # OAuth client secret
-  clientSecret: "XXXXXXXX"
+  existingSecret: sonarqube-passwords
+
+  configFile: |-
+    redirect_url = https://login.sso.tanzu.world/callback
+    upstreams = [ "http://sonarqube-sonarqube:9000" ]
+    pass_basic_auth = true
+    pass_user_headers = true
+    pass_host_header = true 
+    email_domains = [
+        "*"
+    ]
 
 image:
-  repository: "quay.io/pusher/oauth2_proxy"
+  repository: "quay.io/oauth2-proxy/oauth2-proxy"
   tag: "v5.1.0"
   pullPolicy: "Always"
 

@@ -16,7 +16,7 @@ postgresqlUsername: sonarUser
 ##
 postgresqlDatabase: sonarDB
 
-existingSecret: sonarqube-db-postgresql
+existingSecret: sonarqube-passwords
 
 ## PostgreSQL data Persistent Volume Storage Class
 ## If defined, storageClassName: <storageClass>

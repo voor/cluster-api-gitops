@@ -16,5 +16,5 @@ spec:
       secretName: apps/apps.tanzu.world
   routes:
     - services:
-        - name: sonarqube-sonarqube
-          port: 9000
+        - name: sonarqube-proxy-oauth2-proxy
+          port: 80

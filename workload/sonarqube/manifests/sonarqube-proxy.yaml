@@ -1,0 +1,130 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: oauth2-proxy
+    chart: oauth2-proxy-3.0.0
+    release: sonarqube-proxy
+    heritage: Helm
+  name: sonarqube-proxy-oauth2-proxy
+  namespace: sonar
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: oauth2-proxy
+    chart: oauth2-proxy-3.0.0
+    heritage: Helm
+    release: sonarqube-proxy
+  name: sonarqube-proxy-oauth2-proxy
+  namespace: sonar
+data:
+  oauth2_proxy.cfg: "redirect_url = https://login.sso.tanzu.world/callback\nupstreams
+    = [ \"http://sonarqube-sonarqube:9000\" ]\npass_basic_auth = true\npass_user_headers
+    = true\npass_host_header = true \nemail_domains = [\n    \"*\"\n]"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: oauth2-proxy
+    chart: oauth2-proxy-3.0.0
+    release: sonarqube-proxy
+    heritage: Helm
+  name: sonarqube-proxy-oauth2-proxy
+  namespace: sonar
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector:
+    app: oauth2-proxy
+    release: sonarqube-proxy
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: oauth2-proxy
+    chart: oauth2-proxy-3.0.0
+    heritage: Helm
+    release: sonarqube-proxy
+  name: sonarqube-proxy-oauth2-proxy
+  namespace: sonar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oauth2-proxy
+      release: sonarqube-proxy
+  template:
+    metadata:
+      annotations:
+        checksum/config: e1a94844cd294b41770cb7232058773950fb276bbb60360d0ebee568b82c6481
+        checksum/config-emails: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
+        checksum/secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        checksum/google-secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+      labels:
+        app: oauth2-proxy
+        release: sonarqube-proxy
+    spec:
+      serviceAccountName: sonarqube-proxy-oauth2-proxy
+      containers:
+      - name: oauth2-proxy
+        image: quay.io/oauth2-proxy/oauth2-proxy:v5.1.0
+        imagePullPolicy: Always
+        args:
+        - --http-address=0.0.0.0:4180
+        - --config=/etc/oauth2_proxy/oauth2_proxy.cfg
+        env:
+        - name: OAUTH2_PROXY_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: sonarqube-passwords
+              key: client-id
+        - name: OAUTH2_PROXY_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: sonarqube-passwords
+              key: client-secret
+        - name: OAUTH2_PROXY_COOKIE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: sonarqube-passwords
+              key: cookie-secret
+        ports:
+        - containerPort: 4180
+          name: http
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          successThreshold: 1
+          periodSeconds: 10
+        resources: {}
+        volumeMounts:
+        - mountPath: /etc/oauth2_proxy
+          name: configmain
+        securityContext:
+          runAsNonRoot: true
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: sonarqube-proxy-oauth2-proxy
+        name: configmain
+      tolerations: []

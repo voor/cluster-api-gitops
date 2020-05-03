@@ -98,7 +98,7 @@ spec:
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: sonarqube-db-postgresql
+              name: sonarqube-passwords
               key: postgresql-password
         - name: POSTGRES_DB
           value: sonarDB
