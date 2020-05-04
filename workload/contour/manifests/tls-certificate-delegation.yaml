@@ -1,3 +1,9 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: apps
+---
 apiVersion: projectcontour.io/v1
 kind: TLSCertificateDelegation
 metadata:
