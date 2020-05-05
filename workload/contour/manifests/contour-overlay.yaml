@@ -12,7 +12,7 @@ metadata:
     #@overlay/match missing_ok=True
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
     #@overlay/match missing_ok=True
-    external-dns.alpha.kubernetes.io/hostname: "*.apps.tanzu.world,*.default.tanzu.world,*.sso.tanzu.world"
+    external-dns.alpha.kubernetes.io/hostname: "*.apps.tanzu.world,*.default.tanzu.world,*.sso.tanzu.world,*.monitoring.tanzu.world"
 
 
 #@overlay/match by=overlay.subset({"kind":"CustomResourceDefinition"}),expects="4+"
