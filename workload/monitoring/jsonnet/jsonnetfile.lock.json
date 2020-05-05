@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "dependencies": [
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/brancz/kubernetes-grafana",
+          "subdir": "grafana"
+        }
+      },
+      "version": "57b4365eacda291b82e0d55ba7eec573a8198dda",
+      "sum": "92DWADwGjnCfpZaL7Q07C0GZayxBziGla/O03qWea34="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/coreos/etcd",
+          "subdir": "Documentation/etcd-mixin"
+        }
+      },
+      "version": "4a64198a9f424549c64d6c2eeb92eed8ff3a7bd8",
+      "sum": "pk7mLpdUrHuJKkj2vhD6LGMU7P+oYYooBXAeZyZa398="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/coreos/kube-prometheus",
+          "subdir": "jsonnet/kube-prometheus"
+        }
+      },
+      "version": "d07466766d46710e54a627f913eea5661382331a",
+      "sum": "vFv2xVX1SALKIOlQmcIvQ2pDKXqAbdBJ6zdGIrZUcis="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/coreos/prometheus-operator",
+          "subdir": "jsonnet/prometheus-operator"
+        }
+      },
+      "version": "00cbd4911f931380cf9e19d771d7ebae1ec0a807",
+      "sum": "PfB8G2nfy3e/BrXS1ayymsRRFJvQLWT+oY5aqLS0tE8="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/grafana/grafonnet-lib",
+          "subdir": "grafonnet"
+        }
+      },
+      "version": "f1ceb29c053445881cf47c8761225d463273f7e2",
+      "sum": "PQ1u4FqaLkqmYF1tE/BNx6Db8roTei0uqo+SKCwRlbo="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/grafana/jsonnet-libs",
+          "subdir": "grafana-builder"
+        }
+      },
+      "version": "d851699bb178b62deabb5532cdb9e48c1a83b1b9",
+      "sum": "slxrtftVDiTlQK22ertdfrg4Epnq97gdrLI63ftUfaE="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/ksonnet/ksonnet-lib",
+          "subdir": ""
+        }
+      },
+      "version": "0d2f82676817bbf9e4acf6495b2090205f323b9f",
+      "sum": "h28BXZ7+vczxYJ2sCt8JuR9+yznRtU/iA6DCpQUrtEg=",
+      "name": "ksonnet"
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/kubernetes-monitoring/kubernetes-mixin",
+          "subdir": ""
+        }
+      },
+      "version": "90a6d132e3c9558c0690153c9b404b16b4754139",
+      "sum": "RZn1B0sbrPEKenxKIrXGdDN3NGb9OesQ+IA5whAP4ik="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/kubernetes-monitoring/kubernetes-mixin",
+          "subdir": "lib/promgrafonnet"
+        }
+      },
+      "version": "90a6d132e3c9558c0690153c9b404b16b4754139",
+      "sum": "VhgBM39yv0f4bKv8VfGg4FXkg573evGDRalip9ypKbc="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/kubernetes/kube-state-metrics",
+          "subdir": "jsonnet/kube-state-metrics"
+        }
+      },
+      "version": "765afc98be4b2a53b3b12c48df2cf93379932a29",
+      "sum": "cJjGZaLBjcIGrLHZLjRPU9c3KL+ep9rZTb9dbALSKqA="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/kubernetes/kube-state-metrics",
+          "subdir": "jsonnet/kube-state-metrics-mixin"
+        }
+      },
+      "version": "765afc98be4b2a53b3b12c48df2cf93379932a29",
+      "sum": "E1GGavnf9PCWBm4WVrxWnc0FIj72UcbcweqGioWrOdU="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/prometheus/node_exporter",
+          "subdir": "docs/node-mixin"
+        }
+      },
+      "version": "0c532984b7a6a00d67de07a9794aacfeec2c11d3",
+      "sum": "3jFV2qsc/GZe2GADswTYqxxP2zGOiANTj73W/VNFGqc="
+    },
+    {
+      "source": {
+        "git": {
+          "remote": "https://github.com/prometheus/prometheus",
+          "subdir": "documentation/prometheus-mixin"
+        }
+      },
+      "version": "0e2004f6fbe9eeddcd0c0084e401b5acb61760a4",
+      "sum": "kRb3XBTe/AALDcaTFfyuiKqzhxtLvihBkVkvJ5cUd/I=",
+      "name": "prometheus"
+    }
+  ],
+  "legacyImports": false
+}

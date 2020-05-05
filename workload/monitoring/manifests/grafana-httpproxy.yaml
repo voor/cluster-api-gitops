@@ -1,0 +1,15 @@
+---
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: monitoring-grafana
+  namespace: monitoring
+spec:
+  virtualhost:
+    fqdn: grafana.monitoring.tanzu.world
+    tls:
+      secretName: monitoring/monitoring.tanzu.world
+  routes:
+    - services:
+        - name: monitoring-grafana
+          port: 80
