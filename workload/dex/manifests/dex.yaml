@@ -176,18 +176,18 @@ spec:
           httpGet:
             path: /healthz
             port: http
-          initialDelaySeconds: 1
+          initialDelaySeconds: 2
           periodSeconds: 10
-          timeoutSeconds: 1
-          failureThreshold: 1
+          timeoutSeconds: 2
+          failureThreshold: 3
         readinessProbe:
           httpGet:
             path: /healthz
             port: http
-          initialDelaySeconds: 1
+          initialDelaySeconds: 8
           periodSeconds: 10
           timeoutSeconds: 1
-          failureThreshold: 1
+          failureThreshold: 3
         env: []
         volumeMounts:
         - mountPath: /etc/dex/cfg
