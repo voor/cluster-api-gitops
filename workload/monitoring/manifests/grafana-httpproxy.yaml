@@ -11,5 +11,5 @@ spec:
       secretName: monitoring/monitoring.tanzu.world
   routes:
     - services:
-        - name: monitoring-grafana
-          port: 80
+        - name: grafana
+          port: 3000
