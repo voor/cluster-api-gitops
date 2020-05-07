@@ -1,5 +1,7 @@
 fullnameOverride: cert-manager
 
+installCRDs: true
+
 resources:
   requests:
     cpu: 10m
