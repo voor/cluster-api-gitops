@@ -14,3 +14,5 @@ jsonnet -J monitoring/jsonnet/vendor -m monitoring/manifests/out "${1-monitoring
 
 # Make sure to remove json files
 find monitoring/manifests/out -type f ! -name '*.yaml' -delete
+kubectl create -f monitoring/manifests/out/grafana-config.yaml --dry-run=client -o json | kubeseal --cert workload-secrets.pem -o yaml > monitoring/manifests/grafana-config.sealed.yaml
+rm -f monitoring/manifests/out/grafana-config.yaml
