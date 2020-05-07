@@ -12,4 +12,4 @@ ingressShim:
       memory: 32Mi
 
 webhook:
-  enabled: true
+  enabled: false

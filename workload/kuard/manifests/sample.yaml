@@ -4,6 +4,7 @@ metadata:
   labels:
     app: kuard
   name: kuard
+  namespace: apps
 spec:
   replicas: 3
   selector:
@@ -24,6 +25,7 @@ metadata:
   labels:
     app: kuard
   name: kuard
+  namespace: apps
 spec:
   ports:
   - port: 80
@@ -39,6 +41,7 @@ apiVersion: projectcontour.io/v1
 kind: HTTPProxy
 metadata:
   name: kuard
+  namespace: apps
 spec:
   virtualhost:
     fqdn: kuard.default.tanzu.world
