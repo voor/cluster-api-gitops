@@ -10,7 +10,7 @@ set -o pipefail
 rm -rf monitoring/manifests/out
 mkdir -p monitoring/manifests/out/setup
 # Calling gojsontoyaml is optional, but we would like to generate yaml, not json
-jsonnet -J monitoring/jsonnet/vendor -m monitoring/manifests/out "${1-monitoring/jsonnet/prometheus-operator.jsonnet}" | xargs -I{} sh -c 'cat {} | gojsontoyaml > {}.yaml' -- {}
+jsonnet -J monitoring/jsonnet/vendor -m monitoring/manifests/out "${1-monitoring/jsonnet/prometheus-operator.jsonnet}" | xargs -I{} sh -c 'cat {} | gojsontoyaml | ytt -f monitoring/jsonnet/crd-overlay.yaml -f - > {}.yaml' -- {}
 
 # Make sure to remove json files
 find monitoring/manifests/out -type f ! -name '*.yaml' -delete
