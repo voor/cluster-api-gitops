@@ -1,3 +1,9 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: apps
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -44,9 +50,9 @@ metadata:
   namespace: apps
 spec:
   virtualhost:
-    fqdn: kuard.default.tanzu.world
+    fqdn: kuard.apps.tanzu.world
     tls:
-      secretName: default/default.tanzu.world
+      secretName: apps/apps.tanzu.world
   routes:
     - conditions:
       - prefix: /
