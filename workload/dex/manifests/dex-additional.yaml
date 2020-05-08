@@ -1,3 +1,6 @@
+#@ load("@ytt:data", "data")
+
+---
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -10,9 +13,9 @@ metadata:
   namespace: sso
 spec:
   virtualhost:
-    fqdn: login.sso.tanzu.world
+    fqdn: #@ "login.sso.{}".format(data.values.domain)
     tls:
-      secretName: sso/sso.tanzu.world
+      secretName: #@ "sso/sso.{}".format(data.values.domain)
   routes:
     - services:
         - name: dex

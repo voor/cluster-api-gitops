@@ -1,0 +1,15 @@
+#@data/values
+---
+domain: ""
+
+github_org: Pivotal-Field-Engineering
+github_team: pa-federal
+
+github_client_id: ""
+github_client_secret: ""
+
+grafana_client_id: ""
+grafana_client_secret: ""
+
+sonarqube_client_id: ""
+sonarqube_client_secret: ""

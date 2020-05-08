@@ -1,4 +1,5 @@
 #@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
 
 #@overlay/match by=overlay.subset({"kind":"Service", "metadata":{"name":"envoy"}})
 ---
@@ -12,7 +13,7 @@ metadata:
     #@overlay/match missing_ok=True
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
     #@overlay/match missing_ok=True
-    external-dns.alpha.kubernetes.io/hostname: "*.apps.tanzu.world,*.default.tanzu.world,*.sso.tanzu.world,*.monitoring.tanzu.world"
+    external-dns.alpha.kubernetes.io/hostname: #@ "*.apps.{},*.default.{},*.sso.{},*.monitoring.{}".format(data.values.domain, data.values.domain, data.values.domain, data.values.domain)
 
 
 #@overlay/match by=overlay.subset({"kind":"CustomResourceDefinition"}),expects="4+"

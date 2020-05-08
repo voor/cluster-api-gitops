@@ -8,14 +8,14 @@ metadata:
   namespace: cert-manager
 spec:
   acme:
-    email: rcvanvo@gmail.com
-    server: https://acme-v02.api.letsencrypt.org/directory
+    email: #@ data.values.acme_email
+    server: #@ data.values.acme_url
     privateKeySecretRef:
       name: letsencrypt-issuer-account-key
     solvers:
     - dns01:
         cloudflare:
-          email: rcvanvo@gmail.com
+          email: #@ data.values.acme_email
           apiTokenSecretRef:
             name: cloudflare-api-token-secret
             key: api-token
@@ -23,25 +23,25 @@ spec:
 apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
-  name: default.tanzu.world
+  name: #@ "default.{}".format(data.values.domain)
   namespace: default
 spec:
-  secretName: default.tanzu.world
+  secretName: #@ "default.{}".format(data.values.domain)
   issuerRef:
     name: letsencrypt-issuer
     kind: ClusterIssuer
   dnsNames:
-  - '*.default.tanzu.world'
+  - #@ "*.default.{}".format(data.values.domain)
 ---
 apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
-  name: apps.tanzu.world
+  name: #@ "apps.{}".format(data.values.domain)
   namespace: apps
 spec:
-  secretName: apps.tanzu.world
+  secretName: #@ "apps.{}".format(data.values.domain)
   issuerRef:
     name: letsencrypt-issuer
     kind: ClusterIssuer
   dnsNames:
-  - '*.apps.tanzu.world'
+  - #@ "*.apps.{}".format(data.values.domain)
