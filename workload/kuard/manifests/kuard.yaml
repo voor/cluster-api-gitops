@@ -1,3 +1,5 @@
+#@ load("@ytt:data", "data")
+
 ---
 apiVersion: v1
 kind: Namespace
@@ -50,9 +52,9 @@ metadata:
   namespace: apps
 spec:
   virtualhost:
-    fqdn: kuard.apps.tanzu.world
+    fqdn: #@ "kuard.apps.{}".format(data.values.domain)
     tls:
-      secretName: apps/apps.tanzu.world
+      secretName: #@ "apps/apps.{}".format(data.values.domain)
   routes:
     - conditions:
       - prefix: /

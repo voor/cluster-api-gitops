@@ -1,5 +1,7 @@
 #@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
 
+---
 #@overlay/match by=overlay.subset({"metadata":{"name":"config-certmanager"}})
 ---
 apiVersion: v1
@@ -62,4 +64,5 @@ data:
   #@overlay/remove missing_ok=True
   _example:
   #@overlay/match missing_ok=True
-  tanzu.world: ""
+  #@yaml/text-templated-strings
+  (@= data.values.domain @): ""
