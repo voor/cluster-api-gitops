@@ -23,16 +23,16 @@ local kp =
             grafana_net+: {
               url: 'https://grafana.monitoring.tanzu.world'
             },
+            'auth.generic_oauth'+: {
+              enabled: true,
+              client_id: secrets.grafana.client_id,
+              client_secret: secrets.grafana.client_secret,
+              scopes: 'openid email',
+              auth_url: 'https://login.sso.tanzu.world/auth',
+              token_url: 'https://login.sso.tanzu.world/token',
+              api_url: 'https://login.sso.tanzu.world/userinfo'
+            },
             auth+: {
-              generic_oauth+: {
-                enabled: true,
-                client_id: secrets.grafana.client_id,
-                client_secret: secrets.grafana.client_secret,
-                scopes: 'openid email',
-                auth_url: 'https://login.sso.tanzu.world/auth',
-                token_url: 'https://login.sso.tanzu.world/token',
-                api_url: 'https://login.sso.tanzu.world/userinfo'
-              },
               oauth_auto_login: true
             },
             users+: {
