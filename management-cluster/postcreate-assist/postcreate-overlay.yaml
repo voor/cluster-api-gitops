@@ -2,7 +2,7 @@
 #@ load("@ytt:library", "library")
 #@ load("@ytt:yaml", "yaml")
 
-#@overlay/match by=overlay.not_op(overlay.subset({"kind": "Secret"}))
+#@overlay/match by=overlay.not_op(overlay.subset({"kind": "Secret"})),expects="0+"
 ---
 #@overlay/remove
 
