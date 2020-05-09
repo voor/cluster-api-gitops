@@ -1,7 +1,7 @@
 apiVersion: cluster.x-k8s.io/v1alpha3
 kind: Cluster
 metadata:
-  name: owl
+  name: squirrel
   namespace: default
 spec:
   clusterNetwork:
@@ -11,16 +11,16 @@ spec:
   controlPlaneRef:
     apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
     kind: KubeadmControlPlane
-    name: owl-control-plane
+    name: squirrel-control-plane
   infrastructureRef:
     apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
     kind: AWSCluster
-    name: owl
+    name: squirrel
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
 kind: AWSCluster
 metadata:
-  name: owl
+  name: squirrel
   namespace: default
 spec:
   bastion:
@@ -43,13 +43,13 @@ spec:
 apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
 kind: KubeadmControlPlane
 metadata:
-  name: owl-control-plane
+  name: squirrel-control-plane
   namespace: default
 spec:
   infrastructureTemplate:
     apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
     kind: AWSMachineTemplate
-    name: owl-control-plane
+    name: squirrel-control-plane
   kubeadmConfigSpec:
     clusterConfiguration:
       apiServer:
@@ -96,13 +96,13 @@ spec:
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
 kind: AWSMachineTemplate
 metadata:
-  name: owl-control-plane
+  name: squirrel-control-plane
   namespace: default
 spec:
   template:
     spec:
       ami:
-        id: ami-0cdd7837e1fdd81f8
+        id: ami-0f44ed42a1afd5623
       iamInstanceProfile: control-plane.cluster-api-provider-aws.sigs.k8s.io
       instanceType: t3.large
       rootVolume:
@@ -112,13 +112,13 @@ spec:
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
 kind: AWSMachineTemplate
 metadata:
-  name: owl-md-0
+  name: squirrel-md-0
   namespace: default
 spec:
   template:
     spec:
       ami:
-        id: ami-0cdd7837e1fdd81f8
+        id: ami-0f44ed42a1afd5623
       iamInstanceProfile: nodes.cluster-api-provider-aws.sigs.k8s.io
       instanceType: t3.large
       rootVolume:
@@ -128,7 +128,7 @@ spec:
 apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
 kind: KubeadmConfigTemplate
 metadata:
-  name: owl-md-0
+  name: squirrel-md-0
   namespace: default
 spec:
   template:
@@ -144,41 +144,41 @@ spec:
 apiVersion: cluster.x-k8s.io/v1alpha3
 kind: MachineDeployment
 metadata:
-  name: owl-md-0
+  name: squirrel-md-0
   namespace: default
 spec:
-  clusterName: owl
+  clusterName: squirrel
   replicas: 1
   selector:
     matchLabels: null
   template:
     metadata:
       labels:
-        node-pool: owl-worker-pool
+        node-pool: squirrel-worker-pool
     spec:
       bootstrap:
         configRef:
           apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
           kind: KubeadmConfigTemplate
-          name: owl-md-0
-      clusterName: owl
+          name: squirrel-md-0
+      clusterName: squirrel
       infrastructureRef:
         apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
         kind: AWSMachineTemplate
-        name: owl-md-0
+        name: squirrel-md-0
       version: v1.18.1+vmware.1
 ---
 apiVersion: cluster.x-k8s.io/v1alpha3
 kind: MachineHealthCheck
 metadata:
-  name: owl
+  name: squirrel
   namespace: default
 spec:
-  clusterName: owl
+  clusterName: squirrel
   nodeStartupTimeout: 20m
   selector:
     matchLabels:
-      node-pool: owl-worker-pool
+      node-pool: squirrel-worker-pool
   unhealthyConditions:
   - status: Unknown
     timeout: 5m
