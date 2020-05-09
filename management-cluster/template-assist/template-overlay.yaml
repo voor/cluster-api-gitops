@@ -1,7 +1,4 @@
 #@ load("@ytt:overlay", "overlay")
-#@ load("@ytt:data", "data")
-#@ load("@ytt:library", "library")
-#@ load("@ytt:yaml", "yaml")
 
 #@overlay/match by=overlay.subset({"kind":"AWSCluster"})
 ---
@@ -13,6 +10,7 @@ spec:
 
 #@overlay/match by=overlay.subset({"kind": "Secret"})
 ---
-stringData:
-  #@overlay/replace via=lambda old,new: old+new
-  calicoYaml: #@ yaml.encode(library.get("kapp-controller").eval())
+#@overlay/remove
+
+---
+

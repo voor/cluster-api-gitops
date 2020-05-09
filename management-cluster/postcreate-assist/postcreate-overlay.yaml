@@ -1,0 +1,15 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:library", "library")
+#@ load("@ytt:yaml", "yaml")
+
+#@overlay/match by=overlay.not_op(overlay.subset({"kind": "Secret"}))
+---
+#@overlay/remove
+
+---
+
+#@overlay/match by=overlay.subset({"kind": "Secret"})
+---
+stringData:
+  #@overlay/replace via=lambda old,new: old+new
+  calicoYaml: #@ yaml.encode(library.get("kapp-controller").eval())
