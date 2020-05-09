@@ -35,16 +35,6 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kbld.k14s.io/images: |
-      - Metas:
-        - Path: /Users/pivotal/workspace/ytt-go/src/github.com/k14s/kapp-controller
-          Type: local
-        - Dirty: false
-          RemoteURL: git@github.com:k14s/kapp-controller.git
-          SHA: 6ec4c4e50b88896648c8c7da1b8fc4bd79ca2771
-          Type: git
-        URL: index.docker.io/k14s/kapp-controller@sha256:6a6151bb0713a89cedb091531a2a8a2c98918acf6581769b2ee970c1ce615d38
   name: kapp-controller
   namespace: kapp-controller
 spec:
