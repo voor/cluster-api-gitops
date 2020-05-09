@@ -70,6 +70,9 @@ spec:
       - emptyDir:
           medium: Memory
         name: template-fs
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
 ---
 apiVersion: v1
 kind: Namespace

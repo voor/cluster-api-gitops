@@ -9,7 +9,7 @@ spec:
   - git:
       url: https://github.com/voor/cluster-api-gitops
       ref: origin/master
-      subPath: management-cluster/workloads
+      subPath: management-cluster/workload/manifests
   template:
   - ytt: {}
   deploy:
