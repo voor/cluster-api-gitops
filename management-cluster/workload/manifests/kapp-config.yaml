@@ -1,0 +1,102 @@
+apiVersion: kapp.k14s.io/v1alpha1
+kind: Config
+
+ownershipLabelRules:
+  - path: [spec, template, metadata, labels]
+    resourceMatchers:
+      - apiVersionKindMatcher:
+          { apiVersion: cluster.x-k8s.io/v1alpha3, kind: MachineDeployment }
+          
+
+rebaseRules:
+  - path: [spec, controlPlaneEndpoint, host]
+    type: copy
+    sources: [new, existing]
+    resourceMatchers: &capiCluster
+      - apiVersionKindMatcher:
+          apiVersion: cluster.x-k8s.io/v1alpha3
+          kind: Cluster
+      - apiVersionKindMatcher:
+          apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+          kind: AWSCluster
+
+  - path: [spec, controlPlaneEndpoint, port]
+    type: copy
+    sources: [new, existing]
+    resourceMatchers: *capiCluster
+
+  - path: [metadata, labels, cluster.x-k8s.io/cluster-name]
+    type: copy
+    sources: [new, existing]
+    resourceMatchers: *capiCluster
+
+  - path: [spec, networkSpec, subnets]
+    type: copy
+    sources: [new, existing]
+    resourceMatchers: *capiCluster
+
+  - path: [metadata, labels, cluster.x-k8s.io/cluster-name]
+    type: copy
+    sources: [new, existing]
+    resourceMatchers: &capiKubeadmControlPlane
+      - apiVersionKindMatcher:
+          apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmControlPlane
+
+  - path: [spec, kubeadmConfigSpec, clusterConfiguration, networking]
+    type: copy
+    sources: [new, existing]
+    resourceMatchers: *capiKubeadmControlPlane
+
+  - path: [spec, kubeadmConfigSpec, initConfiguration, localAPIEndpoint]
+    type: copy
+    sources: [new, existing]
+    resourceMatchers: *capiKubeadmControlPlane
+
+  - path: [spec, kubeadmConfigSpec, joinConfiguration, discovery]
+    type: copy
+    sources: [new, existing]
+    resourceMatchers: *capiKubeadmControlPlane
+
+  - path: [metadata, annotations, cluster.x-k8s.io/cluster-name]
+    type: copy
+    sources: [new, existing]
+    resourceMatchers: &capiMachinedeployment
+      - apiVersionKindMatcher:
+          apiVersion: cluster.x-k8s.io/v1alpha3
+          kind: Machinedeployment
+
+  - path: [spec, minReadySeconds]
+    type: copy
+    sources: [new, existing]
+    resourceMatchers: *capiMachinedeployment
+
+  - path: [spec, progressDeadlineSeconds]
+    type: copy
+    sources: [new, existing]
+    resourceMatchers: *capiMachinedeployment
+
+  - path: [spec, revisionHistoryLimit]
+    type: copy
+    sources: [new, existing]
+    resourceMatchers: *capiMachinedeployment
+
+  - path: [spec, selector]
+    type: copy
+    sources: [new, existing]
+    resourceMatchers: *capiMachinedeployment
+
+  - path: [spec, strategy]
+    type: copy
+    sources: [new, existing]
+    resourceMatchers: *capiMachinedeployment
+
+  - path: [spec, template, metadata, labels, cluster.x-k8s.io/cluster-name]
+    type: copy
+    sources: [new, existing]
+    resourceMatchers: *capiMachinedeployment
+
+  - path: [spec, template, metadata, labels, cluster.x-k8s.io/deployment-name]
+    type: copy
+    sources: [new, existing]
+    resourceMatchers: *capiMachinedeployment
