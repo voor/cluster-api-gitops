@@ -11,6 +11,11 @@ spec:
       ref: origin/master
       subPath: workload/deploy
   template:
-  - ytt: {}
+  - ytt:
+      ignoreUnknownComments: true
+      inline:
+        pathsFrom:
+        - secretRef:
+            name: initial-values
   deploy:
   - kapp: {}
