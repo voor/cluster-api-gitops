@@ -4,14 +4,3 @@ git_url: https://github.com/voor/cluster-api-gitops
 git_branch: origin/master
 #! This is the file that gets populated from the management cluster postcreate secret, not this file.
 workload_values: initial-values
-
-#! shared (contour, cert-manager, )
-domain:
-
-#! cert-manager
-acme_email: rcvanvo@gmail.com
-acme_url: https://acme-v02.api.letsencrypt.org/directory
-
-# Secrets do not appear here.
-github_client_id: ""
-github_client_secret: ""
