@@ -15,9 +15,5 @@ spec:
   template:
   - ytt:
       ignoreUnknownComments: true
-      inline:
-        pathsFrom:
-        - secretRef:
-            name: #@ data.values.workload_values
   deploy:
   - kapp: {}

@@ -18,6 +18,6 @@ spec:
       inline:
         pathsFrom:
         - secretRef:
-            name: #@ data.values.workload_values
+            name: #@ data.values.contour_values
   deploy:
   - kapp: {}

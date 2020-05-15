@@ -4,3 +4,10 @@ git_url: https://github.com/voor/cluster-api-gitops
 git_branch: origin/master
 #! This is the file that gets populated from the management cluster postcreate secret, not this file.
 workload_values: initial-values
+
+knative_values: knative-values
+#! Uses the same as knative for now.
+kuard_values: knative-values
+contour_values: knative-values
+
+dex_values: dex-values
