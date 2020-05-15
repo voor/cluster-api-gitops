@@ -1,15 +1,17 @@
+#@ load("@ytt:data", "data")
+
 ---
 apiVersion: kappctrl.k14s.io/v1alpha1
 kind: App
 metadata:
-  name: deploy
+  name: apps
   namespace: kapp-controller
 spec:
   fetch:
   - git:
-      url: https://github.com/voor/cluster-api-gitops
-      ref: origin/master
-      subPath: workload/deploy
+      url: #@ data.values.git_url
+      ref: #@ data.values.git_branch
+      subPath: workload/apps/manifests
   template:
   - ytt:
       ignoreUnknownComments: true
