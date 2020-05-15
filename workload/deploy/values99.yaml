@@ -11,3 +11,5 @@ kuard_values: knative-values
 contour_values: knative-values
 
 dex_values: dex-values
+
+certmanager_values: certmanager-values

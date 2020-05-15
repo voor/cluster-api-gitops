@@ -18,6 +18,8 @@ spec:
       inline:
         pathsFrom:
         - secretRef:
-            name: #@ data.values.workload_values
+            name: #@ data.values.knative_values
+        - secretRef:
+            name: #@ data.values.certmanager_values
   deploy:
   - kapp: {}
