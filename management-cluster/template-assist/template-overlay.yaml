@@ -3,13 +3,29 @@
 #@overlay/match by=overlay.subset({"kind":"AWSCluster"})
 ---
 spec:
+  networkSpec:
+    subnets:
+    #@overlay/match by=overlay.all,expects="1+"
+    -
+      #@overlay/remove
+      id: 
   #! Set to false to skip creation of bastion host
   bastion:
     #@overlay/match missing_ok=True
     enabled: false
 
+---
+
+#@overlay/match by=overlay.subset({"kind":"MachineDeployment"})
+---
+spec:
+  #@overlay/remove missing_ok=True
+  selector:
+
 #@overlay/match by=overlay.subset({"kind": "Secret"})
 #@overlay/remove
 
----
 
+
+# TODO stop setting empty spec.networkSpec.subnets.id on AWSCluster
+# TODO do not set spec.strategy.matchLabels to nil on MachineDeployment

@@ -29,11 +29,9 @@ spec:
     subnets:
     - availabilityZone: us-east-1a
       cidrBlock: 10.0.1.0/24
-      id: ""
       isPublic: true
     - availabilityZone: us-east-1a
       cidrBlock: 10.0.0.0/24
-      id: ""
     vpc:
       cidrBlock: 10.0.0.0/16
       id: ""
@@ -149,8 +147,6 @@ metadata:
 spec:
   clusterName: knative-worker
   replicas: 4
-  selector:
-    matchLabels: null
   template:
     metadata:
       labels:
