@@ -34,7 +34,6 @@ spec:
       cidrBlock: 10.0.0.0/24
     vpc:
       cidrBlock: 10.0.0.0/16
-      id: ""
   region: us-east-1
   sshKeyName: cluster-api-provider-aws
 ---

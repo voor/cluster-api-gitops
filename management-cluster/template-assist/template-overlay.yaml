@@ -4,6 +4,9 @@
 ---
 spec:
   networkSpec:
+    vpc:
+      #@overlay/remove
+      id:
     subnets:
     #@overlay/match by=overlay.all,expects="1+"
     -
