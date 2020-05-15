@@ -6,6 +6,8 @@
 #   namespace: kapp-controller
 # stringData:
 #   values2.yml: |
+#     #@data/values
+#     ---
 #     acme_email: rcvanvo@gmail.com
 #     github_client_id: 
 #     github_client_secret: 
