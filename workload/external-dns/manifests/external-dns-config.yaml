@@ -1,0 +1,12 @@
+#@ load("@ytt:data", "data")
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cloudflare-api
+  namespace: external-dns
+type: Opaque
+stringData:
+  CF_API_TOKEN: #@ data.values.cloudflare_token
+  CF_API_EMAIL: #@ data.values.acme_email

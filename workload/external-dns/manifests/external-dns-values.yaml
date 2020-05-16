@@ -1,0 +1,6 @@
+#@data/values
+---
+
+acme_email: ""
+acme_url: ""
+cloudflare_token: ""
