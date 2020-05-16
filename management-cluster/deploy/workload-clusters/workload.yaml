@@ -9,8 +9,8 @@ metadata:
 spec:
   fetch:
   - git:
-      url: #@ data.values.git_url
-      ref: #@ data.values.git_branch
+      url: https://github.com/voor/cluster-api-gitops
+      ref: origin/master
       subPath: management-cluster/workload/manifests
   template:
   - ytt:
