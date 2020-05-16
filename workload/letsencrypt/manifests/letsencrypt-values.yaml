@@ -4,3 +4,5 @@ acme_email: ""
 acme_url: ""
 
 domain: ""
+
+cloudflare_token: ""

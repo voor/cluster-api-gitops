@@ -4,16 +4,22 @@
 apiVersion: kappctrl.k14s.io/v1alpha1
 kind: App
 metadata:
-  name: cert-manager
+  name: letsencrypt
   namespace: kapp-controller
 spec:
   fetch:
   - git:
       url: #@ data.values.git_url
       ref: #@ data.values.git_branch
-      subPath: workload/cert-manager/manifests
+      subPath: workload/letsencrypt/manifests
   template:
   - ytt:
       ignoreUnknownComments: true
+      inline:
+        pathsFrom:
+        - secretRef:
+            name: #@ data.values.knative_values
+        - secretRef:
+            name: #@ data.values.certmanager_values
   deploy:
   - kapp: {}

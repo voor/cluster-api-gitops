@@ -1,7 +1,7 @@
 #@ load("@ytt:data", "data")
 
 ---
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1alpha3
 kind: ClusterIssuer
 metadata:
   name: letsencrypt-issuer
@@ -45,3 +45,12 @@ spec:
     kind: ClusterIssuer
   dnsNames:
   - #@ "*.apps.{}".format(data.values.domain)
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cloudflare-api-token-secret
+  namespace: cert-manager
+type: Opaque
+stringData:
+  api-token: #@ data.values.cloudflare_token
