@@ -7,15 +7,3 @@ ownershipLabelRules:
     resourceMatchers:
       - apiVersionKindMatcher:
           { apiVersion: bitnami.com/v1alpha1, kind: SealedSecret }
-
-changeRuleBindings:
-- rules:
-  - "upsert after upserting change-groups.cert-manager.io/webhook"
-  resourceMatchers:
-  - andMatcher:
-      matchers:
-      - customResourceMatcher: {}
-      - notMatcher:
-          matcher:
-            hasAnnotationMatcher:
-              keys: [kapp.k14s.io/disable-default-change-group-and-rules]
