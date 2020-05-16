@@ -1,7 +1,7 @@
 apiVersion: cluster.x-k8s.io/v1alpha3
 kind: Cluster
 metadata:
-  name: worker
+  name: everything
   namespace: workload-clusters
 spec:
   clusterNetwork:
@@ -11,16 +11,16 @@ spec:
   controlPlaneRef:
     apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
     kind: KubeadmControlPlane
-    name: worker-control-plane
+    name: everything-control-plane
   infrastructureRef:
     apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
     kind: AWSCluster
-    name: worker
+    name: everything
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
 kind: AWSCluster
 metadata:
-  name: worker
+  name: everything
   namespace: workload-clusters
 spec:
   bastion:
@@ -40,13 +40,13 @@ spec:
 apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
 kind: KubeadmControlPlane
 metadata:
-  name: worker-control-plane
+  name: everything-control-plane
   namespace: workload-clusters
 spec:
   infrastructureTemplate:
     apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
     kind: AWSMachineTemplate
-    name: worker-control-plane
+    name: everything-control-plane
   kubeadmConfigSpec:
     clusterConfiguration:
       apiServer:
@@ -93,13 +93,13 @@ spec:
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
 kind: AWSMachineTemplate
 metadata:
-  name: worker-control-plane
+  name: everything-control-plane
   namespace: workload-clusters
 spec:
   template:
     spec:
       ami:
-        id: ami-0f44ed42a1afd5623
+        id: ami-0335ee1e870830751
       iamInstanceProfile: control-plane.cluster-api-provider-aws.sigs.k8s.io
       instanceType: t3.large
       rootVolume:
@@ -109,13 +109,13 @@ spec:
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
 kind: AWSMachineTemplate
 metadata:
-  name: worker-md-0
+  name: everything-md-0
   namespace: workload-clusters
 spec:
   template:
     spec:
       ami:
-        id: ami-0f44ed42a1afd5623
+        id: ami-0335ee1e870830751
       iamInstanceProfile: nodes.cluster-api-provider-aws.sigs.k8s.io
       instanceType: t3.large
       rootVolume:
@@ -125,7 +125,7 @@ spec:
 apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
 kind: KubeadmConfigTemplate
 metadata:
-  name: worker-md-0
+  name: everything-md-0
   namespace: workload-clusters
 spec:
   template:
@@ -141,39 +141,39 @@ spec:
 apiVersion: cluster.x-k8s.io/v1alpha3
 kind: MachineDeployment
 metadata:
-  name: worker-md-0
+  name: everything-md-0
   namespace: workload-clusters
 spec:
-  clusterName: worker
+  clusterName: everything
   replicas: 4
   template:
     metadata:
       labels:
-        node-pool: worker-worker-pool
+        node-pool: everything-worker-pool
     spec:
       bootstrap:
         configRef:
           apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
           kind: KubeadmConfigTemplate
-          name: worker-md-0
-      clusterName: worker
+          name: everything-md-0
+      clusterName: everything
       infrastructureRef:
         apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
         kind: AWSMachineTemplate
-        name: worker-md-0
+        name: everything-md-0
       version: v1.18.2+vmware.1
 ---
 apiVersion: cluster.x-k8s.io/v1alpha3
 kind: MachineHealthCheck
 metadata:
-  name: worker
+  name: everything
   namespace: workload-clusters
 spec:
-  clusterName: worker
+  clusterName: everything
   nodeStartupTimeout: 20m
   selector:
     matchLabels:
-      node-pool: worker-worker-pool
+      node-pool: everything-worker-pool
   unhealthyConditions:
   - status: Unknown
     timeout: 5m
