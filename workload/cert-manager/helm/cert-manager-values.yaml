@@ -14,4 +14,6 @@ ingressShim:
       memory: 32Mi
 
 webhook:
-  enabled: false
+  deploymentAnnotations: 
+    kapp.k14s.io/change-group: "change-groups.cert-manager.io/webhook"
+    kapp.k14s.io/change-rule: "upsert before upserting change-groups.kapp.k14s.io/crds"

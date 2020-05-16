@@ -7066,6 +7066,9 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: "webhook"
     helm.sh/chart: cert-manager-v0.15.0
+  annotations:
+    kapp.k14s.io/change-group: change-groups.cert-manager.io/webhook
+    kapp.k14s.io/change-rule: upsert before upserting change-groups.kapp.k14s.io/crds
 spec:
   replicas: 1
   selector:
