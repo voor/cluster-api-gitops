@@ -76,3 +76,51 @@ rebaseRules:
   sources: [new, existing]
   resourceMatchers:
   - apiVersionKindMatcher: {apiVersion: cluster.x-k8s.io/v1alpha3, kind: MachineDeployment}
+
+- path: [metadata, annotations, machinedeployment.clusters.x-k8s.io/revision]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers:
+  - apiVersionKindMatcher: {apiVersion: cluster.x-k8s.io/v1alpha3, kind: MachineDeployment}
+
+- path: [spec, selector, matchLabels]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers:
+  - apiVersionKindMatcher: {apiVersion: cluster.x-k8s.io/v1alpha3, kind: MachineDeployment}
+
+- path: [spec, minReadySeconds]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers:
+  - apiVersionKindMatcher: {apiVersion: cluster.x-k8s.io/v1alpha3, kind: MachineDeployment}
+
+- path: [spec, progressDeadlineSeconds]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers:
+  - apiVersionKindMatcher: {apiVersion: cluster.x-k8s.io/v1alpha3, kind: MachineDeployment}
+
+- path: [spec, revisionHistoryLimit]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers:
+  - apiVersionKindMatcher: {apiVersion: cluster.x-k8s.io/v1alpha3, kind: MachineDeployment}
+
+- path: [spec, strategy]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers:
+  - apiVersionKindMatcher: {apiVersion: cluster.x-k8s.io/v1alpha3, kind: MachineDeployment}
+
+- path: [spec, template, metadata, labels, cluster.x-k8s.io/cluster-name]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers:
+  - apiVersionKindMatcher: {apiVersion: cluster.x-k8s.io/v1alpha3, kind: MachineDeployment}
+
+- path: [spec, template, metadata, labels, cluster.x-k8s.io/deployment-name]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers:
+  - apiVersionKindMatcher: {apiVersion: cluster.x-k8s.io/v1alpha3, kind: MachineDeployment}
