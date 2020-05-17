@@ -15,5 +15,9 @@ spec:
   template:
   - ytt:
       ignoreUnknownComments: true
+      inline:
+        pathsFrom:
+        - secretRef:
+            name: #@ data.values.contour_values
   deploy:
   - kapp: {}
