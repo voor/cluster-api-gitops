@@ -145,7 +145,7 @@ metadata:
   namespace: default
 spec:
   clusterName: myfriend
-  replicas: 5
+  replicas: 6
   template:
     metadata:
       labels:
