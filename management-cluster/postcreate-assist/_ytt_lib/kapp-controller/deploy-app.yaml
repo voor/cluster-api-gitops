@@ -14,4 +14,7 @@ spec:
   - ytt:
       ignoreUnknownComments: true
   deploy:
-  - kapp: {}
+  - kapp:
+      deploy:
+        rawOptions: 
+        - "--wait=false"

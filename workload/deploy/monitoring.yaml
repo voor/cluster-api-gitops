@@ -15,5 +15,11 @@ spec:
   template:
   - ytt:
       ignoreUnknownComments: true
+      inline:
+        pathsFrom:
+        - secretRef:
+            name: #@ data.values.knative_values
+        - secretRef:
+            name: #@ data.values.dex_values
   deploy:
   - kapp: {}

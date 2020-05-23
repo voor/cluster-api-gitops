@@ -1,0 +1,6 @@
+#@data/values
+---
+grafana_client_id: ""
+grafana_client_secret: ""
+
+domain: ""

@@ -1,0 +1,33 @@
+#@ load("@ytt:data", "data")
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: grafana-config
+  namespace: monitoring
+type: Opaque
+stringData:
+  #@yaml/text-templated-strings
+  grafana.ini: |
+    [auth]
+    oauth_auto_login = true
+    [auth.generic_oauth]
+    api_url = https://login.sso.(@= data.values.domain @)/userinfo
+    auth_url = https://login.sso.(@= data.values.domain @)/auth
+    client_id = (@= data.values.grafana_client_id @)
+    client_secret = (@= data.values.grafana_client_secret @)
+    enabled = true
+    scopes = openid email
+    token_url = https://login.sso.(@= data.values.domain @)/token
+    [dataproxy]
+    timeout = 90
+    [grafana_net]
+    url = https://grafana.monitoring.(@= data.values.domain @)
+    [server]
+    enable_gzip = true
+    root_url = https://grafana.monitoring.(@= data.values.domain @)
+    [users]
+    allow_sign_up = true
+    auto_assign_org = true
+    auto_assign_org_role = Admin
