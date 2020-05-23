@@ -133,6 +133,8 @@ spec:
       joinConfiguration:
         nodeRegistration:
           kubeletExtraArgs:
+            # THIS WILL NOT WORK AND WILL FAIL WITH THIS ERROR:
+            # --node-labels in the 'kubernetes.io' namespace must begin with an allowed prefix (kubelet.kubernetes.io, node.kubernetes.io) or be in the specifically allowed set (beta.kubernetes.io/arch, beta.kubernetes.io/instance-type, beta.kubernetes.io/os, failure-domain.beta.kubernetes.io/region, failure-domain.beta.kubernetes.io/zone, kubernetes.io/arch, kubernetes.io/hostname, kubernetes.io/os, node.kubernetes.io/instance-type, topology.kubernetes.io/region, topology.kubernetes.io/zone)
             node-labels: node-role.kubernetes.io/fartnoise=fartnoise,KubeadmConfigTemplate=workerlabel-md-0,instanceType=t3.small,ilikepizza=andicecream,peopletellme=iamnotfunatparties
             cloud-provider: aws
             tls-cipher-suites: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
@@ -146,7 +148,7 @@ metadata:
   namespace: default
 spec:
   clusterName: workerlabel
-  replicas: 1
+  replicas: 0
   template:
     metadata:
       labels:
@@ -162,4 +164,62 @@ spec:
         apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
         kind: AWSMachineTemplate
         name: workerlabel-md-0
+      version: v1.18.2+vmware.1
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: AWSMachineTemplate
+metadata:
+  name: workerlabel-md-1
+  namespace: default
+spec:
+  template:
+    spec:
+      ami:
+        id: ami-06a63cf3cf467b16f
+      iamInstanceProfile: nodes.cluster-api-provider-aws.sigs.k8s.io
+      instanceType: t3.small
+      rootVolume:
+        size: 80
+      sshKeyName: default
+---
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfigTemplate
+metadata:
+  name: workerlabel-md-1
+  namespace: default
+spec:
+  template:
+    spec:
+      joinConfiguration:
+        nodeRegistration:
+          kubeletExtraArgs:
+            node-labels: KubeadmConfigTemplate=workerlabel-md-0,instanceType=t3.small,ilikepizza=andicecream,peopletellme=iamnotfunatparties
+            cloud-provider: aws
+            tls-cipher-suites: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+          name: '{{ ds.meta_data.local_hostname }}'
+      useExperimentalRetryJoin: true
+---
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineDeployment
+metadata:
+  name: workerlabel-md-1
+  namespace: default
+spec:
+  clusterName: workerlabel
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        node-pool: workerlabel-worker-pool
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: workerlabel-md-1
+      clusterName: workerlabel
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: AWSMachineTemplate
+        name: workerlabel-md-1
       version: v1.18.2+vmware.1
