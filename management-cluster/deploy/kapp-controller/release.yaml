@@ -35,6 +35,13 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  annotations:
+    kbld.k14s.io/images: |
+      - Metas:
+        - Tag: latest
+          Type: resolved
+          URL: voor/kapp-controller:latest
+        URL: index.docker.io/voor/kapp-controller@sha256:549cf474098833a1f80bc2e1314f7f771c96b411a582d5074c8a4e2a2b6d1f66
   name: kapp-controller
   namespace: kapp-controller
 spec:
@@ -48,31 +55,29 @@ spec:
       labels:
         app: kapp-controller
     spec:
-      securityContext:
-        fsGroup: 3000
-        runAsGroup: 2000
-        runAsUser: 1000
       containers:
       - env:
         - name: KAPPCTRL_MEM_TMP_DIR
           value: /etc/kappctrl-mem-tmp
-        image: index.docker.io/k14s/kapp-controller@sha256:6a6151bb0713a89cedb091531a2a8a2c98918acf6581769b2ee970c1ce615d38
+        image: index.docker.io/voor/kapp-controller@sha256:549cf474098833a1f80bc2e1314f7f771c96b411a582d5074c8a4e2a2b6d1f66
         name: kapp-controller
         resources:
           requests:
             cpu: 120m
             memory: 100Mi
+        securityContext:
+          runAsGroup: 2000
+          runAsUser: 1000
         volumeMounts:
         - mountPath: /etc/kappctrl-mem-tmp
           name: template-fs
+      securityContext:
+        fsGroup: 3000
       serviceAccount: kapp-controller-sa
       volumes:
       - emptyDir:
           medium: Memory
         name: template-fs
-      tolerations:
-      - effect: NoSchedule
-        key: node-role.kubernetes.io/master
 ---
 apiVersion: v1
 kind: Namespace
