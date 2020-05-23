@@ -2,16 +2,42 @@
 # apiVersion: v1
 # kind: Secret
 # metadata:
-#   name: initial-values
+#   name: knative-values
 #   namespace: kapp-controller
 # stringData:
-#   values2.yml: |
+#   serving-values.yaml: |
 #     #@data/values
 #     ---
-#     acme_email: rcvanvo@gmail.com
-#     github_client_id: 
-#     github_client_secret: 
-#     grafana_client_id: 
-#     grafana_client_secret: 
-#     sonarqube_client_id: 
-#     sonarqube_client_secret:
+#     domain: tanzu.world
+# ---
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: dex-values
+#   namespace: kapp-controller
+# stringData:
+#   dex-values.yaml: |
+#     #@data/values
+#     ---
+#     github_client_id: CHANGEME
+#     github_client_secret: CHANGEME
+#     grafana_client_id: grafana-client
+#     grafana_client_secret: CHANGEME
+#     sonarqube_client_id: sonarqube-client
+#     sonarqube_client_secret: CHANGEME
+# ---
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: certmanager-values
+#   namespace: kapp-controller
+# stringData:
+#   cert-manager-values.yaml: |
+#     #@data/values
+#     ---
+#     acme_email: rcanvo@gmail.com
+#     acme_url: "https://acme-v02.api.letsencrypt.org/directory"
+#     cloudflare_token: CHANGEME
+
+# acme_url: "https://acme-v02.api.letsencrypt.org/directory"
+# acme_url: "https://acme-staging-v02.api.letsencrypt.org/directory"
