@@ -117,17 +117,7 @@ spec:
   #@overlay/remove missing_ok=True
   selector:
 
-#@ def applyToYamlString(left, right):
-#@   leftYaml = yaml.decode(left.calicoYaml)
-#@   new = overlay.apply(leftYaml, right['calico.yaml'])
-#@   return yaml.encode(new)
-#@ end
-
-#@overlay/match by=overlay.subset({"kind": "Secret"})
+#@overlay/match by=overlay.subset({"kind": "Secret", "metadata": { "name": "{}-postcreate".format(data.values.cluster_name) }})
 ---
-#@overlay/replace via=moveYamlVariable
+#@overlay/replace via=lambda a,b: {"calico.yml": a["calicoYaml"]}
 stringData:
-  #@overlay/match missing_ok=True
-  calico.yaml: 
-  #@overlay/remove
-  calicoYaml:
