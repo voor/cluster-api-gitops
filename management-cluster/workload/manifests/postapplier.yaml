@@ -10,6 +10,10 @@ spec:
       name: postapplier-kubeconfig
       key: value
   fetch:
+  - git:
+      url: https://github.com/voor/cluster-api-gitops
+      ref: origin/master
+      subPath: management-cluster/deploy/kapp-controller
   - inline:
       pathsFrom:
       - secretRef:
