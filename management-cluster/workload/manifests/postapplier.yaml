@@ -16,6 +16,11 @@ spec:
           name: postapplier-postcreate
       - secretRef:
           name: workload-clusters-secrets
+  template:
+  - ytt:
+      ignoreUnknownComments: true
+  deploy:
+  - kapp: {}
 ---
 apiVersion: cluster.x-k8s.io/v1alpha3
 kind: Cluster
