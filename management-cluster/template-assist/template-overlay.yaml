@@ -1,4 +1,10 @@
 #@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.all,expects="0+"
+---
+metadata:
+  namespace: workload-clusters
 
 #@overlay/match by=overlay.subset({"kind":"AWSCluster"})
 ---
@@ -18,17 +24,40 @@ spec:
     enabled: false
 
 ---
+apiVersion: kappctrl.k14s.io/v1alpha1
+kind: App
+
+metadata:
+  name: #@ "{}-postcreate".format(data.values.cluster_name)
+  # namespace is going to be used as a default namespace during kapp deploy
+  namespace: workload-clusters
+
+spec:
+  cluster:
+    namespace: kube-system
+    kubeconfigSecretRef:
+      name:  #@ "{}-kubeconfig".format(data.values.cluster_name)
+      key: value
+
+  fetch:
+  - git:
+      url: https://github.com/voor/cluster-api-gitops
+      ref: origin/master
+      subPath: management-cluster/deploy/kapp-controller
+  - inline:
+      pathsFrom:
+        - secretRef:
+            name: #@ "{}-postcreate".format(data.values.cluster_name)
+        - secretRef:
+            name: workload-clusters-secrets
+  template:
+  - ytt:
+      ignoreUnknownComments: true
+  deploy:
+  - kapp: {}
 
 #@overlay/match by=overlay.subset({"kind":"MachineDeployment"})
 ---
 spec:
   #@overlay/remove missing_ok=True
   selector:
-
-#@overlay/match by=overlay.subset({"kind": "Secret"})
-#@overlay/remove
-
-
-
-# TODO stop setting empty spec.networkSpec.subnets.id on AWSCluster
-# TODO do not set spec.strategy.matchLabels to nil on MachineDeployment
