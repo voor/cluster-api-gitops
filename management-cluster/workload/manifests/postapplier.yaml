@@ -14,7 +14,6 @@ spec:
       pathsFrom:
       - secretRef:
           name: postapplier-postcreate
-          directoryPath: postcreate
       - secretRef:
           name: workload-clusters-secrets
 ---
