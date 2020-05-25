@@ -40,6 +40,33 @@ spec:
       key: value
 
   fetch:
+  - inline:
+        pathsFrom:
+          - secretRef:
+              name: #@ "{}-postcreate".format(data.values.cluster_name)
+  template:
+  - ytt:
+      ignoreUnknownComments: true
+  deploy:
+  - kapp: {}
+
+---
+apiVersion: kappctrl.k14s.io/v1alpha1
+kind: App
+
+metadata:
+  name: #@ "{}-kapp-controller".format(data.values.cluster_name)
+  # namespace is going to be used as a default namespace during kapp deploy
+  namespace: workload-clusters
+
+spec:
+  cluster:
+    namespace: kube-system
+    kubeconfigSecretRef:
+      name:  #@ "{}-kubeconfig".format(data.values.cluster_name)
+      key: value
+
+  fetch:
   - git:
       url: https://github.com/voor/cluster-api-gitops
       ref: origin/master
@@ -49,8 +76,6 @@ spec:
       ignoreUnknownComments: true
       inline:
         pathsFrom:
-          - secretRef:
-              name: #@ "{}-postcreate".format(data.values.cluster_name)
           - secretRef:
               name: workload-clusters-secrets
   deploy:
