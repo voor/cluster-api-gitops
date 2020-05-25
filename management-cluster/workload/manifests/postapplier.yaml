@@ -14,15 +14,15 @@ spec:
       url: https://github.com/voor/cluster-api-gitops
       ref: origin/master
       subPath: management-cluster/deploy/kapp-controller
-  - inline:
-      pathsFrom:
-      - secretRef:
-          name: postapplier-postcreate
-      - secretRef:
-          name: workload-clusters-secrets
   template:
   - ytt:
       ignoreUnknownComments: true
+      inline:
+        pathsFrom:
+        - secretRef:
+            name: postapplier-postcreate
+        - secretRef:
+            name: workload-clusters-secrets
   deploy:
   - kapp: {}
 ---
