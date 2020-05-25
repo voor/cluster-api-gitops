@@ -1,5 +1,6 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
 
 #@overlay/match by=overlay.all,expects="0+"
 ---
@@ -81,8 +82,52 @@ spec:
   deploy:
   - kapp: {}
 
+---
+apiVersion: kappctrl.k14s.io/v1alpha1
+kind: App
+
+metadata:
+  name: #@ "{}-apps".format(data.values.cluster_name)
+  # namespace is going to be used as a default namespace during kapp deploy
+  namespace: workload-clusters
+
+spec:
+  cluster:
+    namespace: kapp-controller
+    kubeconfigSecretRef:
+      name:  #@ "{}-kubeconfig".format(data.values.cluster_name)
+      key: value
+
+  fetch:
+  - git:
+      url: https://github.com/voor/cluster-api-gitops
+      ref: origin/master
+      subPath: workload/deploy
+  template:
+  - ytt:
+      ignoreUnknownComments: true
+  deploy:
+  - kapp: {}
+
+---
+
 #@overlay/match by=overlay.subset({"kind":"MachineDeployment"})
 ---
 spec:
   #@overlay/remove missing_ok=True
   selector:
+
+#@ def applyToYamlString(left, right):
+#@   leftYaml = yaml.decode(left.calicoYaml)
+#@   new = overlay.apply(leftYaml, right['calico.yaml'])
+#@   return yaml.encode(new)
+#@ end
+
+#@overlay/match by=overlay.subset({"kind": "Secret"})
+---
+#@overlay/replace via=moveYamlVariable
+stringData:
+  #@overlay/match missing_ok=True
+  calico.yaml: 
+  #@overlay/remove
+  calicoYaml:
