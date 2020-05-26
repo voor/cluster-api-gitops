@@ -8,7 +8,7 @@ You start with the Management Cluster, do a typical install of TKG following the
 
 1. Fork this repository, rename references in the code pointing to https://github.com/voor/cluster-api-gitops to your fork.  Push those changes.
 1. Go into `management-cluster/deploy/workload-secrets` and change the example file accordingly.  
-    1. This assumes you are using [CloudFlare](https://www.cloudflare.com/) to manage your domain specified in the domain secret, if you are not you'll need to change the [`letsencrypt`](workload/letsencrypt/manifests/letsencrypt-issuer.yaml) and [`external-dns`](workload/external-dns/manifests/external-dns.yaml) programs in the workload folder accordingly.
+    1. This assumes you are using [CloudFlare](https://www.cloudflare.com/) to manage your domain specified in the domain secret, if you are not you'll need to change the [`letsencrypt`](workload/letsencrypt/manifests/letsencrypt-issuer.yaml#L19-L21) and [`external-dns`](workload/external-dns/manifests/external-dns.yaml#L67-L78) programs in the workload folder accordingly.
     1. You have a GitHub OAuth2.0 application setup, or you'll need to change [`dex-config.yaml`](workload/dex/manifests/dex-config.yaml#L35-L47) to point elsewhere.
 1. Populate the management cluster, go into the `management-cluster` folder and run:
     ```
