@@ -124,3 +124,23 @@ rebaseRules:
   sources: [new, existing]
   resourceMatchers:
   - apiVersionKindMatcher: {apiVersion: cluster.x-k8s.io/v1alpha3, kind: MachineDeployment}
+
+
+changeGroupBindings:
+- name: cluster.x-k8s.io/cluster-resources
+  resourceMatchers: &clusterresources
+  - apiGroupKindMatcher: {kind: Cluster, apiGroup: cluster.x-k8s.io}
+  - apiGroupKindMatcher: {kind: MachineDeployment, apiGroup: cluster.x-k8s.io}
+  - apiGroupKindMatcher: {kind: MachineHealthCheck, apiGroup: cluster.x-k8s.io}
+  - apiGroupKindMatcher: {kind: AWSCluster, apiGroup: infrastructure.cluster.x-k8s.io}
+  - apiGroupKindMatcher: {kind: AWSMachineTemplate, apiGroup: infrastructure.cluster.x-k8s.io}
+  - apiGroupKindMatcher: {kind: KubeadmControlPlane, apiGroup: controlplane.x-k8s.io}
+  - apiGroupKindMatcher: {kind: KubeadmConfigTemplate, apiGroup: bootstrap.cluster.x-k8s.io}
+
+changeRuleBindings:
+- rules:
+  # [Note]: Make sure to delete the remote app CR prior to deleting the cluster
+  - "delete before deleting change-groups.kapp.k14s.io/pod-related"
+  - "delete before deleting cluster.x-k8s.io/cluster-resources"
+  resourceMatchers:
+  - apiGroupKindMatcher: {kind: App, apiGroup: kappctrl.k14s.io }

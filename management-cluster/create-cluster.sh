@@ -6,11 +6,6 @@ if [ "$#" == "0" ]; then
   exit 1
 fi
 
-if [ ! -f management-secrets.pem ]; then
-  echo "Sealed Secrets Key for Management Cluster Not Found!"
-fi
-
-
 set -eux
 
 CLUSTER_NAME=$1
