@@ -46,31 +46,6 @@ spec:
   deploy:
   - kapp: {}
 ---
-apiVersion: kappctrl.k14s.io/v1alpha1
-kind: App
-metadata:
-  name: mostwow-apps
-  namespace: workload-clusters
-spec:
-  cluster:
-    namespace: kapp-controller
-    kubeconfigSecretRef:
-      name: mostwow-kubeconfig
-      key: value
-  fetch:
-  - git:
-      url: https://github.com/voor/cluster-api-gitops
-      ref: origin/master
-      subPath: workload/deploy
-  template:
-  - ytt:
-      ignoreUnknownComments: true
-  deploy:
-  - kapp:
-      deploy:
-        rawOptions:
-        - --wait=false
----
 apiVersion: cluster.x-k8s.io/v1alpha3
 kind: Cluster
 metadata:
