@@ -16,4 +16,6 @@ metadata:
     #@overlay/match missing_ok=True
     kapp.k14s.io/disable-default-change-group-and-rules: 'true'
     #@overlay/match missing_ok=True
-    kapp.k14s.io/change-rule: "delete after deleting change-groups.kapp.k14s.io/crds"
+    kapp.k14s.io/change-rule.1: "delete after deleting change-groups.kapp.k14s.io/crds"
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-rule.2: "upsert after upserting change-groups.kapp.k14s.io/namespaces"

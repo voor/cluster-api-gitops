@@ -17,7 +17,9 @@ spec:
       ignoreUnknownComments: true
       inline:
         pathsFrom:
+        #@ for secretRef in data.values.externaldns_secretRef:
         - secretRef:
-            name: #@ data.values.certmanager_values
+            name: #@ secretRef
+        #@ end 
   deploy:
   - kapp: {}

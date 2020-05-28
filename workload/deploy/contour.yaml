@@ -17,7 +17,9 @@ spec:
       ignoreUnknownComments: true
       inline:
         pathsFrom:
+        #@ for secretRef in data.values.contour_secretRef:
         - secretRef:
-            name: #@ data.values.contour_values
+            name: #@ secretRef
+        #@ end 
   deploy:
   - kapp: {}

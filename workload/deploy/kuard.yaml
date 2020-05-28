@@ -17,7 +17,9 @@ spec:
       ignoreUnknownComments: true
       inline:
         pathsFrom:
+        #@ for secretRef in data.values.kuard_secretRef:
         - secretRef:
-            name: #@ data.values.kuard_values
+            name: #@ secretRef
+        #@ end 
   deploy:
   - kapp: {}

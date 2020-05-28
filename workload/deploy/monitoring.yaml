@@ -17,9 +17,9 @@ spec:
       ignoreUnknownComments: true
       inline:
         pathsFrom:
+        #@ for secretRef in data.values.monitoring_secretRef:
         - secretRef:
-            name: #@ data.values.knative_values
-        - secretRef:
-            name: #@ data.values.dex_values
+            name: #@ secretRef
+        #@ end 
   deploy:
   - kapp: {}
