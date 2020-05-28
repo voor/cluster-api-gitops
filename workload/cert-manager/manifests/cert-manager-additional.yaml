@@ -5,6 +5,10 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: cert-manager
+  annotations:
+    kapp.k14s.io/change-group: 'cert-manager.io/cert-manager-namespace'
+    kapp.k14s.io/change-rule.1: "delete after deleting change-groups.kapp.k14s.io/crds"
+
 
 #@overlay/match by=overlay.subset({"metadata":{"labels": {"app.kubernetes.io/name": "webhook"}}}),expects="1+"
 ---
