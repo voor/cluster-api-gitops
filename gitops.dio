@@ -1,6 +1,6 @@
-<mxfile host="" modified="2020-05-26T19:54:58.737Z" agent="5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.45.1 Chrome/78.0.3904.130 Electron/7.2.4 Safari/537.36" etag="qCpaVOVyJQ5PlqBedr0s" version="13.1.3" pages="2">
+<mxfile host="" modified="2020-05-29T17:58:42.138Z" agent="5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.45.1 Chrome/78.0.3904.130 Electron/7.2.4 Safari/537.36" etag="oSH4WsBSbM8j8RaBxw7Y" version="13.1.3" pages="2">
     <diagram id="Tk4W1hsJlV_JRW-axJOY" name="Page-1">
-        <mxGraphModel dx="430" dy="1137" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1800" dy="1171" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -32,10 +32,13 @@
         </mxGraphModel>
     </diagram>
     <diagram id="aogvhWOx26i7M47I6yug" name="Variables Flow">
-        <mxGraphModel dx="2130" dy="1137" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="3714" dy="1171" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="3k3lUmnJIuaL4v77msK6-0"/>
                 <mxCell id="3k3lUmnJIuaL4v77msK6-1" parent="3k3lUmnJIuaL4v77msK6-0"/>
+                <mxCell id="T46OEDbWniiiOUoKuVmc-0" value="Workload Cluster Configuration &lt;b&gt;(YOU MAKE THIS)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;" vertex="1" parent="3k3lUmnJIuaL4v77msK6-1">
+                    <mxGeometry x="-435" y="240" width="415" height="120" as="geometry"/>
+                </mxCell>
                 <mxCell id="3k3lUmnJIuaL4v77msK6-94" value="" style="group" parent="3k3lUmnJIuaL4v77msK6-1" vertex="1" connectable="0">
                     <mxGeometry x="-1390" y="30" width="490" height="470" as="geometry"/>
                 </mxCell>
@@ -72,66 +75,32 @@
                 <mxCell id="3k3lUmnJIuaL4v77msK6-64" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="3k3lUmnJIuaL4v77msK6-94" source="3k3lUmnJIuaL4v77msK6-53" target="3k3lUmnJIuaL4v77msK6-63" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-74" value="Sealed Secret for postapply" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.document2;whiteSpace=wrap;size=0.25;align=left;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" parent="3k3lUmnJIuaL4v77msK6-94" vertex="1">
-                    <mxGeometry x="265" y="410" width="100" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-79" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="3k3lUmnJIuaL4v77msK6-94" source="3k3lUmnJIuaL4v77msK6-75" target="3k3lUmnJIuaL4v77msK6-74" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-75" value="KUBESEAL" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;align=left;" parent="3k3lUmnJIuaL4v77msK6-94" vertex="1">
-                    <mxGeometry x="270" y="340" width="90" height="30" as="geometry"/>
-                </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-78" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="3k3lUmnJIuaL4v77msK6-94" source="3k3lUmnJIuaL4v77msK6-68" target="3k3lUmnJIuaL4v77msK6-75" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-83" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="3k3lUmnJIuaL4v77msK6-94" source="3k3lUmnJIuaL4v77msK6-82" target="3k3lUmnJIuaL4v77msK6-75" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-82" value="Management PEM" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.document2;whiteSpace=wrap;size=0.25;align=center;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" parent="3k3lUmnJIuaL4v77msK6-94" vertex="1">
-                    <mxGeometry x="370" y="270" width="100" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-68" value="YTT (second run)" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;align=left;" parent="3k3lUmnJIuaL4v77msK6-94" vertex="1">
-                    <mxGeometry x="275" y="160" width="80" height="40" as="geometry"/>
-                </mxCell>
                 <mxCell id="3k3lUmnJIuaL4v77msK6-69" value="ytt overlay file" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.document2;whiteSpace=wrap;size=0.25;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" parent="3k3lUmnJIuaL4v77msK6-94" vertex="1">
                     <mxGeometry x="360" y="100" width="100" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-70" value="Removed Everything but Secret" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;align=center;" parent="3k3lUmnJIuaL4v77msK6-94" vertex="1">
-                    <mxGeometry x="380" y="190" width="100" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-71" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" parent="3k3lUmnJIuaL4v77msK6-94" source="3k3lUmnJIuaL4v77msK6-52" target="3k3lUmnJIuaL4v77msK6-68" edge="1">
+                <mxCell id="3k3lUmnJIuaL4v77msK6-71" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" parent="3k3lUmnJIuaL4v77msK6-94" source="3k3lUmnJIuaL4v77msK6-52" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="280" y="60" as="sourcePoint"/>
+                        <mxPoint x="275" y="180" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-72" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="3k3lUmnJIuaL4v77msK6-94" source="3k3lUmnJIuaL4v77msK6-69" target="3k3lUmnJIuaL4v77msK6-68" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
+                <mxCell id="3k3lUmnJIuaL4v77msK6-72" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="3k3lUmnJIuaL4v77msK6-94" source="3k3lUmnJIuaL4v77msK6-69" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="315" y="160" as="targetPoint"/>
+                    </mxGeometry>
                 </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-73" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="3k3lUmnJIuaL4v77msK6-94" source="3k3lUmnJIuaL4v77msK6-68" target="3k3lUmnJIuaL4v77msK6-70" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-89" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="3k3lUmnJIuaL4v77msK6-94" source="3k3lUmnJIuaL4v77msK6-88" target="3k3lUmnJIuaL4v77msK6-68" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
+                <mxCell id="3k3lUmnJIuaL4v77msK6-89" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="3k3lUmnJIuaL4v77msK6-94" source="3k3lUmnJIuaL4v77msK6-88" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="315" y="160" as="targetPoint"/>
+                    </mxGeometry>
                 </mxCell>
                 <mxCell id="3k3lUmnJIuaL4v77msK6-88" value="KAPP Controller Manifest" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.document2;whiteSpace=wrap;size=0.25;align=center;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" parent="3k3lUmnJIuaL4v77msK6-94" vertex="1">
                     <mxGeometry x="140" y="30" width="100" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-91" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="3k3lUmnJIuaL4v77msK6-94" source="3k3lUmnJIuaL4v77msK6-90" target="3k3lUmnJIuaL4v77msK6-68" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-90" value="Workload Cluster Sealed Secrets Private Key" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.document2;whiteSpace=wrap;size=0.25;align=center;fillColor=#a20025;strokeColor=#6F0000;fontColor=#ffffff;" parent="3k3lUmnJIuaL4v77msK6-94" vertex="1">
-                    <mxGeometry x="120" y="100" width="140" height="70" as="geometry"/>
-                </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-93" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="3k3lUmnJIuaL4v77msK6-94" source="3k3lUmnJIuaL4v77msK6-92" target="3k3lUmnJIuaL4v77msK6-68" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-92" value="Workload Cluster Initial Secrets" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.document2;whiteSpace=wrap;size=0.25;align=center;fillColor=#a20025;strokeColor=#6F0000;fontColor=#ffffff;" parent="3k3lUmnJIuaL4v77msK6-94" vertex="1">
-                    <mxGeometry x="365" y="20" width="100" height="60" as="geometry"/>
-                </mxCell>
                 <mxCell id="3k3lUmnJIuaL4v77msK6-96" value="" style="group" parent="3k3lUmnJIuaL4v77msK6-1" vertex="1" connectable="0">
-                    <mxGeometry x="-790" y="25" width="475" height="140" as="geometry"/>
+                    <mxGeometry x="-827.5" y="30" width="475" height="140" as="geometry"/>
                 </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-44" value="Manager Cluster Deploy (&lt;b&gt;MANUAL)&lt;/b&gt;&lt;br&gt;&lt;i&gt;One time deployment (or part of the initial management cluster template)&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;" parent="3k3lUmnJIuaL4v77msK6-96" vertex="1">
+                <mxCell id="3k3lUmnJIuaL4v77msK6-44" value="Manager Cluster Deploy (&lt;b&gt;MANUAL SCRIPT)&lt;/b&gt;&lt;br&gt;&lt;i&gt;One time deployment (or part of the initial management cluster template)&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;" parent="3k3lUmnJIuaL4v77msK6-96" vertex="1">
                     <mxGeometry width="475" height="140" as="geometry"/>
                 </mxCell>
                 <mxCell id="3k3lUmnJIuaL4v77msK6-45" value="KAPP Controller&lt;br&gt;Manifest" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.document2;whiteSpace=wrap;size=0.25;align=left;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" parent="3k3lUmnJIuaL4v77msK6-96" vertex="1">
@@ -143,8 +112,8 @@
                 <mxCell id="3k3lUmnJIuaL4v77msK6-47" value="App CR for Workload Clusters" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.document2;whiteSpace=wrap;size=0.25;align=left;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" parent="3k3lUmnJIuaL4v77msK6-96" vertex="1">
                     <mxGeometry x="250" y="60" width="100" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-103" value="Management Cluster Sealed Secrets Private Key" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.document2;whiteSpace=wrap;size=0.25;align=center;fillColor=#a20025;strokeColor=#6F0000;fontColor=#ffffff;" parent="3k3lUmnJIuaL4v77msK6-96" vertex="1">
-                    <mxGeometry x="365" y="40" width="100" height="90" as="geometry"/>
+                <mxCell id="T46OEDbWniiiOUoKuVmc-1" value="Secrets Wrapper for Configuration" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;fillColor=#a20025;strokeColor=#6F0000;fontColor=#ffffff;" vertex="1" parent="3k3lUmnJIuaL4v77msK6-96">
+                    <mxGeometry x="367.5" y="55" width="99.5" height="70" as="geometry"/>
                 </mxCell>
                 <mxCell id="3k3lUmnJIuaL4v77msK6-100" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.8;exitY=0.8;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" parent="3k3lUmnJIuaL4v77msK6-1" source="3k3lUmnJIuaL4v77msK6-98" target="3k3lUmnJIuaL4v77msK6-48" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
@@ -159,6 +128,14 @@
                 </mxCell>
                 <mxCell id="3k3lUmnJIuaL4v77msK6-107" value="creates with CAPI" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="3k3lUmnJIuaL4v77msK6-105" vertex="1" connectable="0">
                     <mxGeometry x="-0.2404" y="2" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="T46OEDbWniiiOUoKuVmc-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.8;exitY=0.8;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.208;entryY=-0.02;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="3k3lUmnJIuaL4v77msK6-1" source="3k3lUmnJIuaL4v77msK6-98" target="T46OEDbWniiiOUoKuVmc-4">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="T46OEDbWniiiOUoKuVmc-8" value="running locally" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="T46OEDbWniiiOUoKuVmc-5">
+                    <mxGeometry x="0.033" y="-2" relative="1" as="geometry">
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
@@ -187,7 +164,7 @@
                 <mxCell id="3k3lUmnJIuaL4v77msK6-108" value="" style="group;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" parent="3k3lUmnJIuaL4v77msK6-1" vertex="1" connectable="0">
                     <mxGeometry x="-1450" y="750" width="590" height="490" as="geometry"/>
                 </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-29" value="Single App (App A) GIT Repository&lt;b&gt; (KAPP CONTROLLER)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;" parent="3k3lUmnJIuaL4v77msK6-108" vertex="1">
+                <mxCell id="3k3lUmnJIuaL4v77msK6-29" value="Single App (App A) GIT Repository&lt;b&gt; (KAPP CONTROLLER ON WORKLOAD)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;" parent="3k3lUmnJIuaL4v77msK6-108" vertex="1">
                     <mxGeometry width="590" height="490" as="geometry"/>
                 </mxCell>
                 <mxCell id="3k3lUmnJIuaL4v77msK6-2" value="Helm Chart" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;fillColor=#0050ef;strokeColor=#001DBC;fontColor=#ffffff;" parent="3k3lUmnJIuaL4v77msK6-108" vertex="1">
@@ -260,31 +237,30 @@
                     <mxGeometry x="350" y="315" width="100" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="3k3lUmnJIuaL4v77msK6-109" value="" style="group" parent="3k3lUmnJIuaL4v77msK6-1" vertex="1" connectable="0">
-                    <mxGeometry x="-740" y="780" width="580" height="170" as="geometry"/>
+                    <mxGeometry x="-710" y="770" width="560" height="170" as="geometry"/>
                 </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-39" value="Workload Deploy Folder (All App CRs) GIT Repository (&lt;b&gt;KAPP CONTROLLER&lt;/b&gt;)&lt;br&gt;&lt;i&gt;everything going into a workload cluster is outlined here&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;" parent="3k3lUmnJIuaL4v77msK6-109" vertex="1">
-                    <mxGeometry width="580" height="170" as="geometry"/>
+                <mxCell id="3k3lUmnJIuaL4v77msK6-39" value="Workload Deploy Folder (All App CRs) GIT Repository (&lt;b&gt;KAPP CONTROLLER ON MANAGER&lt;/b&gt;)&lt;br&gt;&lt;i&gt;everything going into a workload cluster is outlined here&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;" parent="3k3lUmnJIuaL4v77msK6-109" vertex="1">
+                    <mxGeometry width="560" height="170" as="geometry"/>
                 </mxCell>
                 <mxCell id="3k3lUmnJIuaL4v77msK6-41" value="Values file referencing where apps manifests reside" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.document2;whiteSpace=wrap;size=0.25;align=left;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" parent="3k3lUmnJIuaL4v77msK6-109" vertex="1">
-                    <mxGeometry x="160" y="60" width="130" height="85" as="geometry"/>
+                    <mxGeometry x="154.48275862068965" y="60" width="125.51724137931036" height="85" as="geometry"/>
                 </mxCell>
                 <mxCell id="3k3lUmnJIuaL4v77msK6-42" value="All App CRs" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.multi-document;whiteSpace=wrap;align=left;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" parent="3k3lUmnJIuaL4v77msK6-109" vertex="1">
-                    <mxGeometry x="30" y="60" width="88" height="60" as="geometry"/>
+                    <mxGeometry x="28.965517241379313" y="60" width="84.96551724137932" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-111" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;exitPerimeter=0;" parent="3k3lUmnJIuaL4v77msK6-1" source="3k3lUmnJIuaL4v77msK6-74" target="3k3lUmnJIuaL4v77msK6-48" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
+                <mxCell id="3k3lUmnJIuaL4v77msK6-111" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;exitPerimeter=0;" parent="3k3lUmnJIuaL4v77msK6-1" target="3k3lUmnJIuaL4v77msK6-48" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-1125" y="485" as="sourcePoint"/>
+                    </mxGeometry>
                 </mxCell>
                 <mxCell id="3k3lUmnJIuaL4v77msK6-112" value="" style="group" parent="3k3lUmnJIuaL4v77msK6-1" vertex="1" connectable="0">
-                    <mxGeometry x="-1450" y="550" width="590" height="120" as="geometry"/>
+                    <mxGeometry x="-1450" y="540" width="590" height="120" as="geometry"/>
                 </mxCell>
                 <mxCell id="3k3lUmnJIuaL4v77msK6-48" value="Workload Clusters Folder (Workload Cluster Manifests) GIT Repository (&lt;b&gt;KAPP CONTROLLER&lt;/b&gt;)&lt;br&gt;&lt;i&gt;Cluster API templates for the workload clusters being deployed&lt;/i&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;" parent="3k3lUmnJIuaL4v77msK6-112" vertex="1">
                     <mxGeometry width="590" height="120" as="geometry"/>
                 </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-49" value="Workload Cluster CAPI Templates" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.document2;whiteSpace=wrap;size=0.25;align=left;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" parent="3k3lUmnJIuaL4v77msK6-112" vertex="1">
-                    <mxGeometry x="225" y="50" width="100" height="60" as="geometry"/>
-                </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-50" value="Sealed Secret for postapply" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.document2;whiteSpace=wrap;size=0.25;align=left;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" parent="3k3lUmnJIuaL4v77msK6-112" vertex="1">
-                    <mxGeometry x="415" y="40" width="100" height="60" as="geometry"/>
+                <mxCell id="3k3lUmnJIuaL4v77msK6-49" value="Workload Cluster TKG Template" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.document2;whiteSpace=wrap;size=0.25;align=left;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" parent="3k3lUmnJIuaL4v77msK6-112" vertex="1">
+                    <mxGeometry x="140" y="50" width="100" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="3k3lUmnJIuaL4v77msK6-113" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="3k3lUmnJIuaL4v77msK6-1" source="3k3lUmnJIuaL4v77msK6-63" target="3k3lUmnJIuaL4v77msK6-48" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
@@ -297,7 +273,7 @@
                 <mxCell id="3k3lUmnJIuaL4v77msK6-117" value="" style="group" parent="3k3lUmnJIuaL4v77msK6-1" vertex="1" connectable="0">
                     <mxGeometry x="-750" y="1050" width="590" height="490" as="geometry"/>
                 </mxCell>
-                <mxCell id="3k3lUmnJIuaL4v77msK6-118" value="Single App (App B) GIT Repository&lt;b&gt; (KAPP CONTROLLER)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;" parent="3k3lUmnJIuaL4v77msK6-117" vertex="1">
+                <mxCell id="3k3lUmnJIuaL4v77msK6-118" value="Single App (App B) GIT Repository&lt;b&gt; (KAPP CONTROLLER ON WORKLOAD)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;" parent="3k3lUmnJIuaL4v77msK6-117" vertex="1">
                     <mxGeometry width="590" height="490" as="geometry"/>
                 </mxCell>
                 <mxCell id="3k3lUmnJIuaL4v77msK6-119" value="JSONNET" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;fillColor=#0050ef;strokeColor=#001DBC;fontColor=#ffffff;" parent="3k3lUmnJIuaL4v77msK6-117" vertex="1">
@@ -384,6 +360,50 @@
                     <mxGeometry x="0.4259" relative="1" as="geometry">
                         <mxPoint as="offset"/>
                     </mxGeometry>
+                </mxCell>
+                <mxCell id="3k3lUmnJIuaL4v77msK6-92" value="Workload Cluster Initial Secrets" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.document2;whiteSpace=wrap;size=0.25;align=center;fillColor=#a20025;strokeColor=#6F0000;fontColor=#ffffff;" parent="3k3lUmnJIuaL4v77msK6-1" vertex="1">
+                    <mxGeometry x="-415" y="270" width="100" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="3k3lUmnJIuaL4v77msK6-90" value="Workload Cluster Sealed Secrets Private Key (optional)" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.document2;whiteSpace=wrap;size=0.25;align=center;fillColor=#a20025;strokeColor=#6F0000;fontColor=#ffffff;" parent="3k3lUmnJIuaL4v77msK6-1" vertex="1">
+                    <mxGeometry x="-290" y="270" width="140" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="3k3lUmnJIuaL4v77msK6-103" value="Management Cluster Sealed Secrets Private Key (optional)" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.document2;whiteSpace=wrap;size=0.25;align=center;fillColor=#a20025;strokeColor=#6F0000;fontColor=#ffffff;" parent="3k3lUmnJIuaL4v77msK6-1" vertex="1">
+                    <mxGeometry x="-130" y="260" width="100" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="T46OEDbWniiiOUoKuVmc-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="3k3lUmnJIuaL4v77msK6-1" source="T46OEDbWniiiOUoKuVmc-0" target="T46OEDbWniiiOUoKuVmc-1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="T46OEDbWniiiOUoKuVmc-3" value="wrapped" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="T46OEDbWniiiOUoKuVmc-2">
+                    <mxGeometry x="-0.2253" y="3" relative="1" as="geometry">
+                        <mxPoint x="1" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="T46OEDbWniiiOUoKuVmc-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.96;entryY=0.7;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="3k3lUmnJIuaL4v77msK6-1" source="T46OEDbWniiiOUoKuVmc-4" target="3k3lUmnJIuaL4v77msK6-104">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="-350" y="510"/>
+                            <mxPoint x="-350" y="650"/>
+                            <mxPoint x="-450" y="650"/>
+                            <mxPoint x="-450" y="607"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="T46OEDbWniiiOUoKuVmc-7" value="kapp deploys remotely" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="T46OEDbWniiiOUoKuVmc-6">
+                    <mxGeometry x="0.1425" y="3" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="T46OEDbWniiiOUoKuVmc-4" value="Workload Initial Manifests &lt;b&gt;(KAPP CONTROLLER ON MANAGER)&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;" vertex="1" parent="3k3lUmnJIuaL4v77msK6-1">
+                    <mxGeometry x="-500" y="410" width="380" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="T46OEDbWniiiOUoKuVmc-9" value="Calico (CNI)" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;align=left;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" vertex="1" parent="3k3lUmnJIuaL4v77msK6-1">
+                    <mxGeometry x="-477" y="440" width="107" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="T46OEDbWniiiOUoKuVmc-10" value="kapp-controller" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;align=left;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" vertex="1" parent="3k3lUmnJIuaL4v77msK6-1">
+                    <mxGeometry x="-340" y="440" width="90" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="T46OEDbWniiiOUoKuVmc-11" value="&lt;span style=&quot;color: rgb(255, 255, 255); font-family: helvetica; font-size: 12px; font-style: normal; font-weight: 400; letter-spacing: normal; text-align: center; text-indent: 0px; text-transform: none; word-spacing: 0px; float: none; display: inline;&quot;&gt;Secrets Wrapper for Configuration&lt;/span&gt;" style="shape=document;whiteSpace=wrap;html=1;boundedLbl=1;align=left;fillColor=#a20025;strokeColor=#6F0000;fontColor=#ffffff;labelBackgroundColor=none;" vertex="1" parent="3k3lUmnJIuaL4v77msK6-1">
+                    <mxGeometry x="-240" y="440" width="100" height="60" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
