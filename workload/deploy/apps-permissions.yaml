@@ -6,6 +6,8 @@ kind: App
 metadata:
   name: apps
   namespace: kapp-controller
+  annotations:
+    kapp.k14s.io/change-group: "gitops.tanzu.vmware.com/app-permissions"
 spec:
   fetch:
   - git:

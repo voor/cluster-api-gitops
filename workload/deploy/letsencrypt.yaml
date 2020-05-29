@@ -6,6 +6,9 @@ kind: App
 metadata:
   name: letsencrypt
   namespace: kapp-controller
+  annotations:
+    kapp.k14s.io/change-rule.1: "delete before deleting gitops.tanzu.vmware.com/cert-manager"
+    kapp.k14s.io/change-rule.2: "upsert after upserting gitops.tanzu.vmware.com/cert-manager"
 spec:
   fetch:
   - git:

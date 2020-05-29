@@ -6,6 +6,8 @@ kind: App
 metadata:
   name: cert-manager
   namespace: kapp-controller
+  annotations:
+    kapp.k14s.io/change-group: "gitops.tanzu.vmware.com/cert-manager"
 spec:
   fetch:
   - git:

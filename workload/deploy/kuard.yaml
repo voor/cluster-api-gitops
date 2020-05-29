@@ -6,6 +6,9 @@ kind: App
 metadata:
   name: kuard
   namespace: kapp-controller
+  annotations:
+    kapp.k14s.io/change-rule.1: "delete before deleting gitops.tanzu.vmware.com/app-permissions"
+    kapp.k14s.io/change-rule.2: "upsert after upserting gitops.tanzu.vmware.com/app-permissions"
 spec:
   fetch:
   - git:

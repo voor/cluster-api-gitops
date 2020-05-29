@@ -32,6 +32,9 @@ metadata:
   name: #@ "{}-postcreate".format(data.values.cluster_name)
   # namespace is going to be used as a default namespace during kapp deploy
   namespace: workload-clusters
+  annotations:
+    kapp.k14s.io/change-group: "gitops.tanzu.vmware.com/cni"
+    kapp.k14s.io/change-rule: "upsert before upserting gitops.tanzu.vmware.com/kapp-controller"
 
 spec:
   cluster:
@@ -59,6 +62,9 @@ metadata:
   name: #@ "{}-kapp-controller".format(data.values.cluster_name)
   # namespace is going to be used as a default namespace during kapp deploy
   namespace: workload-clusters
+  annotations:
+    kapp.k14s.io/change-group: "gitops.tanzu.vmware.com/kapp-controller"
+    kapp.k14s.io/change-rule.1: "delete before deleting gitops.tanzu.vmware.com/cni"
 
 spec:
   cluster:
@@ -90,6 +96,10 @@ metadata:
   name: #@ "{}-apps".format(data.values.cluster_name)
   # namespace is going to be used as a default namespace during kapp deploy
   namespace: workload-clusters
+  annotations:
+    kapp.k14s.io/change-group: "gitops.tanzu.vmware.com/remote-apps"
+    kapp.k14s.io/change-rule.1: "delete before deleting gitops.tanzu.vmware.com/kapp-controller"
+    kapp.k14s.io/change-rule.2: "upsert after upserting gitops.tanzu.vmware.com/kapp-controller"
 
 spec:
   cluster:
