@@ -20,32 +20,6 @@ spec:
   deploy:
   - kapp: {}
 ---
-apiVersion: kappctrl.k14s.io/v1alpha1
-kind: App
-metadata:
-  name: stuckinthemud-kapp-controller
-  namespace: workload-clusters
-spec:
-  cluster:
-    namespace: kube-system
-    kubeconfigSecretRef:
-      name: stuckinthemud-kubeconfig
-      key: value
-  fetch:
-  - git:
-      url: https://github.com/voor/cluster-api-gitops
-      ref: origin/master
-      subPath: management-cluster/deploy/kapp-controller
-  template:
-  - ytt:
-      ignoreUnknownComments: true
-      inline:
-        pathsFrom:
-        - secretRef:
-            name: workload-clusters-secrets
-  deploy:
-  - kapp: {}
----
 apiVersion: cluster.x-k8s.io/v1alpha3
 kind: Cluster
 metadata:
