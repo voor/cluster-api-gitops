@@ -1,6 +1,6 @@
 #@data/values
 ---
 ami:
-  id: "ami-0ffb75ee5cb111cfb"
+  id: "ami-05b1c4d8a7cfd8c2c"
 kubeadmConfigSpec: 
   kubernetesVersion: v1.18.2+vmware.1
