@@ -1,0 +1,30 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind":"AWSMachineTemplate"}),expects="0+"
+---
+metadata:
+  #@overlay/replace via=lambda old,new: old+"-"+new
+  name: #@ data.values.ami.id
+spec:
+  template:
+    spec:
+      ami:
+        id: #@ data.values.ami.id
+
+#@overlay/match by=overlay.subset({"kind":"KubeadmControlPlane"}),expects="0+"
+---
+spec:
+  infrastructureTemplate:
+    #@overlay/replace via=lambda old,new: old+"-"+new
+    name: #@ data.values.ami.id
+  version: #@ data.values.kubeadmConfigSpec.kubernetesVersion
+
+#@overlay/match by=overlay.subset({"kind":"MachineDeployment"}),expects="0+"
+---
+spec:
+  template:
+    spec:
+      infrastructureRef:
+        #@overlay/replace via=lambda old,new: old+"-"+new
+        name: #@ data.values.ami.id
