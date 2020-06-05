@@ -18,4 +18,7 @@ spec:
   - ytt:
       ignoreUnknownComments: true
   deploy:
-  - kapp: {}
+  - kapp:
+      delete:
+        rawOptions: 
+        - "--apply-ignored=true"
