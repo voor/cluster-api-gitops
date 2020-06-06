@@ -7,7 +7,8 @@ metadata:
   name: cert-manager
   annotations:
     kapp.k14s.io/change-group: 'cert-manager.io/cert-manager-namespace'
-    kapp.k14s.io/change-rule.1: "delete after deleting change-groups.kapp.k14s.io/crds"
+    kapp.k14s.io/change-rule.1: "delete after deleting cert-manager.io/crds"
+    kapp.k14s.io/disable-default-change-group-and-rules: 'true'
 
 
 #@overlay/match by=overlay.subset({"metadata":{"labels": {"app.kubernetes.io/name": "webhook"}}}),expects="1+"
@@ -23,3 +24,17 @@ metadata:
     kapp.k14s.io/change-rule.1: "delete after deleting change-groups.kapp.k14s.io/crds"
     #@overlay/match missing_ok=True
     kapp.k14s.io/change-rule.2: "upsert after upserting change-groups.kapp.k14s.io/namespaces"
+
+#@overlay/match by=overlay.subset({"kind":"CustomResourceDefinition"}),expects="1+"
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-group: 'cert-manager.io/crds'
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/disable-default-change-group-and-rules: 'true'
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-rule.1: "delete before deleting change-groups.kapp.k14s.io/namespaces"
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-rule.2: "upsert before upserting change-groups.kapp.k14s.io/namespaces"
