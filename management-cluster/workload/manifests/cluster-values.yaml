@@ -1,7 +1,7 @@
 #@data/values
 ---
 ami:
-  id: "ami-05b1c4d8a7cfd8c2c"
+  id: "ami-0ffb75ee5cb111cfb"
 kubeadmConfigSpec:
   apiVersion: kubeadm.k8s.io/v1beta1
   kind: ClusterConfiguration
