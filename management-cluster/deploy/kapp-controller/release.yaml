@@ -9,6 +9,11 @@ spec:
     description: Friendly description
     name: Description
     type: string
+  - JSONPath: .status.deploy.startedAt
+    description: Last time app started being deployed. Does not mean anything was
+      changed.
+    name: Since-Deploy
+    type: date
   - JSONPath: .metadata.creationTimestamp
     description: |-
       CreationTimestamp is a timestamp representing the server time when this object was created.
@@ -40,8 +45,8 @@ metadata:
       - Metas:
         - Tag: latest
           Type: resolved
-          URL: voor/kapp-controller:latest
-        URL: index.docker.io/voor/kapp-controller@sha256:549cf474098833a1f80bc2e1314f7f771c96b411a582d5074c8a4e2a2b6d1f66
+          URL: voor/kapp-controller
+        URL: index.docker.io/voor/kapp-controller@sha256:da777f12546aec2cd9b2d8a272ae8db54c03f7ee05185f794e60bbb7067c0a90
   name: kapp-controller
   namespace: kapp-controller
 spec:
@@ -59,7 +64,7 @@ spec:
       - env:
         - name: KAPPCTRL_MEM_TMP_DIR
           value: /etc/kappctrl-mem-tmp
-        image: index.docker.io/voor/kapp-controller@sha256:549cf474098833a1f80bc2e1314f7f771c96b411a582d5074c8a4e2a2b6d1f66
+        image: index.docker.io/voor/kapp-controller@sha256:da777f12546aec2cd9b2d8a272ae8db54c03f7ee05185f794e60bbb7067c0a90
         name: kapp-controller
         resources:
           requests:
