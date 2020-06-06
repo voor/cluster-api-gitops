@@ -2,5 +2,17 @@
 ---
 ami:
   id: "ami-05b1c4d8a7cfd8c2c"
-kubeadmConfigSpec: 
+kubeadmConfigSpec:
+  apiVersion: kubeadm.k8s.io/v1beta1
+  kind: ClusterConfiguration
+  imageRepository: registry.tkg.vmware.run
   kubernetesVersion: v1.18.2+vmware.1
+  etcd:
+    local:
+      dataDir: /var/lib/etcd
+      imageRepository: registry.tkg.vmware.run
+      imageTag: v3.4.3_vmware.5
+  dns:
+    type: CoreDNS
+    imageRepository: registry.tkg.vmware.run
+    imageTag: v1.6.7_vmware.1
