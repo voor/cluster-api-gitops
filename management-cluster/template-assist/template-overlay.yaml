@@ -100,6 +100,7 @@ metadata:
     kapp.k14s.io/change-group: "gitops.tanzu.vmware.com/remote-apps"
     kapp.k14s.io/change-rule.1: "delete before deleting gitops.tanzu.vmware.com/kapp-controller"
     kapp.k14s.io/change-rule.2: "upsert after upserting gitops.tanzu.vmware.com/kapp-controller"
+    kapp.k14s.io/disable-wait: "true"
 
 spec:
   cluster:
@@ -117,10 +118,7 @@ spec:
   - ytt:
       ignoreUnknownComments: true
   deploy:
-  - kapp:
-      deploy:
-        rawOptions: 
-        - "--wait=false"
+  - kapp: {}
 
 ---
 
