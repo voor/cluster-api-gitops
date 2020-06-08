@@ -1,0 +1,24 @@
+#@data/values
+---
+acme_email: 
+acme_url: "https://acme-v02.api.letsencrypt.org/directory"
+
+domain: ""
+
+cloudflare_key: ""
+
+auth:
+  clientSecret: ""
+  sesssionKey: ""
+  authorizeURL:
+  tokenURL:
+  audience:
+  redirectURL:
+  usernameClaim:
+  emailClaim:
+
+management:
+  cluster_name: ""
+  # k get cluster -n tkg-system ${CURRENT_MC} -o jsonpath={.spec.controlPlaneEndpoint.host}
+  apiServerURL: ""
+  httpPath: ""

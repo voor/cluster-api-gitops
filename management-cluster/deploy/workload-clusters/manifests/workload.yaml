@@ -6,6 +6,8 @@ kind: App
 metadata:
   name: workload-clusters
   namespace: kapp-controller
+  annotations:
+    kapp.k14s.io/disable-wait: "true"
 spec:
   fetch:
   - git:
@@ -15,5 +17,11 @@ spec:
   template:
   - ytt:
       ignoreUnknownComments: true
+      inline:
+        pathsFrom:
+        #@ for secretRef in data.values.workload_secretRef:
+        - secretRef:
+            name: #@ secretRef
+        #@ end 
   deploy:
   - kapp: {}

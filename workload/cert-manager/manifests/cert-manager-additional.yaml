@@ -37,4 +37,4 @@ metadata:
     #@overlay/match missing_ok=True
     kapp.k14s.io/change-rule.1: "delete before deleting change-groups.kapp.k14s.io/namespaces"
     #@overlay/match missing_ok=True
-    kapp.k14s.io/change-rule.2: "upsert before upserting change-groups.kapp.k14s.io/namespaces"
+    kapp.k14s.io/change-rule.2: "upsert after upserting change-groups.kapp.k14s.io/namespaces"

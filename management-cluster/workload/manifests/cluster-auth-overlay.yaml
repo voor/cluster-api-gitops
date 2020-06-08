@@ -1,0 +1,18 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind":"KubeadmControlPlane"}),expects="0+"
+---
+spec:
+  kubeadmConfigSpec:
+    clusterConfiguration:
+      apiServer:
+        extraArgs:
+          #@overlay/match missing_ok=True
+          oidc-client-id: #@ data.values.auth.oidc-client-id
+          #@overlay/match missing_ok=True
+          oidc-issuer-url: #@ data.values.auth.oidc-issuer-url
+          #@overlay/match missing_ok=True
+          oidc-username-claim: #@ data.values.auth.oidc-username-claim
+          #@overlay/match missing_ok=True
+          oidc-groups-claim: #@ data.values.auth.oidc-groups-claim

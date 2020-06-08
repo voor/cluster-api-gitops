@@ -1,0 +1,6 @@
+#@data/values
+---
+
+workload_secretRef:
+  #! This file contains secrets for configuring workload clusters.
+  - cluster-config-secrets

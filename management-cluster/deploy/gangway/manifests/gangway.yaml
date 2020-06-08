@@ -1,0 +1,224 @@
+#@ load("@ytt:data", "data")
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tanzu-system-auth
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: gangwaysvc
+  namespace: tanzu-system-auth
+  labels:
+    app: gangway
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: ssl
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+spec:
+  type: LoadBalancer
+  ports:
+    - name: "https"
+      protocol: TCP
+      port: 443
+      targetPort: "https"
+  selector:
+    app: gangway
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gangway
+  namespace: tanzu-system-auth
+data:
+  #@yaml/text-templated-strings
+  gangway.yaml: |
+    # The public cert file (including root and intermediates) to use when serving
+    # TLS.
+    # Env var: GANGWAY_CERT_FILE
+    certFile: /tls/tls.crt
+
+    # The private key file when serving TLS.
+    # Env var: GANGWAY_KEY_FILE
+    keyFile: /tls/tls.key
+
+    # The cluster name. Used in UI and kubectl config instructions.
+    # Env var: GANGWAY_CLUSTER_NAME
+    clusterName: "(@= data.values.management.cluster_name @)"
+
+    # OAuth2 URL to start authorization flow.
+    # Env var: GANGWAY_AUTHORIZE_URL
+    authorizeURL: "(@= data.values.auth.authorizeURL @)"
+
+    # OAuth2 URL to obtain access tokens.
+    # Env var: GANGWAY_TOKEN_URL
+    tokenURL: "(@= data.values.auth.tokenURL @)"
+
+    # Endpoint that provides user profile information [optional]. Not all providers
+    # will require this.
+    # Env var: GANGWAY_AUDIENCE
+    audience: "(@= data.values.auth.audience @)"
+
+    # Used to specify the scope of the requested Oauth authorization.
+    scopes: ["openid", "profile", "email", "offline_access"]
+
+    # Where to redirect back to. This should be a URL where gangway is reachable.
+    # Typically this also needs to be registered as part of the oauth application
+    # with the oAuth provider.
+    # Env var: GANGWAY_REDIRECT_URL
+    redirectURL: "(@= data.values.auth.redirectURL @)"
+
+    # The JWT claim to use as the username. This is used in UI.
+    # Default is "nickname". This is combined with the clusterName
+    # for the "user" portion of the kubeconfig.
+    # Env var: GANGWAY_USERNAME_CLAIM
+    usernameClaim: "(@= data.values.auth.usernameClaim @)"
+
+    emailClaim: "(@= data.values.auth.emailClaim @)"
+
+    # The API server endpoint used to configure kubectl
+    # Env var: GANGWAY_APISERVER_URL
+    apiServerURL: "(@= data.values.management.apiServerURL @)"
+
+    # The path to find the CA bundle for the API server. Used to configure kubectl.
+    # This is typically mounted into the default location for workloads running on
+    # a Kubernetes cluster and doesn't need to be set.
+    # Env var: GANGWAY_CLUSTER_CA_PATH
+    # cluster_ca_path: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+
+    # The path gangway uses to create urls (defaults to "")
+    # Env var: GANGWAY_HTTP_PATH
+    httpPath: "(@= data.values.management.httpPath @)"
+
+    # The path to find custom HTML templates
+    # Env var: GANGWAY_CUSTOM_HTTP_TEMPLATES_DIR
+    #customHTMLTemplatesDir: /custom-templates
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gangway
+  namespace: tanzu-system-auth
+stringData:
+  clientSecret: #@ data.values.auth.clientSecret
+  sesssionKey: #@ data.values.auth.sesssionKey
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gangway
+  namespace: tanzu-system-auth
+  labels:
+    app: gangway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gangway
+  template:
+    metadata:
+      labels:
+        app: gangway
+        revision: "1"
+    spec:
+      containers:
+        - name: gangway
+          image: vmware-docker-tkg.bintray.io/gangway:v3.2.0_vmware.1
+          imagePullPolicy: IfNotPresent
+          command: ["gangway", "-config", "/gangway/gangway.yaml"]
+          env:
+            - name: GANGWAY_SERVE_TLS
+              value: "true"
+            - name: GANGWAY_SESSION_SECURITY_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gangway
+                  key: sesssionKey
+            - name: GANGWAY_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: gangway
+                  key: clientSecret
+          ports:
+            - name: https
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "512Mi"
+          volumeMounts:
+            - name: gangway
+              mountPath: /gangway/
+            - name: tls
+              mountPath: /tls/
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTPS
+            initialDelaySeconds: 20
+            timeoutSeconds: 1
+            periodSeconds: 60
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTPS
+            timeoutSeconds: 1
+            periodSeconds: 10
+            failureThreshold: 3
+      volumes:
+        - name: gangway
+          configMap:
+            name: gangway
+        - name: tls
+          secret:
+            secretName: #@ "management.{}".format(data.values.domain)
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-issuer
+  namespace: cert-manager
+spec:
+  acme:
+    email: #@ data.values.acme_email
+    server: #@ data.values.acme_url
+    privateKeySecretRef:
+      name: letsencrypt-issuer-account-key
+    solvers:
+    - dns01:
+        cloudflare:
+          email: #@ data.values.acme_email
+          #! Until CAPI updates, still using legacy DNS option, not this is KEY and not TOKEN.
+          apiKeySecretRef:
+            name: cloudflare-api-key-secret
+            key: api-key
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: #@ "management.{}".format(data.values.domain)
+  namespace: tanzu-system-auth
+spec:
+  secretName: #@ "management.{}".format(data.values.domain)
+  issuerRef:
+    name: letsencrypt-issuer
+    kind: ClusterIssuer
+  dnsNames:
+  - #@ "*.management.{}".format(data.values.domain)
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cloudflare-api-key-secret
+  namespace: cert-manager
+type: Opaque
+stringData:
+  api-key: #@ data.values.cloudflare_key
