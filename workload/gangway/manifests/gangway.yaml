@@ -102,6 +102,7 @@ metadata:
   namespace: tanzu-system-auth
 stringData:
   clientSecret: #@ data.values.auth.clientSecret
+  clientID: #@ data.values.auth.clientID
   sesssionKey: #@ data.values.auth.sesssionKey
 ---
 apiVersion: apps/v1
@@ -135,6 +136,11 @@ spec:
                 secretKeyRef:
                   name: gangway
                   key: sesssionKey
+            - name: GANGWAY_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: gangway
+                  key: clientID         
             - name: GANGWAY_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
@@ -180,45 +186,3 @@ spec:
         - name: tls
           secret:
             secretName: #@ "management.{}".format(data.values.domain)
----
-apiVersion: cert-manager.io/v1alpha2
-kind: ClusterIssuer
-metadata:
-  name: letsencrypt-issuer
-  namespace: cert-manager
-spec:
-  acme:
-    email: #@ data.values.acme_email
-    server: #@ data.values.acme_url
-    privateKeySecretRef:
-      name: letsencrypt-issuer-account-key
-    solvers:
-    - dns01:
-        cloudflare:
-          email: #@ data.values.acme_email
-          #! Until CAPI updates, still using legacy DNS option, not this is KEY and not TOKEN.
-          apiKeySecretRef:
-            name: cloudflare-api-key-secret
-            key: api-key
----
-apiVersion: cert-manager.io/v1alpha2
-kind: Certificate
-metadata:
-  name: #@ "management.{}".format(data.values.domain)
-  namespace: tanzu-system-auth
-spec:
-  secretName: #@ "management.{}".format(data.values.domain)
-  issuerRef:
-    name: letsencrypt-issuer
-    kind: ClusterIssuer
-  dnsNames:
-  - #@ "*.management.{}".format(data.values.domain)
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: cloudflare-api-key-secret
-  namespace: cert-manager
-type: Opaque
-stringData:
-  api-key: #@ data.values.cloudflare_key
