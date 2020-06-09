@@ -28,3 +28,7 @@ letsencrypt_secretRef:
 
 knative_secretRef:
 - domain-values
+
+gangway_secretRef:
+- domain-values
+- gangway-values

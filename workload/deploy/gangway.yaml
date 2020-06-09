@@ -1,0 +1,25 @@
+#@ load("@ytt:data", "data")
+
+---
+apiVersion: kappctrl.k14s.io/v1alpha1
+kind: App
+metadata:
+  name: gangway
+  namespace: kapp-controller
+spec:
+  fetch:
+  - git:
+      url: #@ data.values.git_url
+      ref: #@ data.values.git_branch
+      subPath: workload/gangway/manifests
+  template:
+  - ytt:
+      ignoreUnknownComments: true
+      inline:
+        pathsFrom:
+        #@ for secretRef in data.values.gangway_secretRef:
+        - secretRef:
+            name: #@ secretRef
+        #@ end 
+  deploy:
+  - kapp: {}
