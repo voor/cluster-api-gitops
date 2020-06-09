@@ -1,6 +1,11 @@
 #@data/values
 ---
 
+git:
+  url: https://github.com/voor/cluster-api-gitops
+  branch: origin/master
+
 workload_secretRef:
   #! This file contains secrets for configuring workload clusters.
-  - cluster-config-secrets
+  - workload-config-secrets
+  - workload-git-secrets

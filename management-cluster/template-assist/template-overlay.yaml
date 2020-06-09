@@ -75,8 +75,8 @@ spec:
 
   fetch:
   - git:
-      url: https://github.com/voor/cluster-api-gitops
-      ref: origin/master
+      url: #@ data.values.git.url
+      ref: #@ data.values.git.branch
       subPath: management-cluster/deploy/kapp-controller
   template:
   - ytt:
@@ -111,8 +111,8 @@ spec:
 
   fetch:
   - git:
-      url: https://github.com/voor/cluster-api-gitops
-      ref: origin/master
+      url: #@ data.values.git.url
+      ref: #@ data.values.git.branch
       subPath: workload/deploy
   template:
   - ytt:
