@@ -1,0 +1,32 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:yaml", "yaml")
+#@ load("@ytt:data", "data")
+
+#@ def applyToYamlString(left, right):
+#@   leftYaml = yaml.decode(left)
+#@   new = overlay.apply(leftYaml, right)
+#@   return yaml.encode(new)
+#@ end
+
+#@overlay/match by=overlay.subset({"kind": "KubeadmControlPlane"})
+---
+spec:
+  kubeadmConfigSpec:
+    files:
+      #@overlay/match by="path", missing_ok=True
+      -
+        path: /etc/kubernetes/encryption-provider.yaml
+        #@overlay/replace via=applyToYamlString
+        content:
+          #@overlay/match missing_ok=True
+          resources:
+          #@overlay/match by=overlay.all,expects=1
+          - 
+            providers:
+            #@overlay/match by=overlay.all,expects=1
+            - aescbc:
+                keys:
+                #@overlay/match by="name",expects=1
+                - 
+                  name: key1
+                  secret: #@ data.values.etcd.aescbc
