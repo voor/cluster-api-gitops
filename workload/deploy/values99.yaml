@@ -1,7 +1,7 @@
 #@data/values
 ---
 git_url: https://github.com/voor/cluster-api-gitops
-git_branch: origin/master
+git_branch: origin/refactor-management-cluster
 
 contour_secretRef:
 - domain-values
