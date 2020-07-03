@@ -1,0 +1,23 @@
+#@ load("@ytt:data", "data")
+
+#@ if data.values.clusteradminrole:
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kapp-controller-clusteradmin
+  namespace: kapp-controller
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kapp-controller-cluster-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: kapp-controller-clusteradmin
+  namespace: kapp-controller
+#@ end

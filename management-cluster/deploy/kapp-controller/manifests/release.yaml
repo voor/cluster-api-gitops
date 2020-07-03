@@ -43,10 +43,13 @@ metadata:
   annotations:
     kbld.k14s.io/images: |
       - Metas:
-        - Tag: latest
-          Type: resolved
-          URL: voor/kapp-controller
-        URL: index.docker.io/voor/kapp-controller@sha256:da777f12546aec2cd9b2d8a272ae8db54c03f7ee05185f794e60bbb7067c0a90
+        - Path: /Users/pivotal/workspace/ytt-go/src/github.com/k14s/kapp-controller
+          Type: local
+        - Dirty: true
+          RemoteURL: git@github.com:k14s/kapp-controller.git
+          SHA: a3c8bce01771bbddb5fa9a2d7763759ef37ec931
+          Type: git
+        URL: index.docker.io/k14s/kapp-controller@sha256:06998279d3ae57416f14b04425af605c2f59faad7d5fde35eca17e9069bc924c
   name: kapp-controller
   namespace: kapp-controller
 spec:
@@ -61,10 +64,13 @@ spec:
         app: kapp-controller
     spec:
       containers:
-      - env:
+      - args: []
+        command:
+        - /kapp-controller
+        env:
         - name: KAPPCTRL_MEM_TMP_DIR
           value: /etc/kappctrl-mem-tmp
-        image: index.docker.io/voor/kapp-controller@sha256:da777f12546aec2cd9b2d8a272ae8db54c03f7ee05185f794e60bbb7067c0a90
+        image: index.docker.io/k14s/kapp-controller@sha256:06998279d3ae57416f14b04425af605c2f59faad7d5fde35eca17e9069bc924c
         name: kapp-controller
         resources:
           requests:
@@ -101,9 +107,18 @@ metadata:
   name: kapp-controller-cluster-role
 rules:
 - apiGroups:
-  - '*'
+  - ""
   resources:
-  - '*'
+  - serviceaccounts
+  - secrets
+  - configmaps
+  verbs:
+  - get
+- apiGroups:
+  - kappctrl.k14s.io
+  resources:
+  - apps
+  - apps/status
   verbs:
   - '*'
 ---

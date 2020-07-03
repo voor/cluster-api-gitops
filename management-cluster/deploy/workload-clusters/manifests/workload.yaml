@@ -1,14 +1,26 @@
 #@ load("@ytt:data", "data")
 
 ---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: workload-clusters
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: workload-sa
+  namespace: workload-clusters
+---
 apiVersion: kappctrl.k14s.io/v1alpha1
 kind: App
 metadata:
   name: workload-clusters
-  namespace: kapp-controller
+  namespace: workload-clusters
   annotations:
     kapp.k14s.io/disable-wait: "true"
 spec:
+  serviceAccountName: workload-sa
   fetch:
   - git:
       url: #@ data.values.git.url
@@ -25,3 +37,40 @@ spec:
         #@ end 
   deploy:
   - kapp: {}
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: workload-role-binding
+  namespace: workload-clusters
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: workload-role
+subjects:
+- kind: ServiceAccount
+  name: workload-sa
+  namespace: workload-clusters
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  name: workload-role
+  namespace: workload-clusters
+rules:
+- apiGroups:
+  - kappctrl.k14s.io/v1alpha1
+  - cluster.x-k8s.io/v1alpha3
+  - infrastructure.cluster.x-k8s.io/v1alpha3
+  - controlplane.cluster.x-k8s.io/v1alpha3
+  - bootstrap.cluster.x-k8s.io/v1alpha3
+  resources:
+  - '*'
+  verbs:
+  - '*'
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - '*'

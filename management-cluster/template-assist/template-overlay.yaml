@@ -13,13 +13,9 @@ spec:
   networkSpec:
     vpc:
       #@overlay/remove
-      id:
+      cidrBlock:
+    #@overlay/remove
     subnets:
-    #@overlay/match by=overlay.all,expects="1+"
-    -
-      #@overlay/remove
-      id: 
-  #! Set to false to skip creation of bastion host
   bastion:
     #@overlay/match missing_ok=True
     enabled: false
@@ -82,6 +78,10 @@ spec:
   - ytt:
       ignoreUnknownComments: true
       inline:
+        paths:
+          clusteradmin-values.yaml: |
+            #@ load("@ytt:data", "data")
+            clusteradminrole: true
         pathsFrom:
           - secretRef:
               name: workload-clusters-secrets
@@ -121,12 +121,6 @@ spec:
   - kapp: {}
 
 ---
-
-#@overlay/match by=overlay.subset({"kind":"MachineDeployment"})
----
-spec:
-  #@overlay/remove missing_ok=True
-  selector:
 
 #@overlay/match by=overlay.subset({"kind": "Secret", "metadata": { "name": "{}-postcreate".format(data.values.cluster_name) }})
 ---

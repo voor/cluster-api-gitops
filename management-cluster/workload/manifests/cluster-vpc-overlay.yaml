@@ -1,0 +1,34 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.all,expects="0+"
+---
+metadata:
+  namespace: workload-clusters
+
+#@overlay/match by=overlay.subset({"kind":"AWSCluster"}),expects="0+"
+---
+spec:
+  networkSpec:
+    vpc:
+      id: 
+      #@overlay/remove
+      cidrBlock:
+    #@overlay/remove
+    subnets:
+  bastion:
+    #@overlay/match missing_ok=True
+    enabled: false
+
+#@overlay/match by=overlay.subset({"kind":"AWSMachineTemplate"}),expects="0+"
+---
+metadata:
+  #@overlay/replace via=lambda old,new: old+"-"+new
+  name: #@ data.values.ami.id
+spec:
+  template:
+    spec:
+      subnet:
+        filters:
+          - name: 'tag:Purpose'
+            value: Node
