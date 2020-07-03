@@ -5,19 +5,19 @@
 ---
 metadata:
   #@overlay/replace via=lambda old,new: old+"-"+new
-  name: #@ data.values.ami.id
+  name: #@ data.values.aws.ami.id
 spec:
   template:
     spec:
       ami:
-        id: #@ data.values.ami.id
+        id: #@ data.values.aws.ami.id
 
 #@overlay/match by=overlay.subset({"kind":"KubeadmControlPlane"}),expects="0+"
 ---
 spec:
   infrastructureTemplate:
     #@overlay/replace via=lambda old,new: old+"-"+new
-    name: #@ data.values.ami.id
+    name: #@ data.values.aws.ami.id
   kubeadmConfigSpec:
     clusterConfiguration:
       dns:
@@ -26,7 +26,6 @@ spec:
         type: #@ data.values.kubeadmConfigSpec.dns.type
       etcd:
         local:
-          dataDir: #@ data.values.kubeadmConfigSpec.etcd.local.dataDir
           imageRepository: #@ data.values.kubeadmConfigSpec.etcd.local.imageRepository
           imageTag: #@ data.values.kubeadmConfigSpec.etcd.local.imageTag
       kubernetesVersion: #@ data.values.kubeadmConfigSpec.kubernetesVersion
@@ -40,4 +39,4 @@ spec:
     spec:
       infrastructureRef:
         #@overlay/replace via=lambda old,new: old+"-"+new
-        name: #@ data.values.ami.id
+        name: #@ data.values.aws.ami.id

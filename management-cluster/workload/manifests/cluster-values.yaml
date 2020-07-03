@@ -1,18 +1,24 @@
 #@data/values
 ---
-ami:
-  id: "ami-0ed6f6ef757de2508"
+
 kubeadmConfigSpec:
-  apiVersion: kubeadm.k8s.io/v1beta1
+  apiVersion: kubeadm.k8s.io/v1beta2
   kind: ClusterConfiguration
   imageRepository: registry.tkg.vmware.run
-  kubernetesVersion: v1.18.2+vmware.1
+  kubernetesVersion: v1.18.3+vmware.1
   etcd:
     local:
-      dataDir: /var/lib/etcd
       imageRepository: registry.tkg.vmware.run
       imageTag: v3.4.3_vmware.5
   dns:
     type: CoreDNS
     imageRepository: registry.tkg.vmware.run
     imageTag: v1.6.7_vmware.1
+
+aws:
+  region: us-east-1
+  sshKeyName: default
+  vpc:
+    id: "vpc-020230e9f340109ec"
+  ami:
+    id: "ami-0b975c22dfc70e4e8"
