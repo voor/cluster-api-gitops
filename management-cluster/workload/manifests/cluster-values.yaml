@@ -24,10 +24,10 @@ aws:
     id: "ami-0b975c22dfc70e4e8"
 
 auth:
-  client_id:
-  issuer_url:
+  client_id: ""
+  issuer_url: ""
   username_claim: email
   groups_claim: groups
 
 etcd:
-  aescbc:
+  aescbc: ""
