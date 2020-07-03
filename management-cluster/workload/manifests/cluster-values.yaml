@@ -22,3 +22,12 @@ aws:
     id: "vpc-020230e9f340109ec"
   ami:
     id: "ami-0b975c22dfc70e4e8"
+
+auth:
+  oidc-client-id:
+  oidc-issuer-url:
+  oidc-username-claim: email
+  oidc-groups-claim: groups
+
+etcd:
+  aescbc:
