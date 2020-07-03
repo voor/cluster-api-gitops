@@ -8,7 +8,7 @@
 #@   return yaml.encode(new)
 #@ end
 
-#@overlay/match by=overlay.subset({"kind": "KubeadmControlPlane"})
+#@overlay/match by=overlay.subset({"kind": "KubeadmControlPlane"}),expects="0+"
 ---
 spec:
   kubeadmConfigSpec:

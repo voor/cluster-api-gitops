@@ -21,4 +21,18 @@ spec:
   bastion:
     #@overlay/match missing_ok=True
     enabled: false
-    
+  #@overlay/match missing_ok=True
+  controlPlaneLoadBalancer:
+    #@overlay/match missing_ok=True
+    scheme: internal
+
+#@overlay/match by=overlay.subset({"kind":"KubeadmControlPlane"}),expects="0+"
+---
+spec:
+  kubeadmConfigSpec:
+    clusterConfiguration:
+      controllerManager:
+        #@overlay/match missing_ok=True
+        extraArgs:
+          #@overlay/match missing_ok=True
+          configure-cloud-routes: "false"
