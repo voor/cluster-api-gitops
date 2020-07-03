@@ -122,6 +122,12 @@ spec:
 
 ---
 
+#@overlay/match by=overlay.subset({"kind":"MachineDeployment"})
+---
+spec:
+  #@overlay/remove missing_ok=True
+  selector:
+
 #@overlay/match by=overlay.subset({"kind": "Secret", "metadata": { "name": "{}-postcreate".format(data.values.cluster_name) }})
 ---
 #@overlay/replace via=lambda a,b: {"calico.yml": a["calicoYaml"]}
