@@ -1,8 +1,9 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:data", "data")
 
-#@overlay/match by=overlay.all,expects="0+"
+#@overlay/match by=overlay.not_op(overlay.subset({"apiVersion": "kapp.k14s.io/v1alpha1", "kind":"Config"})),expects="0+"
 ---
+#@overlay/match missing_ok=True
 metadata:
   namespace: workload-clusters
 
