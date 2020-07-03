@@ -1,2 +1,1 @@
-workload-secrets.yaml
-cluster-config-secrets.yaml
+*.yaml
