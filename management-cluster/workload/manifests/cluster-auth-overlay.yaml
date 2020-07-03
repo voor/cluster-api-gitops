@@ -8,6 +8,9 @@ spec:
     clusterConfiguration:
       apiServer:
         #@overlay/match missing_ok=True
+        certSANs:
+        - #@ "clusters.{}".format(data.values.domain)
+        #@overlay/match missing_ok=True
         extraArgs:
           #@overlay/match missing_ok=True
           oidc-client-id: #@ data.values.oidc.client_id

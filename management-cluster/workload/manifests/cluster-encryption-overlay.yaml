@@ -2,31 +2,114 @@
 #@ load("@ytt:yaml", "yaml")
 #@ load("@ytt:data", "data")
 
-#@ def applyToYamlString(left, right):
-#@   leftYaml = yaml.decode(left)
-#@   new = overlay.apply(leftYaml, right)
-#@   return yaml.encode(new)
-#@ end
-
 #@overlay/match by=overlay.subset({"kind": "KubeadmControlPlane"}),expects="0+"
 ---
 spec:
   kubeadmConfigSpec:
-    files:
-      #@overlay/match by="path", missing_ok=True
-      -
-        path: /etc/kubernetes/encryption-provider.yaml
-        #@overlay/replace via=applyToYamlString
-        content:
+    clusterConfiguration:
+      apiServer:
+        #@overlay/match missing_ok=True
+        extraArgs:
           #@overlay/match missing_ok=True
+          enable-admission-plugins: AlwaysPullImages,ServiceAccount,EventRateLimit,NamespaceLifecycle
+          #@overlay/match missing_ok=True
+          admission-control-config-file: /etc/kubernetes/admission-control-config.yaml
+          #@overlay/match missing_ok=True
+          audit-log-path: /var/log/kube-apiserver/kube-apiserver.log
+          #@overlay/match missing_ok=True
+          audit-policy-file: /etc/kubernetes/audit-policy.yaml
+          #@overlay/match missing_ok=True
+          audit-log-maxage: "30"
+          #@overlay/match missing_ok=True
+          audit-log-maxbackup: "10"
+          #@overlay/match missing_ok=True
+          audit-log-maxsize: "100"
+          #@overlay/match missing_ok=True
+          encryption-provider-config: /etc/kubernetes/encryption-provider.yaml
+        #@overlay/match missing_ok=True
+        extraVolumes:
+        - name: audit-policy
+          hostPath: /etc/kubernetes/audit-policy.yaml
+          mountPath: /etc/kubernetes/audit-policy.yaml
+        - name: audit-logs
+          hostPath: /var/log/kube-apiserver
+          mountPath: /var/log/kube-apiserver
+        - name: encryption-provider
+          hostPath: /etc/kubernetes/encryption-provider.yaml
+          mountPath: /etc/kubernetes/encryption-provider.yaml
+        - name: admission-control-config
+          hostPath: /etc/kubernetes/admission-control-config.yaml
+          mountPath: /etc/kubernetes/admission-control-config.yaml
+        - name: event-rate-limit-config
+          hostPath: /etc/kubernetes/event-rate-limit-config.yaml
+          mountPath: /etc/kubernetes/event-rate-limit-config.yaml
+    #@overlay/match missing_ok=True
+    files:
+      - path: /etc/kubernetes/encryption-provider.yaml
+        owner: "root:root"
+        permissions: "0600"
+        #@yaml/text-templated-strings
+        content: |
+          apiVersion: apiserver.config.k8s.io/v1
+          kind: EncryptionConfiguration
           resources:
-          #@overlay/match by=overlay.all,expects=1
-          - 
-            providers:
-            #@overlay/match by=overlay.all,expects=1
-            - aescbc:
-                keys:
-                #@overlay/match by="name",expects=1
-                - 
-                  name: key1
-                  secret: #@ data.values.etcd.aescbc
+            - resources:
+              - secrets
+              providers:
+              - aescbc:
+                  keys:
+                  - name: key1
+                    secret: (@= data.values.etcd.aescbc @)
+              - identity: {}
+      - path: /etc/kubernetes/admission-control-config.yaml
+        owner: "root:root"
+        permissions: "0600"
+        content: |
+          apiVersion: apiserver.config.k8s.io/v1
+          kind: AdmissionConfiguration
+          plugins:
+          - name: EventRateLimit
+            path: /etc/kubernetes/event-rate-limit-config.yaml
+      - path: /etc/kubernetes/event-rate-limit-config.yaml
+        owner: "root:root"
+        permissions: "0600"
+        content: |
+          apiVersion: eventratelimit.admission.k8s.io/v1alpha1
+          kind: Configuration
+          limits:
+          - type: Namespace
+            qps: 50
+            burst: 100
+            cacheSize: 2000
+          - type: User
+            qps: 10
+            burst: 50
+      - path: /etc/kubernetes/audit-policy.yaml
+        owner: "root:root"
+        permissions: "0600"
+        encoding: "gzip+base64"
+        # See "audit-config.yaml" this is just that file `gzip < audit-config.yaml | base64`
+        content: |
+          H4sIAH60Xl4AA+1Y32/jNgx+v7+CcIENKOIYBQbskD0dbkP3oz0Uvbu9DHuQZcbWIkueJCdN//qj
+          bMWxYydNtxb3cg9tHIkmP5KfSCoAF/CpQFhqKfVGqBxYnQkHlZaCb0FYSJnFDLQCVxhEsLo2HC0s
+          jS6hrqwzyMrFGyA9ADEJIazqFI1CR1KZ5hbwgZWVxAUUzlV2kSSGbea5cEWd1hYN18qhcnOuy2T/
+          arLB1AqHScmsQ5MEqQRVEvTZpIHa/o9bwPMtK+UAzPX7X8DgEg0qjsGtPZIWxaHp3mMqddpBkHXz
+          mXOkP+EhLUVeG4wLlBWauS0ubn58+0Nn//MfcCuUoBhtQS/hd3pdnAZRBnG9/KcVJqO6zuJKMrfU
+          poyFWhpCY2ruyPAA3kpXNpFijfFVEwbwOOiPVeJPNFZotWiTO1+9tXOhk/VVio5dkchKqGwBdw0u
+          +qpL4T46lqP1ifWeRPf4b43W3SNHspBFtG5quRM45JBppS1sKO5QMlUzKYlNGWVQLAXxiVkoRF7E
+          ay3rEoGpDOjd2Ai7mgWVVkNmdOWzWM4DDolrlAv4oBU2KwCeQXYBf0V2S1EoFz53cWX0wzb6O4is
+          0aSNyIY5XnTLBgOXF2HBG8iNrqsFRBEB4Npgt9WXJ1WoskoL5Ww0g4ggrClXg+fEOuZqG6xNIVes
+          RFuxoJDCRgZs7HluKJDk1diBHN3LwG+pW7Jqb6Qv88FDm0YVS2QZfahcqIcT3nV58QmRHjdBkpgz
+          qiphKfDBbV/NTaWzNivNw9Mp8aCvve4+o1olr5eL/wJyYKjP/F6i6NjRETZHBC0vMKMTPLEfKMw4
+          17VyQbzd2tG+Z2cqLuRMXWXMYRehIdl7Kl/6OJ7ByOAL1UXvKZrXzG3ndpPg7tsuy8PFpVBMisdd
+          1C7gZ62+d1QYc/j17h0skcqXL68lOiO4faooPpcihymU1IrOC8MOUNtYohF6KuEWSQXLYq2oEXy+
+          vzmBXml1H6x5wb7BpEAmXfF42V9bt92tv2Q3LCfHLkdIWE1YqOhwIme271NOA0fjmFDeerxz1gOF
+          irniiViPasbAzP4QTDtG7TUhMl6O40bGiNMdzOMg/t/haax0pLshw1GlMxomdO550DwHwgJzcEtT
+          Ax1u1uIYYtrtHcPVQ/VmEswxwzt0vkg24wJtQrsHnKaLMJE2NRQYTR2H4wVnClIEyUyOMxpMdzEm
+          65VW1o+02tCsWiH31GjrV1/r0NEwEB3rdn4S2LcPP5CkEss4o6GSO216+yeq7fSro2oVSu0sql5u
+          vhn0oslUnIjEuS306wC/gMynCLmvgdxR5QgEeiZDusLd6iM951HkjLzvNPdq9Th6h1507n1EbtDZ
+          GbxvprxbmvJmzRH4pFdIFWgtcNN669X7mmdR0V2LBnv4DlJqQnRf8Ye4N4k3ZbspoK65Vg1rwPx5
+          ReA5+bStMz6Vk0Nrp6lXcikYoRUd0+p8JEwbiS5u1zSSGqxsm+s+G34CuxKTN5Fhjic7KH0+cfE4
+          Go39BstKYX2XM5j7G2LfyWgsXQl8cD6p5MspqTO1UcTHq1PxnhbTRjw+KaUtnUKabsabaRO90bJv
+          2HSZ9C32uI/7MIz3pqaW/r5Ct9GG7sb5UZH2Kj9eNynj8/NcD4P4KSsWnaP940gt9QUa5A7nL1yy
+          WrqWqk3tWim9UfDu7rfpSnUfCt03nn7j6VflKbVj0JQ2c2z0Pegwhz9YtbLjH62+AD8/IGruFAAA
