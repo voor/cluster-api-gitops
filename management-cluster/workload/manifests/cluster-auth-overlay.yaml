@@ -9,10 +9,10 @@ spec:
       apiServer:
         extraArgs:
           #@overlay/match missing_ok=True
-          oidc-client-id: #@ data.values.auth.oidc-client-id
+          oidc-client-id: #@ data.values.auth.client_id
           #@overlay/match missing_ok=True
-          oidc-issuer-url: #@ data.values.auth.oidc-issuer-url
+          oidc-issuer-url: #@ data.values.auth.issuer_url
           #@overlay/match missing_ok=True
-          oidc-username-claim: #@ data.values.auth.oidc-username-claim
+          oidc-username-claim: #@ data.values.auth.username_claim
           #@overlay/match missing_ok=True
-          oidc-groups-claim: #@ data.values.auth.oidc-groups-claim
+          oidc-groups-claim: #@ data.values.auth.groups_claim

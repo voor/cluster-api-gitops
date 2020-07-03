@@ -24,10 +24,10 @@ aws:
     id: "ami-0b975c22dfc70e4e8"
 
 auth:
-  oidc-client-id:
-  oidc-issuer-url:
-  oidc-username-claim: email
-  oidc-groups-claim: groups
+  client_id:
+  issuer_url:
+  username_claim: email
+  groups_claim: groups
 
 etcd:
   aescbc:
