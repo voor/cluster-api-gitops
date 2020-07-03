@@ -7,12 +7,13 @@ spec:
   kubeadmConfigSpec:
     clusterConfiguration:
       apiServer:
+        #@overlay/match missing_ok=True
         extraArgs:
           #@overlay/match missing_ok=True
-          oidc-client-id: #@ data.values.auth.client_id
+          oidc-client-id: #@ data.values.oidc.client_id
           #@overlay/match missing_ok=True
-          oidc-issuer-url: #@ data.values.auth.issuer_url
+          oidc-issuer-url: #@ data.values.oidc.issuer_url
           #@overlay/match missing_ok=True
-          oidc-username-claim: #@ data.values.auth.username_claim
+          oidc-username-claim: #@ data.values.oidc.username_claim
           #@overlay/match missing_ok=True
-          oidc-groups-claim: #@ data.values.auth.groups_claim
+          oidc-groups-claim: #@ data.values.oidc.groups_claim
