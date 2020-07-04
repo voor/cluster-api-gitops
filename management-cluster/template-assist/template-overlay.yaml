@@ -7,19 +7,6 @@
 metadata:
   namespace: workload-clusters
 
-#@overlay/match by=overlay.subset({"kind":"AWSCluster"})
----
-spec:
-  networkSpec:
-    vpc:
-      #@overlay/remove
-      cidrBlock:
-    #@overlay/remove
-    subnets:
-  bastion:
-    #@overlay/match missing_ok=True
-    enabled: false
-
 ---
 apiVersion: kappctrl.k14s.io/v1alpha1
 kind: App

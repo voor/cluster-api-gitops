@@ -110,10 +110,17 @@ metadata:
 spec:
   bastion:
     enabled: false
-  controlPlaneLoadBalancer:
-    scheme: internal
   networkSpec:
+    subnets:
+    - availabilityZone: us-east-1a
+      cidrBlock: ""
+      id: subnet-0a2301984162c2118
+      isPublic: true
+    - availabilityZone: us-east-1a
+      cidrBlock: ""
+      id: subnet-050ae947136b8c30f
     vpc:
+      cidrBlock: 192.168.0.0/16
       id: vpc-08fcad5279a640501
   region: us-east-1
   sshKeyName: default
