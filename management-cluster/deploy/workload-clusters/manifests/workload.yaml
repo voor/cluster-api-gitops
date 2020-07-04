@@ -75,3 +75,9 @@ rules:
   - configmaps
   verbs:
   - '*'
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get

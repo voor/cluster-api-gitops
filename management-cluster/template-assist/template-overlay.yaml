@@ -109,6 +109,17 @@ spec:
 
 ---
 
+#@overlay/match by=overlay.subset({"kind":"KubeadmControlPlane"})
+---
+spec:
+  kubeadmConfigSpec:
+    clusterConfiguration:
+      #@overlay/match missing_ok=True
+      apiServer:
+        #@overlay/match missing_ok=True
+        certSANs:
+        - #@ "{}.cluster.tanzu.world".format(data.values.cluster_name)
+
 #@overlay/match by=overlay.subset({"kind":"MachineDeployment"})
 ---
 spec:
