@@ -15,9 +15,9 @@ spec:
   networkSpec:
     vpc:
       id: #@ data.values.aws.vpc.id
-      #@overlay/remove
+      #@overlay/remove missing_ok=True
       cidrBlock:
-    #@overlay/remove
+    #@overlay/remove missing_ok=True
     subnets:
   bastion:
     #@overlay/match missing_ok=True
