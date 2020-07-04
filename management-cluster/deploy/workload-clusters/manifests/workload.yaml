@@ -59,11 +59,11 @@ metadata:
   namespace: workload-clusters
 rules:
 - apiGroups:
-  - kappctrl.k14s.io/v1alpha1
-  - cluster.x-k8s.io/v1alpha3
-  - infrastructure.cluster.x-k8s.io/v1alpha3
-  - controlplane.cluster.x-k8s.io/v1alpha3
-  - bootstrap.cluster.x-k8s.io/v1alpha3
+  - kappctrl.k14s.io
+  - cluster.x-k8s.io
+  - infrastructure.cluster.x-k8s.io
+  - controlplane.cluster.x-k8s.io
+  - bootstrap.cluster.x-k8s.io
   resources:
   - '*'
   verbs:
