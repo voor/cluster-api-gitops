@@ -112,8 +112,12 @@ spec:
 #@overlay/match by=overlay.subset({"kind":"MachineDeployment"})
 ---
 spec:
-  #@overlay/remove missing_ok=True
+  #@overlay/match missing_ok=True
   selector:
+    #@overlay/match missing_ok=True
+    #@overlay/replace
+    matchLabels:
+      node-pool: #@ "{}-worker-pool".format(data.values.cluster_name)
 
 #@overlay/match by=overlay.subset({"kind": "Secret", "metadata": { "name": "{}-postcreate".format(data.values.cluster_name) }})
 ---

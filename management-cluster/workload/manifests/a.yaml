@@ -234,6 +234,9 @@ metadata:
 spec:
   clusterName: a
   replicas: 5
+  selector:
+    matchLabels:
+      node-pool: a-worker-pool
   template:
     metadata:
       labels:
