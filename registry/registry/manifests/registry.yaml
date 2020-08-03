@@ -1,0 +1,147 @@
+#@ load("@ytt:yaml", "yaml")
+#@ load("@ytt:json", "json")
+#@ load("@ytt:base64", "base64")
+#@ load("@ytt:data", "data")
+#@ load("@ytt:assert", "assert")
+
+#@ def labels():
+app: #@ data.values.registry.name
+purpose: platform
+readonly: "true"
+region: #@ data.values.aws.region
+#@ end
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: #@ data.values.registry.namespace
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: #@ "{}-certs".format(data.values.registry.name)
+  namespace: #@ data.values.registry.namespace
+  labels: #@ labels()
+type: kubernetes.io/tls
+data:
+  tls.crt: #@ base64.encode(data.values.registry.secrets.crt)
+  tls.key: #@ base64.encode(data.values.registry.secrets.key)
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: #@ "{}-config".format(data.values.registry.name)
+  namespace: #@ data.values.registry.namespace
+  labels: #@ labels()
+data:
+  #@yaml/text-templated-strings
+  config.yml: |
+    http:
+      addr: :8443
+      headers:
+        X-Content-Type-Options:
+        - nosniff
+      tls:
+        certificate: /certs/tls.crt
+        key: /certs/tls.key
+    log:
+      fields:
+        service: registry
+    storage:
+      cache:
+        blobdescriptor: inmemory
+      s3:
+        accesskey: (@= data.values.registry.s3.accesskey @)
+        secretkey: (@= data.values.registry.s3.secretkey @)
+        bucket: (@= data.values.registry.s3.bucket @)
+        region: (@= data.values.aws.region @)
+        rootdirectory: (@= data.values.registry.s3.prefix @)
+      maintenance:
+        readonly:
+          enabled: true
+    version: 0.1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: #@ (data.values.registry.name)
+  namespace: #@ data.values.registry.namespace
+  labels: #@ labels()
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 443
+      protocol: TCP
+      name: https
+      targetPort: https
+  selector:
+    app: #@ (data.values.registry.name)
+    release: #@ (data.values.registry.name)
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: #@ data.values.registry.name
+  namespace: #@ data.values.registry.namespace
+  labels: #@ labels()
+spec:
+  selector:
+    matchLabels:
+      app: #@ data.values.registry.name
+      release: #@ data.values.registry.name
+  replicas: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: #@ data.values.registry.name
+        release: #@ data.values.registry.name
+    spec:
+      serviceAccountName: default
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+      containers:
+        - name: #@ data.values.registry.name
+          image: #@ data.values.registry.image
+          imagePullPolicy: IfNotPresent
+          command:
+          - registry
+          - serve
+          - /etc/docker/registry/config.yml
+          ports:
+          - containerPort: 8443
+            name: https
+          livenessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /
+              port: 8443
+          readinessProbe:
+            httpGet:
+              scheme: HTTPS
+              path: /
+              port: 8443
+          resources:
+            {}
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/registry/
+            - name: #@ "{}-config".format(data.values.registry.name)
+              mountPath: "/etc/docker/registry"
+            - name: certificate
+              mountPath: "/certs/"
+      volumes:
+        - name: data
+          emptyDir: {}
+        - name: #@ "{}-config".format(data.values.registry.name)
+          configMap:
+            name: #@ "{}-config".format(data.values.registry.name)
+        - name: certificate
+          secret:
+            secretName: #@ "{}-certs".format(data.values.registry.name)

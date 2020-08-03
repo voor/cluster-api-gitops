@@ -18,12 +18,12 @@ kubeadmConfigSpec:
     imageTag: v1.6.7_vmware.1
 
 aws:
-  region: us-east-1
+  region: us-gov-east-1
   sshKeyName: default
   vpc:
-    id: "vpc-020230e9f340109ec"
+    id: "vpc-095b089627aa8020b"
   ami:
-    id: "ami-0b975c22dfc70e4e8"
+    id: "ami-0dd920d9e6a0e9b0d"
 
 oidc:
   client_id: ""
