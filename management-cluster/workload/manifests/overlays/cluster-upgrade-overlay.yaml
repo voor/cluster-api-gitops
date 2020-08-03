@@ -9,7 +9,9 @@ metadata:
 spec:
   template:
     spec:
+      #@overlay/match missing_ok=True
       ami:
+        #@overlay/match missing_ok=True
         id: #@ data.values.aws.ami.id
 
 #@overlay/match by=overlay.subset({"kind":"KubeadmControlPlane"}),expects="0+"
@@ -38,5 +40,6 @@ spec:
   template:
     spec:
       infrastructureRef:
+        #@overlay/match missing_ok=True
         #@overlay/replace via=lambda old,new: old+"-"+new
         name: #@ data.values.aws.ami.id

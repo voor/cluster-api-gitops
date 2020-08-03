@@ -12,4 +12,4 @@ CLUSTER_NAME=$1
 
 shift
 
-tkg create cluster $CLUSTER_NAME $@ --dry-run | ytt --ignore-unknown-comments --data-value cluster_name=${CLUSTER_NAME} -f template-assist -f- > workload/manifests/${CLUSTER_NAME}.yaml
+tkg create cluster $CLUSTER_NAME $@ --dry-run 2>/dev/null | ytt --ignore-unknown-comments --data-value cluster_name=${CLUSTER_NAME} -f template-assist -f- > workload/manifests/${CLUSTER_NAME}.yaml
