@@ -93,7 +93,7 @@ spec:
     matchLabels:
       app: #@ data.values.registry.name
       release: #@ data.values.registry.name
-  replicas: 1
+  replicas: #@ data.values.registry.replicas
   minReadySeconds: 5
   template:
     metadata:

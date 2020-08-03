@@ -1,0 +1,21 @@
+#@data/values
+---
+aws:
+  region: "us-east-1"
+registry:
+  image: "docker.io/bitnami/harbor-registry:2-debian-10"
+  namespace: registry
+  name: registry
+  replicas: 1
+  s3:
+    accesskey: ""
+    secretkey: ""
+    bucket: "registry-05d29c2606"
+    prefix: "images"
+  secrets:
+    crt: |
+      -----BEGIN CERTIFICATE-----
+      -----END CERTIFICATE-----
+    key: |
+      -----BEGIN RSA PRIVATE KEY-----
+      -----END RSA PRIVATE KEY-----
