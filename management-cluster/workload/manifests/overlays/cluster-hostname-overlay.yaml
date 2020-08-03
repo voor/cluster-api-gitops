@@ -1,3 +1,5 @@
+#@ load("@ytt:overlay", "overlay")
+
 #@overlay/match by=overlay.subset({"kind":"KubeadmControlPlane"}),expects="0+"
 ---
 spec:
