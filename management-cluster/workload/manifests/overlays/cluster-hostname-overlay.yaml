@@ -1,0 +1,30 @@
+#@overlay/match by=overlay.subset({"kind":"KubeadmControlPlane"}),expects="0+"
+---
+spec:
+  kubeadmConfigSpec:
+    initConfiguration:
+      nodeRegistration:
+        name: '{{ v1.local_hostname }}.${AWS_DEFAULT_REGION}.compute.internal'
+    clusterConfiguration:
+      controllerManager:
+        extraArgs:
+          #@overlay/match missing_ok=True
+          configure-cloud-routes: "false"
+    joinConfiguration:
+      nodeRegistration:
+        name: '{{ v1.local_hostname }}.${AWS_DEFAULT_REGION}.compute.internal'
+    #@overlay/match missing_ok=True
+    preKubeadmCommands:
+    - "hostnamectl set-hostname $(hostname -s).${AWS_DEFAULT_REGION}.compute.internal"
+
+#@overlay/match by=overlay.subset({"kind":"KubeadmConfigTemplate"}),expects="0+"
+---
+spec:
+  template:
+    spec:
+      joinConfiguration:
+        nodeRegistration:
+          name: '{{ v1.local_hostname }}.${AWS_DEFAULT_REGION}.compute.internal'
+      #@overlay/match missing_ok=True
+      preKubeadmCommands:
+      - "hostnamectl set-hostname $(hostname -s).${AWS_DEFAULT_REGION}.compute.internal"

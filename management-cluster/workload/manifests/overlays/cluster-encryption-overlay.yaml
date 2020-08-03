@@ -113,3 +113,17 @@ spec:
           Go39BstKYX2XM5j7G2LfyWgsXQl8cD6p5MspqTO1UcTHq1PxnhbTRjw+KaUtnUKabsabaRO90bJv
           2HSZ9C32uI/7MIz3pqaW/r5Ct9GG7sb5UZH2Kj9eNynj8/NcD4P4KSsWnaP940gt9QUa5A7nL1yy
           WrqWqk3tWim9UfDu7rfpSnUfCt03nn7j6VflKbVj0JQ2c2z0Pegwhz9YtbLjH62+AD8/IGruFAAA
+
+#@overlay/match by=overlay.subset({"kind":"AWSMachineTemplate"}),expects="0+"
+---
+spec:
+  template:
+    spec:
+      #@overlay/match missing_ok=True
+      rootVolume:
+        #@overlay/match missing_ok=True
+        encrypted: true
+      #@overlay/match missing_ok=True
+      cloudInit:
+        #@overlay/match missing_ok=True
+        insecureSkipSecretsManager: true
