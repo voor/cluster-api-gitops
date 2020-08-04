@@ -81,3 +81,5 @@ rules:
   - pods
   verbs:
   - get
+  - list
+  - watch
