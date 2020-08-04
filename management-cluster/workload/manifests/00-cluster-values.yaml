@@ -21,7 +21,7 @@ aws:
   region: us-gov-east-1
   sshKeyName: default
   vpc:
-    id: "vpc-095b089627aa8020b"
+    id: "vpc-077617e1cf2cfb9ac"
   ami:
     id: "ami-0dd920d9e6a0e9b0d"
 
