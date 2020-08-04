@@ -6,7 +6,7 @@ spec:
   kubeadmConfigSpec:
     initConfiguration:
       nodeRegistration:
-        name: '{{ v1.local_hostname }}.${AWS_DEFAULT_REGION}.compute.internal'
+        name: '{{ v1.local_hostname }}.{{ v1.region }}.compute.internal'
     clusterConfiguration:
       controllerManager:
         extraArgs:
@@ -14,10 +14,10 @@ spec:
           configure-cloud-routes: "false"
     joinConfiguration:
       nodeRegistration:
-        name: '{{ v1.local_hostname }}.${AWS_DEFAULT_REGION}.compute.internal'
+        name: '{{ v1.local_hostname }}.{{ v1.region }}.compute.internal'
     #@overlay/match missing_ok=True
     preKubeadmCommands:
-    - "hostnamectl set-hostname $(hostname -s).${AWS_DEFAULT_REGION}.compute.internal"
+    - "hostnamectl set-hostname {{ v1.local_hostname }}.{{ v1.region }}.compute.internal"
 
 #@overlay/match by=overlay.subset({"kind":"KubeadmConfigTemplate"}),expects="0+"
 ---
@@ -26,7 +26,7 @@ spec:
     spec:
       joinConfiguration:
         nodeRegistration:
-          name: '{{ v1.local_hostname }}.${AWS_DEFAULT_REGION}.compute.internal'
+          name: '{{ v1.local_hostname }}.{{ v1.region }}.compute.internal'
       #@overlay/match missing_ok=True
       preKubeadmCommands:
-      - "hostnamectl set-hostname $(hostname -s).${AWS_DEFAULT_REGION}.compute.internal"
+      - "hostnamectl set-hostname {{ v1.local_hostname }}.{{ v1.region }}.compute.internal"
