@@ -14,13 +14,8 @@ spec:
   sshKeyName: #@ data.values.aws.sshKeyName
   networkSpec:
     vpc:
-      id: #@ data.values.aws.vpc.id
       #@overlay/match missing_ok=True
-      #@overlay/remove
-      cidrBlock:
-    #@overlay/match missing_ok=True
-    #@overlay/remove
-    subnets:
+      id: #@ data.values.aws.vpc.id
   bastion:
     #@overlay/match missing_ok=True
     enabled: false
