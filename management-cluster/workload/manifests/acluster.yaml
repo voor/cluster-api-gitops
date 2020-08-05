@@ -49,6 +49,7 @@ spec:
         paths:
           clusteradmin-values.yaml: |
             #@ load("@ytt:data", "data")
+            ---
             clusteradminrole: true
         pathsFrom:
         - secretRef:
