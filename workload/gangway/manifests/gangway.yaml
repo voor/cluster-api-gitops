@@ -47,6 +47,8 @@ metadata:
 data:
   #@yaml/text-templated-strings
   gangway.yaml: |
+    host: 0.0.0.0
+    port: 8080
     # The cluster name. Used in UI and kubectl config instructions.
     # Env var: GANGWAY_CLUSTER_NAME
     clusterName: "(@= data.values.management.cluster_name @)"
