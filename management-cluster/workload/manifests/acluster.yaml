@@ -41,7 +41,7 @@ spec:
   - git:
       url: https://github.com/voor/cluster-api-gitops
       ref: origin/refactor-management-cluster
-      subPath: management-cluster/deploy/kapp-controller
+      subPath: management-cluster/deploy/kapp-controller/manifests
   template:
   - ytt:
       ignoreUnknownComments: true

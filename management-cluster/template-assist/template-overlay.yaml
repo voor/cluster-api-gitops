@@ -60,7 +60,7 @@ spec:
   - git:
       url: #@ data.values.git.url
       ref: #@ data.values.git.branch
-      subPath: management-cluster/deploy/kapp-controller
+      subPath: management-cluster/deploy/kapp-controller/manifests
   template:
   - ytt:
       ignoreUnknownComments: true
