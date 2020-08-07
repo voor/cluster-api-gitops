@@ -68,6 +68,7 @@ spec:
         paths:
           clusteradmin-values.yaml: |
             #@data/values
+            ---
             clusteradminrole: true
         pathsFrom:
           - secretRef:
