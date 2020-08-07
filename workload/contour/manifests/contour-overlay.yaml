@@ -9,7 +9,7 @@ metadata:
     #@overlay/match missing_ok=True
     service.beta.kubernetes.io/aws-load-balancer-type: nlb
     #@overlay/match missing_ok=True
-    external-dns.alpha.kubernetes.io/hostname: #@ "*.apps.{},*.default.{},*.sso.{},*.monitoring.{}".format(data.values.domain, data.values.domain, data.values.domain, data.values.domain)
+    external-dns.alpha.kubernetes.io/hostname: #@ "*.apps.{},*.default.{},*.sso.{},*.monitoring.{},*.management.{}".format(data.values.domain, data.values.domain, data.values.domain, data.values.domain, data.values.domain)
 
 #@overlay/match by=overlay.subset({"kind":"CustomResourceDefinition"}),expects="4+"
 ---

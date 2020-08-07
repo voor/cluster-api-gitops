@@ -9,23 +9,35 @@ metadata:
 kind: Service
 apiVersion: v1
 metadata:
-  name: gangwaysvc
+  name: gangway
   namespace: management
   labels:
-    app: gangway
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: #@ "*.management.{}".format(data.values.domain)
-    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: ssl
-    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    app.kubernetes.io/name: gangway
+    app.kubernetes.io/instance: gangway
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
-    - name: "https"
-      protocol: TCP
-      port: 443
-      targetPort: "https"
+    - name: http
+      port: 8080
+      targetPort: http
   selector:
-    app: gangway
+    app.kubernetes.io/name: gangway
+    app.kubernetes.io/instance: gangway
+---
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: gangway
+  namespace: management
+spec:
+  virtualhost:
+    fqdn: #@ "sso.management.{}".format(data.values.domain)
+    tls:
+      secretName: #@ "management/management.{}".format(data.values.domain)
+  routes:
+    - services:
+        - name: gangway
+          port: 8080
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -35,15 +47,6 @@ metadata:
 data:
   #@yaml/text-templated-strings
   gangway.yaml: |
-    # The public cert file (including root and intermediates) to use when serving
-    # TLS.
-    # Env var: GANGWAY_CERT_FILE
-    certFile: /tls/tls.crt
-
-    # The private key file when serving TLS.
-    # Env var: GANGWAY_KEY_FILE
-    keyFile: /tls/tls.key
-
     # The cluster name. Used in UI and kubectl config instructions.
     # Env var: GANGWAY_CLUSTER_NAME
     clusterName: "(@= data.values.management.cluster_name @)"
@@ -112,16 +115,19 @@ metadata:
   name: gangway
   namespace: management
   labels:
-    app: gangway
+    app.kubernetes.io/name: gangway
+    app.kubernetes.io/instance: gangway
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: gangway
+      app.kubernetes.io/name: gangway
+      app.kubernetes.io/instance: gangway
   template:
     metadata:
       labels:
-        app: gangway
+        app.kubernetes.io/name: gangway
+        app.kubernetes.io/instance: gangway
         revision: "1"
     spec:
       containers:
@@ -130,8 +136,6 @@ spec:
           imagePullPolicy: IfNotPresent
           command: ["gangway", "-config", "/gangway/gangway.yaml"]
           env:
-            - name: GANGWAY_SERVE_TLS
-              value: "true"
             - name: GANGWAY_SESSION_SECURITY_KEY
               valueFrom:
                 secretKeyRef:
@@ -148,9 +152,8 @@ spec:
                   name: gangway
                   key: clientSecret
           ports:
-            - name: https
+            - name: http
               containerPort: 8080
-              protocol: TCP
           resources:
             requests:
               cpu: "100m"
@@ -161,13 +164,10 @@ spec:
           volumeMounts:
             - name: gangway
               mountPath: /gangway/
-            - name: tls
-              mountPath: /tls/
           livenessProbe:
             httpGet:
               path: /
               port: 8080
-              scheme: HTTPS
             initialDelaySeconds: 20
             timeoutSeconds: 1
             periodSeconds: 60
@@ -176,14 +176,14 @@ spec:
             httpGet:
               path: /
               port: 8080
-              scheme: HTTPS
             timeoutSeconds: 1
             periodSeconds: 10
             failureThreshold: 3
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
       volumes:
         - name: gangway
           configMap:
             name: gangway
-        - name: tls
-          secret:
-            secretName: #@ "management.{}".format(data.values.domain)
