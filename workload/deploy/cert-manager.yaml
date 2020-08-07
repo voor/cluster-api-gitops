@@ -9,6 +9,7 @@ metadata:
   annotations:
     kapp.k14s.io/change-group: "gitops.tanzu.vmware.com/cert-manager"
 spec:
+  serviceAccountName: kapp-controller-clusteradmin
   fetch:
   - git:
       url: #@ data.values.git_url
