@@ -4,13 +4,13 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: tanzu-system-auth
+  name: management
 ---
 kind: Service
 apiVersion: v1
 metadata:
   name: gangwaysvc
-  namespace: tanzu-system-auth
+  namespace: management
   labels:
     app: gangway
   annotations:
@@ -30,7 +30,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: gangway
-  namespace: tanzu-system-auth
+  namespace: management
 data:
   #@yaml/text-templated-strings
   gangway.yaml: |
@@ -99,7 +99,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: gangway
-  namespace: tanzu-system-auth
+  namespace: management
 stringData:
   clientSecret: #@ data.values.auth.clientSecret
   clientID: #@ data.values.auth.clientID
@@ -109,7 +109,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gangway
-  namespace: tanzu-system-auth
+  namespace: management
   labels:
     app: gangway
 spec:
