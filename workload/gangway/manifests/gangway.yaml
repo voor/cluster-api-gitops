@@ -168,7 +168,7 @@ spec:
               mountPath: /gangway/
           livenessProbe:
             httpGet:
-              path: /login
+              path: /
               port: 8080
             initialDelaySeconds: 20
             timeoutSeconds: 1
@@ -176,7 +176,7 @@ spec:
             failureThreshold: 3
           readinessProbe:
             httpGet:
-              path: /login
+              path: /
               port: 8080
             timeoutSeconds: 1
             periodSeconds: 10
