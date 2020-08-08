@@ -93,7 +93,7 @@ data:
 
     # The path gangway uses to create urls (defaults to "")
     # Env var: GANGWAY_HTTP_PATH
-    httpPath: "(@= data.values.management.httpPath @)"
+    # httpPath: "(@= data.values.management.httpPath @)"
 
     # The path to find custom HTML templates
     # Env var: GANGWAY_CUSTOM_HTTP_TEMPLATES_DIR
@@ -132,7 +132,7 @@ spec:
     spec:
       containers:
         - name: gangway
-          image: vmware-docker-tkg.bintray.io/gangway:v3.2.0_vmware.1
+          image: registry.tkg.vmware.run/gangway:v3.2.0_vmware.1
           imagePullPolicy: IfNotPresent
           command: ["gangway", "-config", "/gangway/gangway.yaml"]
           env:
@@ -172,7 +172,7 @@ spec:
               mountPath: /gangway/
           livenessProbe:
             httpGet:
-              path: /
+              path: /login
               port: 8080
             initialDelaySeconds: 20
             timeoutSeconds: 1
@@ -180,7 +180,7 @@ spec:
             failureThreshold: 3
           readinessProbe:
             httpGet:
-              path: /
+              path: /login
               port: 8080
             timeoutSeconds: 1
             periodSeconds: 10
