@@ -47,8 +47,6 @@ metadata:
 data:
   #@yaml/text-templated-strings
   gangway.yaml: |
-    host: 0.0.0.0
-    port: 8080
     # The cluster name. Used in UI and kubectl config instructions.
     # Env var: GANGWAY_CLUSTER_NAME
     clusterName: "(@= data.values.management.cluster_name @)"
@@ -138,6 +136,12 @@ spec:
           imagePullPolicy: IfNotPresent
           command: ["gangway", "-config", "/gangway/gangway.yaml"]
           env:
+            - name: GANGWAY_PORT
+              value: "8080"
+            - name: GANGWAY_HOST
+              value: "0.0.0.0"
+            - name: GANGWAY_SERVE_TLS
+              value: "false"
             - name: GANGWAY_SESSION_SECURITY_KEY
               valueFrom:
                 secretKeyRef:
