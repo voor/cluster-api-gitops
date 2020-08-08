@@ -91,10 +91,6 @@ data:
     # Env var: GANGWAY_CLUSTER_CA_PATH
     # cluster_ca_path: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
 
-    # The path gangway uses to create urls (defaults to "")
-    # Env var: GANGWAY_HTTP_PATH
-    # httpPath: "(@= data.values.management.httpPath @)"
-
     # The path to find custom HTML templates
     # Env var: GANGWAY_CUSTOM_HTTP_TEMPLATES_DIR
     #customHTMLTemplatesDir: /custom-templates

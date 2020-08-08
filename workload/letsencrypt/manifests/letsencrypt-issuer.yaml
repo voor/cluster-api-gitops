@@ -59,6 +59,19 @@ spec:
   dnsNames:
   - #@ "*.management.{}".format(data.values.domain)
 ---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: #@ "sso.{}".format(data.values.domain)
+  namespace: sso
+spec:
+  secretName: #@ "sso.{}".format(data.values.domain)
+  issuerRef:
+    name: letsencrypt-issuer
+    kind: ClusterIssuer
+  dnsNames:
+  - #@ "*.sso.{}".format(data.values.domain)
+---
 apiVersion: v1
 kind: Secret
 metadata:
