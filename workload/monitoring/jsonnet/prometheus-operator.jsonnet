@@ -10,7 +10,7 @@ local kp =
       namespace: 'monitoring',
 
       prometheus+:: {
-        namespaces+: ['projectcontour', 'knative-serving', 'cert-manager'],
+        namespaces+: ['projectcontour', 'cert-manager'],
       },
       grafana+:: {
         config+: { // do not put config here, as this file will get deleted
