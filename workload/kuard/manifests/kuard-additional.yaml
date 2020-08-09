@@ -32,7 +32,7 @@ data:
     provider = "oidc"
     provider_display_name = "Dex"
     skip_provider_button = true
-    redirect_url = "(@= "kuard.apps.{}/oauth2/callback".format(data.values.domain) @)"
+    redirect_url = "oauth2/callback"
     upstreams = [ "http://kuard:8080" ]
     oidc_issuer_url = "(@= "https://login.sso.{}".format(data.values.domain) @)"
     pass_basic_auth = true
