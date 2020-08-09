@@ -31,7 +31,7 @@ metadata:
   namespace: apps
 spec:
   ports:
-  - port: 80
+  - port: 8080
     protocol: TCP
     targetPort: 8080
   selector:
@@ -39,20 +39,3 @@ spec:
   sessionAffinity: None
   type: ClusterIP
 ---
-# httpproxy.yaml
-apiVersion: projectcontour.io/v1
-kind: HTTPProxy
-metadata:
-  name: kuard
-  namespace: apps
-spec:
-  virtualhost:
-    fqdn: #@ "kuard.apps.{}".format(data.values.domain)
-    tls:
-      secretName: #@ "apps/apps.{}".format(data.values.domain)
-  routes:
-    - conditions:
-      - prefix: /
-      services:
-        - name: kuard
-          port: 80

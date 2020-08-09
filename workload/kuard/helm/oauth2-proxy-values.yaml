@@ -1,0 +1,6 @@
+config:
+  existingSecret: kuard-proxy-oauth2-proxy
+  existingConfig: kuard-proxy-oauth2-proxy
+
+securityContext:
+  enabled: true

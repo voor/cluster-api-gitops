@@ -3,3 +3,8 @@
 
 #! This is overridded by kapp controller.
 domain: ""
+
+#! Proxy configuration.
+kuard_cookie_secret: ""
+kuard_client_id: ""
+kuard_client_secret: ""

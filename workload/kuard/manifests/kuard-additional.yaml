@@ -1,0 +1,58 @@
+#@ load("@ytt:data", "data")
+
+---
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: kuard-kuard
+  namespace: apps
+spec:
+  virtualhost:
+    fqdn: #@ "kuard.apps.{}".format(data.values.domain)
+    tls:
+      secretName: #@ "apps/apps.{}".format(data.values.domain)
+  routes:
+    - services:
+        - name: kuard-proxy-oauth2-proxy
+          port: 80
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: oauth2-proxy
+    chart: oauth2-proxy-3.2.2
+    heritage: Helm
+    release: kuard-proxy
+  name: kuard-proxy-oauth2-proxy
+  namespace: apps
+data:
+  #@yaml/text-templated-strings
+  oauth2_proxy.cfg: |-
+    provider = "oidc"
+    provider_display_name = "Dex"
+    redirect_url = "(@= "kuard.apps.{}/oauth2/callback".format(data.values.domain) @)"
+    upstreams = [ "http://kuard:8080" ]
+    oidc_issuer_url = "(@= "https://login.sso.{}".format(data.values.domain) @)"
+    pass_basic_auth = true
+    pass_user_headers = true
+    pass_host_header = true 
+    email_domains = [
+        "*"
+    ]
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app: oauth2-proxy
+    chart: oauth2-proxy-3.2.2
+    heritage: Helm
+    release: kuard-proxy
+  name: kuard-proxy-oauth2-proxy
+  namespace: apps
+type: Opaque
+stringData:
+  cookie-secret: #@ data.values.kuard_cookie_secret
+  client-id: #@ data.values.kuard_client_id
+  client-secret: #@ data.values.kuard_client_secret
