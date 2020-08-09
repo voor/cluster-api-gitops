@@ -29,6 +29,7 @@ letsencrypt_secretRef:
 
 knative_secretRef:
 - domain-values
+- kuard-client-values
 
 gangway_secretRef:
 - domain-values
