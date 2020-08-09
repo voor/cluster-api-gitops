@@ -15,3 +15,7 @@ grafana_client_secret: ""
 
 sonarqube_client_id: ""
 sonarqube_client_secret: ""
+
+kuard_cookie_secret: ""
+kuard_client_id: ""
+kuard_client_secret: ""

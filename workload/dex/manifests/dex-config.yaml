@@ -51,6 +51,11 @@ stringData:
       name: 'SonarQube'
       redirectURIs:
       - 'https://sonar.apps.(@= data.values.domain @)/oauth2/callback'
+    - id: (@= data.values.kuard_client_id @)
+      secret: (@= data.values.kuard_client_secret @)
+      name: 'Kuard'
+      redirectURIs:
+      - 'https://kuard.apps.(@= data.values.domain @)/oauth2/callback'
     - id: (@= data.values.grafana_client_id @)
       secret: (@= data.values.grafana_client_secret @)
       name: 'Grafana'

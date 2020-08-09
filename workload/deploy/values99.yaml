@@ -17,6 +17,7 @@ dex_secretRef:
 - grafana-client-values
 - github-client-values
 - sonarqube-client-values
+- kuard-client-values
 
 monitoring_secretRef:
 - domain-values
