@@ -1,4 +1,0 @@
-image:
-  registry: docker.io
-  repository: bitnami/metrics-server
-  tag: 0.3.7-debian-10-r89

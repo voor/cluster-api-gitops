@@ -4,4 +4,4 @@
 ---
 metadata:
   #@overlay/match missing_ok=True
-  namespace: monitoring
+  namespace: kube-system

@@ -7,7 +7,7 @@ metadata:
     helm.sh/chart: metrics-server-4.3.0
     app.kubernetes.io/instance: metrics-server
     app.kubernetes.io/managed-by: Helm
-  namespace: monitoring
+  namespace: kube-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -18,7 +18,7 @@ metadata:
     helm.sh/chart: metrics-server-4.3.0
     app.kubernetes.io/instance: metrics-server
     app.kubernetes.io/managed-by: Helm
-  namespace: monitoring
+  namespace: kube-system
 rules:
 - apiGroups:
   - ""
@@ -42,7 +42,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: metrics-server:system:auth-delegator
-  namespace: monitoring
+  namespace: kube-system
   labels:
     app.kubernetes.io/name: metrics-server
     helm.sh/chart: metrics-server-4.3.0
@@ -55,7 +55,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: metrics-server
-  namespace: monitoring
+  namespace: kube-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -66,7 +66,7 @@ metadata:
     helm.sh/chart: metrics-server-4.3.0
     app.kubernetes.io/instance: metrics-server
     app.kubernetes.io/managed-by: Helm
-  namespace: monitoring
+  namespace: kube-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -74,13 +74,13 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: metrics-server
-  namespace: monitoring
+  namespace: kube-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
   name: metrics-server-auth-reader
-  namespace: monitoring
+  namespace: kube-system
   labels:
     app.kubernetes.io/name: metrics-server
     helm.sh/chart: metrics-server-4.3.0
@@ -93,7 +93,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: metrics-server
-  namespace: monitoring
+  namespace: kube-system
 ---
 apiVersion: v1
 kind: Service
@@ -104,7 +104,7 @@ metadata:
     helm.sh/chart: metrics-server-4.3.0
     app.kubernetes.io/instance: metrics-server
     app.kubernetes.io/managed-by: Helm
-  namespace: monitoring
+  namespace: kube-system
 spec:
   type: ClusterIP
   ports:
@@ -126,7 +126,7 @@ metadata:
     helm.sh/chart: metrics-server-4.3.0
     app.kubernetes.io/instance: metrics-server
     app.kubernetes.io/managed-by: Helm
-  namespace: monitoring
+  namespace: kube-system
 spec:
   selector:
     matchLabels:
