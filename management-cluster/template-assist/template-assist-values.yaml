@@ -4,4 +4,4 @@ cluster_name: ""
 
 git:
   url: https://github.com/voor/cluster-api-gitops
-  branch: origin/refactor-management-cluster
+  branch: origin/default
