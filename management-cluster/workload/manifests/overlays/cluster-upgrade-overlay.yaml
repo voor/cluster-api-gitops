@@ -6,6 +6,10 @@
 metadata:
   #@overlay/replace via=lambda old,new: old+"-"+new
   name: #@ data.values.aws.ami.id
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/delete-strategy: "orphan"
 spec:
   template:
     spec:
