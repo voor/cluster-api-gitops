@@ -11,7 +11,7 @@ metadata:
     #@overlay/match missing_ok=True
     external-dns.alpha.kubernetes.io/hostname: #@ "*.apps.{},*.default.{},*.sso.{},*.monitoring.{},*.management.{}".format(data.values.domain, data.values.domain, data.values.domain, data.values.domain, data.values.domain)
 
-#@overlay/match by=overlay.subset({"kind":"CustomResourceDefinition"}),expects="4+"
+#@overlay/match by=overlay.subset({"kind":"CustomResourceDefinition"}),expects="0+"
 ---
 #@overlay/remove
 status:
