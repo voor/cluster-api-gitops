@@ -7,7 +7,7 @@ kubeadmConfigSpec:
   apiVersion: kubeadm.k8s.io/v1beta2
   kind: ClusterConfiguration
   imageRepository: registry.tkg.vmware.run
-  kubernetesVersion: v1.18.3+vmware.1
+  kubernetesVersion: v1.18.6+vmware.1
   etcd:
     local:
       imageRepository: registry.tkg.vmware.run

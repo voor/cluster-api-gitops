@@ -43,6 +43,7 @@ spec:
 spec:
   template:
     spec:
+      version: #@ data.values.kubeadmConfigSpec.kubernetesVersion
       infrastructureRef:
         #@overlay/match missing_ok=True
         #@overlay/replace via=lambda old,new: old+"-"+new
