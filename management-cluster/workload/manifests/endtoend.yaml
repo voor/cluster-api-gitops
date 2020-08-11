@@ -236,7 +236,7 @@ metadata:
   namespace: workload-clusters
 spec:
   clusterName: endtoend
-  replicas: 3
+  replicas: 6
   selector:
     matchLabels:
       node-pool: endtoend-worker-pool
