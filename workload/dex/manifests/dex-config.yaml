@@ -10,6 +10,8 @@ metadata:
     app.kubernetes.io/instance: dex
     app.kubernetes.io/version: 2.23.0
     app.kubernetes.io/managed-by: Helm
+  annotations:
+    kapp.k14s.io/versioned: ""
   name: dex
   namespace: sso
 stringData:

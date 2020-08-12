@@ -44,6 +44,8 @@ kind: ConfigMap
 metadata:
   name: gangway
   namespace: management
+  annotations:
+    kapp.k14s.io/versioned: ""
 data:
   #@yaml/text-templated-strings
   gangway.yaml: |
@@ -100,6 +102,8 @@ kind: Secret
 metadata:
   name: gangway
   namespace: management
+  annotations:
+    kapp.k14s.io/versioned: ""
 stringData:
   clientSecret: #@ data.values.auth.clientSecret
   clientID: #@ data.values.auth.clientID
