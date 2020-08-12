@@ -45,6 +45,16 @@ stringData:
         - name: (@= data.values.github_org @)-Teams
           teams:
           - (@= data.values.github_team @)
+    - type: saml
+      id: saml
+      name: SAML
+      config:
+        ssoURL: (@= data.values.saml_url @)
+        caData: (@= data.values.saml_caData @)
+        usernameAttr: name
+        emailAttr: email
+        groupsAttr: groups
+        redirectURI: https://login.sso.(@= data.values.domain @)/callback
     staticClients:
     - id: (@= data.values.sonarqube_client_id @)
       secret: (@= data.values.sonarqube_client_secret @)

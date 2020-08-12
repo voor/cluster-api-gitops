@@ -19,3 +19,6 @@ sonarqube_client_secret: ""
 kuard_cookie_secret: ""
 kuard_client_id: ""
 kuard_client_secret: ""
+
+saml_url: ""
+saml_caData: ""
