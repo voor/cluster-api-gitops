@@ -46,7 +46,7 @@ metadata:
   namespace: management
   annotations:
     kapp.k14s.io/versioned: ""
-    kapp.k14s.io/num-versions: 4
+    kapp.k14s.io/num-versions: "4"
 data:
   #@yaml/text-templated-strings
   gangway.yaml: |
@@ -105,7 +105,7 @@ metadata:
   namespace: management
   annotations:
     kapp.k14s.io/versioned: ""
-    kapp.k14s.io/num-versions: 4
+    kapp.k14s.io/num-versions: "4"
 stringData:
   clientSecret: #@ data.values.auth.clientSecret
   clientID: #@ data.values.auth.clientID

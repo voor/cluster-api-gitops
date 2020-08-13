@@ -12,7 +12,7 @@ metadata:
     app.kubernetes.io/managed-by: Helm
   annotations:
     kapp.k14s.io/versioned: ""
-    kapp.k14s.io/num-versions: 4
+    kapp.k14s.io/num-versions: "4"
   name: dex
   namespace: sso
 stringData:
