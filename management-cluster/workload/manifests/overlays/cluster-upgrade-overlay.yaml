@@ -45,11 +45,6 @@ spec:
 
 #@overlay/match by=overlay.subset({"kind":"MachineDeployment"}),expects="0+"
 ---
-metadata:
-  #@overlay/match missing_ok=True
-  annotations:
-    #@overlay/match missing_ok=True
-    kapp.k14s.io/delete-strategy: "orphan"
 spec:
   template:
     spec:
