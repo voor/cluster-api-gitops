@@ -23,7 +23,7 @@ aws:
   vpc:
     id: "vpc-077617e1cf2cfb9ac"
   ami:
-    id: "ami-0dd920d9e6a0e9b0d"
+    id: "ami-00b9d65f69a9d14ff"
 
 oidc:
   client_id: ""
