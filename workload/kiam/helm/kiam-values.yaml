@@ -1,0 +1,101 @@
+psp:
+  # Specifies whether PodSecurityPolicies should be created
+  create: true
+
+agent:
+  tlsSecret: kiam-agent-tls
+  tlsCerts:
+    certFileName: tls.crt
+    keyFileName: tls.key
+    caFileName: ca.crt
+
+  prometheus:
+    servicemonitor:
+      enabled: false
+      labels: {}
+
+  host:
+    iptables: true
+
+  extraArgs:
+    region: $(AWS_REGION)
+
+  extraEnv:
+  - name: AWS_REGION
+    valueFrom:
+      secretKeyRef:
+        name: kiam-config
+        key: region
+  - name: DEFAULT_AWS_REGION
+    valueFrom:
+      secretKeyRef:
+        name: kiam-config
+        key: region
+
+server:
+  deployment:
+    replicas: 1 # Change this to 3 for production
+    enabled: true
+
+  sslCertHostPath: /etc/ssl/certs
+
+  extraArgs:
+    region: $(AWS_REGION)
+
+  extraEnv:
+  - name: AWS_REGION
+    valueFrom:
+      secretKeyRef:
+        name: kiam-config
+        key: region
+  - name: DEFAULT_AWS_REGION
+    valueFrom:
+      secretKeyRef:
+        name: kiam-config
+        key: region
+  - name: ASSUME_ROLE_ARN
+    valueFrom:
+      secretKeyRef:
+        name: kiam-config
+        key: roleArn
+
+  tlsSecret: kiam-server-tls
+  tlsCerts:
+    certFileName: tls.crt
+    keyFileName: tls.key
+    caFileName: ca.crt
+
+  roleBaseArn: null
+
+  assumeRoleArn: $(ASSUME_ROLE_ARN)
+
+  prometheus:
+    servicemonitor:
+      enabled: false
+      labels: {}
+
+  nodeSelector:
+    node-role.kubernetes.io/master: ""
+
+  tolerations:
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/master
+  # these are automatically added to daemonsets, so we need them manually since deployment: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/#taints-and-tolerations
+  - key: "node-role.kubernetes.io/not-ready"
+    effect: "NoSchedule"
+    operator: "Exists"
+  - key: "node-role.kubernetes.io/unreachable"
+    effect: "NoSchedule"
+    operator: "Exists"
+  - key: "node-role.kubernetes.io/disk-pressure"
+    effect: "NoSchedule"
+    operator: "Exists"
+  - key: "node-role.kubernetes.io/memory-pressure"
+    effect: "NoSchedule"
+    operator: "Exists"
+  - key: "node-role.kubernetes.io/unschedulable"
+    effect: "NoSchedule"
+    operator: "Exists"
+  - key: "node-role.kubernetes.io/network-unavailable"
+    effect: "NoSchedule"
+    operator: "Exists"

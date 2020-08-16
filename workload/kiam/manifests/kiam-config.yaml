@@ -1,0 +1,12 @@
+#@ load("@ytt:data", "data")
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kiam-config
+  namespace: kube-system
+type: Opaque
+stringData:
+  region: #@ data.values.aws_region
+  roleArn: #@ data.values.kiam_role_arn

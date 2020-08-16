@@ -1,0 +1,560 @@
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: kiam-agent
+  namespace: kube-system
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  allowedCapabilities:
+  - NET_ADMIN
+  volumes:
+  - secret
+  - hostPath
+  allowedHostPaths:
+  - pathPrefix: /run/xtables.lock
+  hostNetwork: true
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    rule: RunAsAny
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: MustRunAs
+    ranges:
+    - min: 1
+      max: 65535
+  fsGroup:
+    rule: MustRunAs
+    ranges:
+    - min: 1
+      max: 65535
+  readOnlyRootFilesystem: false
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: kiam-server
+  namespace: kube-system
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  volumes:
+  - secret
+  - hostPath
+  allowedHostPaths:
+  - pathPrefix: /etc/ssl/certs
+    readOnly: true
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    rule: RunAsAny
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: MustRunAs
+    ranges:
+    - min: 1
+      max: 65535
+  fsGroup:
+    rule: MustRunAs
+    ranges:
+    - min: 1
+      max: 65535
+  readOnlyRootFilesystem: false
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: kiam
+    chart: kiam-5.8.1
+    component: agent
+    heritage: Helm
+    release: kiam
+  name: kiam-agent
+  namespace: kube-system
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: kiam
+    chart: kiam-5.8.1
+    component: server
+    heritage: Helm
+    release: kiam
+  name: kiam-server
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  labels:
+    app: kiam
+    chart: kiam-5.8.1
+    component: agent
+    heritage: Helm
+    release: kiam
+  annotations:
+    k8s-addon: podsecuritypolicy.addons.k8s.io
+  name: kiam-agent-psp-use
+  namespace: kube-system
+rules:
+- apiGroups:
+  - policy
+  resources:
+  - podsecuritypolicies
+  resourceNames:
+  - kiam-agent
+  verbs:
+  - use
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  labels:
+    app: kiam
+    chart: kiam-5.8.1
+    component: server
+    heritage: Helm
+    release: kiam
+  annotations:
+    k8s-addon: podsecuritypolicy.addons.k8s.io
+  name: kiam-server-psp-use
+  namespace: kube-system
+rules:
+- apiGroups:
+  - policy
+  resources:
+  - podsecuritypolicies
+  resourceNames:
+  - kiam-server
+  verbs:
+  - use
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  labels:
+    app: kiam
+    chart: kiam-5.8.1
+    component: server
+    heritage: Helm
+    release: kiam
+  name: kiam-read
+  namespace: kube-system
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  - pods
+  verbs:
+  - watch
+  - get
+  - list
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  labels:
+    app: kiam
+    chart: kiam-5.8.1
+    component: server
+    heritage: Helm
+    release: kiam
+  name: kiam-write
+  namespace: kube-system
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: kiam
+    chart: kiam-5.8.1
+    component: server
+    heritage: Helm
+    release: kiam
+  name: kiam-read
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kiam-read
+subjects:
+- kind: ServiceAccount
+  name: kiam-server
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: kiam
+    chart: kiam-5.8.1
+    component: server
+    heritage: Helm
+    release: kiam
+  name: kiam-write
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kiam-write
+subjects:
+- kind: ServiceAccount
+  name: kiam-server
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app: kiam
+    chart: kiam-5.8.1
+    component: agent
+    heritage: Helm
+    release: kiam
+  name: kiam-agent-psp
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kiam-agent-psp-use
+subjects:
+- kind: ServiceAccount
+  name: kiam-agent
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app: kiam
+    chart: kiam-5.8.1
+    component: server
+    heritage: Helm
+    release: kiam
+  name: kiam-server-psp
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kiam-server-psp-use
+subjects:
+- kind: ServiceAccount
+  name: kiam-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kiam-agent
+  labels:
+    app: kiam
+    chart: kiam-5.8.1
+    component: agent
+    heritage: Helm
+    release: kiam
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9620"
+  namespace: kube-system
+spec:
+  clusterIP: None
+  selector:
+    app: kiam
+    component: agent
+    release: kiam
+  ports:
+  - name: metrics
+    port: 9620
+    targetPort: 9620
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kiam-server
+  labels:
+    app: kiam
+    chart: kiam-5.8.1
+    component: server
+    heritage: Helm
+    release: kiam
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9620"
+  namespace: kube-system
+spec:
+  clusterIP: None
+  selector:
+    app: kiam
+    component: server
+    release: kiam
+  ports:
+  - name: metrics
+    port: 9620
+    targetPort: 9620
+    protocol: TCP
+  - name: grpclb
+    port: 443
+    targetPort: 443
+    protocol: TCP
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: kiam
+    chart: kiam-5.8.1
+    component: agent
+    heritage: Helm
+    release: kiam
+  name: kiam-agent
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      app: kiam
+      component: agent
+      release: kiam
+  template:
+    metadata:
+      labels:
+        app: kiam
+        component: agent
+        release: kiam
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      serviceAccountName: kiam-agent
+      tolerations: []
+      volumes:
+      - name: tls
+        secret:
+          secretName: kiam-agent-tls
+      - name: xtables
+        hostPath:
+          path: /run/xtables.lock
+          type: FileOrCreate
+      containers:
+      - name: kiam-agent
+        securityContext:
+          capabilities:
+            add:
+            - NET_ADMIN
+        image: quay.io/uswitch/kiam:v3.5
+        imagePullPolicy: IfNotPresent
+        command:
+        - /kiam
+        - agent
+        args:
+        - --iptables
+        - --no-iptables-remove
+        - --host-interface=cali+
+        - --json-log
+        - --level=info
+        - --port=8181
+        - --cert=/etc/kiam/tls/tls.crt
+        - --key=/etc/kiam/tls/tls.key
+        - --ca=/etc/kiam/tls/ca.crt
+        - --server-address=kiam-server:443
+        - --prometheus-listen-addr=0.0.0.0:9620
+        - --prometheus-sync-interval=5s
+        - --gateway-timeout-creation=1s
+        - --region=$(AWS_REGION)
+        env:
+        - name: HOST_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: AWS_REGION
+          valueFrom:
+            secretKeyRef:
+              key: region
+              name: kiam-config
+        - name: DEFAULT_AWS_REGION
+          valueFrom:
+            secretKeyRef:
+              key: region
+              name: kiam-config
+        volumeMounts:
+        - mountPath: /etc/kiam/tls
+          name: tls
+        - mountPath: /var/run/xtables.lock
+          name: xtables
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: 8181
+          initialDelaySeconds: 3
+          periodSeconds: 3
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+  updateStrategy:
+    type: OnDelete
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kiam
+    chart: kiam-5.8.1
+    component: server
+    heritage: Helm
+    release: kiam
+  name: kiam-server
+  namespace: kube-system
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: kiam
+      component: server
+      release: kiam
+  template:
+    metadata:
+      labels:
+        app: kiam
+        component: server
+        release: kiam
+    spec:
+      serviceAccountName: kiam-server
+      hostNetwork: false
+      nodeSelector:
+        node-role.kubernetes.io/master: ""
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/not-ready
+        operator: Exists
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/unreachable
+        operator: Exists
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/disk-pressure
+        operator: Exists
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/memory-pressure
+        operator: Exists
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/unschedulable
+        operator: Exists
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/network-unavailable
+        operator: Exists
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - kiam
+              - key: component
+                operator: In
+                values:
+                - server
+            topologyKey: kubernetes.io/hostname
+      volumes:
+      - name: tls
+        secret:
+          secretName: kiam-server-tls
+      - name: ssl-certs
+        hostPath:
+          path: /etc/ssl/certs
+      containers:
+      - name: kiam-server
+        image: quay.io/uswitch/kiam:v3.5
+        imagePullPolicy: IfNotPresent
+        command:
+        - /kiam
+        - server
+        args:
+        - --json-log
+        - --level=info
+        - --bind=0.0.0.0:443
+        - --cert=/etc/kiam/tls/tls.crt
+        - --key=/etc/kiam/tls/tls.key
+        - --ca=/etc/kiam/tls/ca.crt
+        - --role-base-arn-autodetect
+        - --assume-role-arn=$(ASSUME_ROLE_ARN)
+        - --session-duration=15m
+        - --sync=1m
+        - --prometheus-listen-addr=0.0.0.0:9620
+        - --prometheus-sync-interval=5s
+        - --region=$(AWS_REGION)
+        env:
+        - name: AWS_REGION
+          valueFrom:
+            secretKeyRef:
+              key: region
+              name: kiam-config
+        - name: DEFAULT_AWS_REGION
+          valueFrom:
+            secretKeyRef:
+              key: region
+              name: kiam-config
+        - name: ASSUME_ROLE_ARN
+          valueFrom:
+            secretKeyRef:
+              key: roleArn
+              name: kiam-config
+        volumeMounts:
+        - mountPath: /etc/kiam/tls
+          name: tls
+        - mountPath: /etc/ssl/certs
+          name: ssl-certs
+          readOnly: true
+        livenessProbe:
+          exec:
+            command:
+            - /kiam
+            - health
+            - --cert=/etc/kiam/tls/tls.crt
+            - --key=/etc/kiam/tls/tls.key
+            - --ca=/etc/kiam/tls/ca.crt
+            - --server-address=127.0.0.1:443
+            - --server-address-refresh=2s
+            - --timeout=5s
+            - --gateway-timeout-creation=1s
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command:
+            - /kiam
+            - health
+            - --cert=/etc/kiam/tls/tls.crt
+            - --key=/etc/kiam/tls/tls.key
+            - --ca=/etc/kiam/tls/ca.crt
+            - --server-address=127.0.0.1:443
+            - --server-address-refresh=2s
+            - --timeout=5s
+            - --gateway-timeout-creation=1s
+          initialDelaySeconds: 3
+          periodSeconds: 10
+          timeoutSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3

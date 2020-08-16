@@ -1,0 +1,66 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: kiam-selfsigned-issuer
+  namespace: kube-system
+spec:
+  selfSigned: {}
+
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: kiam-serving-cert
+  namespace: kube-system
+spec:
+  secretName: kiam-ca-tls
+  commonName: "kiam-ca"
+  isCA: true
+  issuerRef:
+    name: kiam-selfsigned-issuer
+  usages:
+  - "any"
+
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: kiam-ca-issuer
+  namespace: kube-system
+spec:
+  ca:
+    secretName: kiam-ca-tls
+
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: kiam-agent
+  namespace: kube-system
+spec:
+  secretName: kiam-agent-tls
+  commonName: agent
+  issuerRef:
+    name: kiam-ca-issuer
+  usages:
+  - "any"
+
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: kiam-server
+  namespace: kube-system
+spec:
+  secretName: kiam-server-tls
+  issuerRef:
+    name: kiam-ca-issuer
+  usages:
+  - "any"
+  dnsNames:
+  - "localhost"
+  - "kiam-server"
+  - kiam-server.kube-system.svc
+  - kiam-server.kube-system.svc.cluster.local
+  ipAddresses:
+  - "127.0.0.1"
