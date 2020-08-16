@@ -20,6 +20,12 @@ local kp =
             }
           },
         },
+        env: [
+          {
+            name: "GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH",
+            value: "/grafana-dashboard-definitions/rdm/start-page/dashboard-definition.json"
+          },
+        ],
       },
     },
 

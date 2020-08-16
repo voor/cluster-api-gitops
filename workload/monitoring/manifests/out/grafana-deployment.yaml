@@ -12,12 +12,17 @@ spec:
       app: grafana
   template:
     metadata:
+      annotations:
+        checksum/grafana-config: 029e6d930cf883d07751f29fdc38ebd5
+        checksum/grafana-datasources: 48faab41f579fc8efde6034391496f6a
       labels:
         app: grafana
     spec:
       containers:
-      - env: []
-        image: grafana/grafana:6.6.0
+      - env:
+        - name: GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH
+          value: /grafana-dashboard-definitions/rdm/start-page/dashboard-definition.json
+        image: grafana/grafana:7.1.0
         name: grafana
         ports:
         - containerPort: 3000
@@ -118,6 +123,7 @@ spec:
       nodeSelector:
         beta.kubernetes.io/os: linux
       securityContext:
+        fsGroup: 65534
         runAsNonRoot: true
         runAsUser: 65534
       serviceAccountName: grafana

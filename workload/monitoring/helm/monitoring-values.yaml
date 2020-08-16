@@ -1,0 +1,44 @@
+global:
+  imageRegistry: docker.io
+
+operator:
+  image:
+    repository: bitnami/prometheus-operator
+    tag: 0.41.0-debian-10-r5
+
+prometheus:
+  image:
+    repository: bitnami/prometheus
+    tag: 2.20.1-debian-10-r0
+
+  thanos:
+    ## Create a Thanos Sidecar container
+    ##
+    create: false
+    ## Bitnami Thanos image
+    ## ref: https://hub.docker.com/r/bitnami/thanos/tags/
+    ##
+    image:
+      repository: bitnami/thanos
+      tag: 0.14.0-scratch-r3
+
+alertmanager:
+  image:
+    repository: bitnami/alertmanager
+    tag: 0.21.0-debian-10-r41
+
+node-exporter:
+  image:
+    repository: bitnami/node-exporter
+    tag: 1.0.1-debian-10-r40
+
+  serviceMonitor:
+    enabled: false
+
+kube-state-metrics:
+  image:
+    repository: bitnami/kube-state-metrics
+    tag: 1.9.7-debian-10-r51
+
+  serviceMonitor:
+    enabled: false

@@ -11,7 +11,7 @@ spec:
     - name: alertmanager-main
       namespace: monitoring
       port: web
-  image: quay.io/prometheus/prometheus:v2.17.2
+  image: quay.io/prometheus/prometheus:v2.20.0
   nodeSelector:
     kubernetes.io/os: linux
   podMonitorNamespaceSelector: {}
@@ -43,4 +43,4 @@ spec:
           requests:
             storage: 100Gi
         storageClassName: generic
-  version: v2.17.2
+  version: v2.20.0
