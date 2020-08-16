@@ -16,10 +16,7 @@ agent:
 
   host:
     iptables: true
-
-  extraArgs:
-    region: $(AWS_REGION)
-
+    
   extraEnv:
   - name: AWS_REGION
     valueFrom:
