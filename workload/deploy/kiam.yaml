@@ -1,0 +1,26 @@
+#@ load("@ytt:data", "data")
+
+---
+apiVersion: kappctrl.k14s.io/v1alpha1
+kind: App
+metadata:
+  name: kiam
+  namespace: kapp-controller
+spec:
+  serviceAccountName: kapp-controller-clusteradmin
+  fetch:
+  - git:
+      url: #@ data.values.git_url
+      ref: #@ data.values.git_branch
+      subPath: workload/kiam/manifests
+  template:
+  - ytt:
+      ignoreUnknownComments: true
+      inline:
+        pathsFrom:
+        #@ for secretRef in data.values.kiam_secretRef:
+        - secretRef:
+            name: #@ secretRef
+        #@ end 
+  deploy:
+  - kapp: {}

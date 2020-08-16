@@ -35,3 +35,6 @@ knative_secretRef:
 gangway_secretRef:
 - domain-values
 - gangway-values
+
+kiam_secretRef:
+- kiam-values
