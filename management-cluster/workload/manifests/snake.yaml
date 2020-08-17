@@ -175,7 +175,7 @@ metadata:
   namespace: workload-clusters
 spec:
   clusterName: snake
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       node-pool: snake-worker-pool
