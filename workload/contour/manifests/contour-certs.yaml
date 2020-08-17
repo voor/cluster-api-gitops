@@ -1,0 +1,70 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: contour-selfsigned-issuer
+  namespace: projectcontour
+spec:
+  selfSigned: {}
+
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: contour-serving-cert
+  namespace: projectcontour
+spec:
+  secretName: contour-ca-tls
+  commonName: "contour-ca"
+  isCA: true
+  issuerRef:
+    name: contour-selfsigned-issuer
+  usages:
+  - "any"
+
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: contour-ca-issuer
+  namespace: projectcontour
+spec:
+  ca:
+    secretName: contour-ca-tls
+
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: contourcert
+  namespace: projectcontour
+spec:
+  secretName: contourcert
+  commonName: contour
+  issuerRef:
+    name: contour-ca-issuer
+  usages:
+  - "any"
+  dnsNames:
+  - "contour"
+  - contour.projectcontour
+  - contour.projectcontour.svc
+  - contour.projectcontour.svc.cluster.local
+
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: envoycert
+  namespace: projectcontour
+spec:
+  secretName: envoycert
+  commonName: envoy
+  issuerRef:
+    name: contour-ca-issuer
+  usages:
+  - "any"
+  dnsNames:
+  - "envoy"
+  - envoy.projectcontour
+  - envoy.projectcontour.svc
+  - envoy.projectcontour.svc.cluster.local
