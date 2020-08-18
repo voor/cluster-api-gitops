@@ -38,6 +38,7 @@ server:
 
   extraArgs:
     region: $(AWS_REGION)
+    session: tanzu
 
   extraEnv:
   - name: AWS_REGION
