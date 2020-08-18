@@ -1,38 +1,138 @@
----
-apiVersion: v1
-kind: Namespace
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
 metadata:
-  name: external-dns 
+  name: external-dns
+  labels:
+    app.kubernetes.io/name: external-dns
+    helm.sh/chart: external-dns-3.3.0
+    app.kubernetes.io/instance: external-dns
+    app.kubernetes.io/managed-by: Helm
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  requiredDropCapabilities:
+  - ALL
+  volumes:
+  - configMap
+  - emptyDir
+  - projected
+  - secret
+  - downwardAPI
+  - hostPath
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    rule: MustRunAs
+    ranges:
+    - min: 1001
+      max: 1001
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: MustRunAs
+    ranges:
+    - min: 1001
+      max: 1001
+  fsGroup:
+    rule: MustRunAs
+    ranges:
+    - min: 1001
+      max: 1001
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: external-dns
-  namespace: external-dns
+  labels:
+    app.kubernetes.io/name: external-dns
+    helm.sh/chart: external-dns-3.3.0
+    app.kubernetes.io/instance: external-dns
+    app.kubernetes.io/managed-by: Helm
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
   name: external-dns
+  labels:
+    app.kubernetes.io/name: external-dns
+    helm.sh/chart: external-dns-3.3.0
+    app.kubernetes.io/instance: external-dns
+    app.kubernetes.io/managed-by: Helm
 rules:
-- apiGroups: [""]
-  resources: ["services"]
-  verbs: ["get","watch","list"]
-- apiGroups: [""]
-  resources: ["pods"]
-  verbs: ["get","watch","list"]
-- apiGroups: ["extensions"] 
-  resources: ["ingresses"] 
-  verbs: ["get","watch","list"]
-- apiGroups: [""]
-  resources: ["nodes"]
-  verbs: ["list"]
+- apiGroups:
+  - ""
+  resources:
+  - services
+  - pods
+  - nodes
+  - endpoints
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - extensions
+  - networking.k8s.io
+  resources:
+  - ingresses
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - networking.istio.io
+  resources:
+  - gateways
+  - virtualservices
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - zalando.org
+  resources:
+  - routegroups
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - zalando.org
+  resources:
+  - routegroups/status
+  verbs:
+  - patch
+  - update
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: external-dns-psp
+  labels:
+    app.kubernetes.io/name: external-dns
+    helm.sh/chart: external-dns-3.3.0
+    app.kubernetes.io/instance: external-dns
+    app.kubernetes.io/managed-by: Helm
+rules:
+- apiGroups:
+  - extensions
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+  resourceNames:
+  - external-dns
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: external-dns-viewer
-  namespace: external-dns
+  name: external-dns
+  labels:
+    app.kubernetes.io/name: external-dns
+    helm.sh/chart: external-dns-3.3.0
+    app.kubernetes.io/instance: external-dns
+    app.kubernetes.io/managed-by: Helm
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -42,38 +142,143 @@ subjects:
   name: external-dns
   namespace: external-dns
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: external-dns-psp
+  labels:
+    app.kubernetes.io/name: external-dns
+    helm.sh/chart: external-dns-3.3.0
+    app.kubernetes.io/instance: external-dns
+    app.kubernetes.io/managed-by: Helm
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: external-dns-psp
+subjects:
+- kind: ServiceAccount
+  name: external-dns
+  namespace: external-dns
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: external-dns
+  labels:
+    app.kubernetes.io/name: external-dns
+    helm.sh/chart: external-dns-3.3.0
+    app.kubernetes.io/instance: external-dns
+    app.kubernetes.io/managed-by: Helm
+spec:
+  ports:
+  - name: http
+    port: 7979
+    protocol: TCP
+    targetPort: http
+  selector:
+    app.kubernetes.io/name: external-dns
+    app.kubernetes.io/instance: external-dns
+  type: ClusterIP
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: external-dns
-  namespace: external-dns
+  labels:
+    app.kubernetes.io/name: external-dns
+    helm.sh/chart: external-dns-3.3.0
+    app.kubernetes.io/instance: external-dns
+    app.kubernetes.io/managed-by: Helm
 spec:
-  strategy:
-    type: Recreate
+  replicas: 1
   selector:
     matchLabels:
-      app: external-dns
+      app.kubernetes.io/name: external-dns
+      app.kubernetes.io/instance: external-dns
   template:
     metadata:
       labels:
-        app: external-dns
+        app.kubernetes.io/name: external-dns
+        helm.sh/chart: external-dns-3.3.0
+        app.kubernetes.io/instance: external-dns
+        app.kubernetes.io/managed-by: Helm
+      annotations: null
     spec:
+      securityContext:
+        fsGroup: 1001
+        runAsUser: 1001
       serviceAccountName: external-dns
       containers:
       - name: external-dns
-        image: bitnami/external-dns:0.7.3
+        image: docker.io/bitnami/external-dns:0.7.3-debian-10-r0
+        imagePullPolicy: IfNotPresent
         args:
-        - --source=service
+        - --log-level=info
+        - --log-format=text
+        - --policy=upsert-only
         - --provider=cloudflare
+        - --registry=txt
+        - --interval=1m
         - --txt-prefix=txt
+        - --source=service
+        - --cloudflare-proxied
         env:
         - name: CF_API_TOKEN
           valueFrom:
             secretKeyRef:
               name: cloudflare-api
-              key: CF_API_TOKEN
-        - name: CF_API_EMAIL
+              key: cloudflare_api_token
+              optional: true
+        - name: CF_API_KEY
           valueFrom:
             secretKeyRef:
               name: cloudflare-api
-              key: CF_API_EMAIL
+              key: cloudflare_api_key
+              optional: true
+        - name: CF_API_EMAIL
+          value: I am replaced by an overlay by ytt
+        ports:
+        - name: http
+          containerPort: 7979
+        readinessProbe:
+          failureThreshold: 6
+          httpGet:
+            path: /healthz
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        livenessProbe:
+          failureThreshold: 2
+          httpGet:
+            path: /healthz
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        volumeMounts: null
+      volumes: null
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: external-dns
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: external-dns
+    helm.sh/chart: external-dns-3.3.0
+    app.kubernetes.io/instance: external-dns
+    app.kubernetes.io/managed-by: Helm
+spec:
+  endpoints:
+  - port: http
+    path: /metrics
+  namespaceSelector:
+    matchNames:
+    - external-dns
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: external-dns
+      app.kubernetes.io/instance: external-dns

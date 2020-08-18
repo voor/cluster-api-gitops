@@ -1,0 +1,15 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata":{"name":"external-dns"}})
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by="name"
+      - name: external-dns
+        env:
+        #@overlay/match by="name"
+        - name: CF_API_EMAIL
+          value: #@ data.values.acme_email

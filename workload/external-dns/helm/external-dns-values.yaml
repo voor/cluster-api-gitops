@@ -1,0 +1,40 @@
+image:
+  registry: docker.io
+  repository: bitnami/external-dns
+  tag: 0.7.3-debian-10-r0
+
+# provider: aws
+provider: cloudflare
+
+sources:
+  - service
+
+# aws:
+#   region: us-gov-east-1
+
+#   assumeRoleArn: ""
+
+cloudflare:
+  secretName: cloudflare-api
+  email: "I am replaced by an overlay by ytt"
+
+txtPrefix: txt
+
+rbac:
+  pspEnabled: true
+
+metrics:
+  enabled: true
+  ## Metrics exporter pod Annotation and Labels
+  ##
+  # podAnnotations:
+  #   prometheus.io/scrape: "true"
+  #   prometheus.io/port: "7979"
+
+  ## Prometheus Operator ServiceMonitor configuration
+  ##
+  serviceMonitor:
+    enabled: true
+    ## Namespace in which Prometheus is running
+    ##
+    namespace: monitoring
