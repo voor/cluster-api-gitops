@@ -15,3 +15,7 @@ metadata:
 ---
 #@overlay/remove
 status:
+
+#@overlay/match by=overlay.subset({"kind":"Job"}),expects="0+"
+---
+#@overlay/remove
