@@ -38,3 +38,6 @@ metrics:
     ## Namespace in which Prometheus is running
     ##
     namespace: monitoring
+
+podAnnotations:
+  iam.amazonaws.com/role:

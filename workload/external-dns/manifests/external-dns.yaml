@@ -210,7 +210,8 @@ spec:
         helm.sh/chart: external-dns-3.3.0
         app.kubernetes.io/instance: external-dns
         app.kubernetes.io/managed-by: Helm
-      annotations: null
+      annotations:
+        iam.amazonaws.com/role: null
     spec:
       securityContext:
         fsGroup: 1001

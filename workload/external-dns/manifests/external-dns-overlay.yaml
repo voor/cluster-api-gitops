@@ -5,17 +5,17 @@
 ---
 spec:
   template:
-    #@overlay/match missing_ok=True
-    annotations:
+    metadata:
       #@overlay/match missing_ok=True
-      iam.amazonaws.com/role: #@ data.values.pod_role
+      annotations:
+        #@overlay/match missing_ok=True
+        iam.amazonaws.com/role: #@ data.values.pod_role
     spec:
       containers:
       #@overlay/match by="name"
       - name: external-dns
         args:
-        #@overlay/match by=overlay.subset("--aws-assume-role=arn:aws:iam::123455567:role/I-am-replaced-by-an-overlay-by-ytt")
-        #@overlay/replace
+        #@overlay/match by=lambda _,a,b: "--aws-assume-role=" in a
         - #@ "--aws-assume-role={}".format(data.values.assumed_role)
         env:
         #@overlay/match by="name",when=1
