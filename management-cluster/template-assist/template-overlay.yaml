@@ -28,9 +28,9 @@ spec:
 
   fetch:
   - inline:
-        pathsFrom:
-          - secretRef:
-              name: #@ "{}-postcreate".format(data.values.cluster_name)
+      pathsFrom:
+      - secretRef:
+          name: #@ "{}-postcreate".format(data.values.cluster_name)
   template:
   - ytt:
       ignoreUnknownComments: true
