@@ -3,20 +3,20 @@ image:
   repository: bitnami/external-dns
   tag: 0.7.3-debian-10-r0
 
-# provider: aws
-provider: cloudflare
+provider: aws
+# provider: cloudflare
 
 sources:
   - service
 
-# aws:
-#   region: us-gov-east-1
+aws:
+  region: I-am-replaced-by-an-overlay-by-ytt
 
-#   assumeRoleArn: ""
+  assumeRoleArn: arn:aws:iam::123455567:role/I-am-replaced-by-an-overlay-by-ytt
 
 cloudflare:
   secretName: cloudflare-api
-  email: "I am replaced by an overlay by ytt"
+  email: I-am-replaced-by-an-overlay-by-ytt
 
 txtPrefix: txt
 

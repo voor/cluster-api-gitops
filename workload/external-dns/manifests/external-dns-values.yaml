@@ -1,6 +1,12 @@
 #@data/values
 ---
 
+#! For Cloudflare
 acme_email: ""
 acme_url: ""
 cloudflare_token: ""
+
+#! For AWS
+iam_role: ""
+assumed_role: ""
+aws_region: ""

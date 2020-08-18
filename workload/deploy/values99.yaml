@@ -12,6 +12,8 @@ kuard_secretRef:
 
 externaldns_secretRef:
 - certmanager-values
+- aws-values
+- external-dns-values
 
 dex_secretRef: 
 - domain-values
@@ -38,3 +40,4 @@ gangway_secretRef:
 
 kiam_secretRef:
 - kiam-values
+- aws-values
