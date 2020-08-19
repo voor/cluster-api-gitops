@@ -228,9 +228,7 @@ spec:
         - --provider=aws
         - --registry=txt
         - --interval=1m
-        - --txt-prefix=txt
         - --source=service
-        - --aws-assume-role=arn:aws:iam::123455567:role/I-am-replaced-by-an-overlay-by-ytt
         - --aws-batch-change-size=1000
         env:
         - name: AWS_DEFAULT_REGION
