@@ -16,7 +16,7 @@ cloudflare:
   secretName: cloudflare-api
   email: I-am-replaced-by-an-overlay-by-ytt
 
-# txtPrefix: txt
+txtPrefix: txt
 
 rbac:
   pspEnabled: true

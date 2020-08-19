@@ -228,6 +228,7 @@ spec:
         - --provider=aws
         - --registry=txt
         - --interval=1m
+        - --txt-prefix=txt
         - --source=service
         - --aws-batch-change-size=1000
         env:
