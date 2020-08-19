@@ -19,6 +19,8 @@ spec:
         #@overlay/match by=lambda _,a,b: "--aws-assume-role=" in a, expects="0+"
         - #@ "--aws-assume-role={}".format(data.values.assumed_role)
         #@ end
+        #@overlay/append
+        - --aws-prefer-cname
         env:
         #@overlay/match by="name",when=1
         - name: CF_API_EMAIL
