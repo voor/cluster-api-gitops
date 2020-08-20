@@ -40,6 +40,7 @@ metadata:
   namespace: projectcontour
 data:
   contour.yaml: |
+    debug: true
     # should contour expect to be running inside a k8s cluster
     # incluster: true
     #
