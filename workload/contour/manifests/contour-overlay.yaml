@@ -19,3 +19,11 @@ status:
 #! #@overlay/match by=overlay.subset({"kind":"Job"}),expects="0+"
 #! ---
 #! #@overlay/remove
+
+#@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata":{"name":"contour"}})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    kapp.k14s.io/versioned: ""
+    kapp.k14s.io/num-versions: "4"
