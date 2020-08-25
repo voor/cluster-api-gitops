@@ -1,6 +1,6 @@
 #@data/values
 ---
-git_url: https://github.com/voor/cluster-api-gitops
+git_url: https://code.afcmade.com/chrysalis/tkg-clusters.git
 git_branch: origin/default
 git:
   secretRef: workload-git-secret

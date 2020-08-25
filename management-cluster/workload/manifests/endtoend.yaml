@@ -39,7 +39,7 @@ spec:
       key: value
   fetch:
   - git:
-      url: https://github.com/voor/cluster-api-gitops
+      url: https://code.afcmade.com/chrysalis/tkg-clusters.git
       ref: origin/default
       subPath: management-cluster/deploy/kapp-controller/manifests
       secretRef:
@@ -77,7 +77,7 @@ spec:
       key: value
   fetch:
   - git:
-      url: https://github.com/voor/cluster-api-gitops
+      url: https://code.afcmade.com/chrysalis/tkg-clusters.git
       ref: origin/default
       subPath: workload/deploy
       secretRef:
