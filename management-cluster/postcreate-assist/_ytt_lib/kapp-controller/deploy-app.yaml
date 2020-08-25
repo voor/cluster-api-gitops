@@ -10,6 +10,8 @@ spec:
       url: https://github.com/voor/cluster-api-gitops
       ref: origin/master
       subPath: workload/deploy
+      secretRef:
+        name: #@ data.values.git.secretRef
   template:
   - ytt:
       ignoreUnknownComments: true

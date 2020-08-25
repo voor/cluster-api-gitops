@@ -61,6 +61,8 @@ spec:
       url: #@ data.values.git.url
       ref: #@ data.values.git.branch
       subPath: management-cluster/deploy/kapp-controller/manifests
+      secretRef:
+        name: #@ data.values.git.secretRef
   template:
   - ytt:
       ignoreUnknownComments: true
@@ -102,6 +104,8 @@ spec:
       url: #@ data.values.git.url
       ref: #@ data.values.git.branch
       subPath: workload/deploy
+      secretRef:
+        name: #@ data.values.git.secretRef
   template:
   - ytt:
       ignoreUnknownComments: true

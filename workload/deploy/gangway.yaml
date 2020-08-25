@@ -13,6 +13,8 @@ spec:
       url: #@ data.values.git_url
       ref: #@ data.values.git_branch
       subPath: workload/gangway/manifests
+      secretRef:
+        name: #@ data.values.git.secretRef
   template:
   - ytt:
       ignoreUnknownComments: true

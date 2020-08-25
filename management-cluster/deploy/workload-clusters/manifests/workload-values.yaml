@@ -4,6 +4,7 @@
 git:
   url: https://github.com/voor/cluster-api-gitops
   branch: origin/default
+  secretRef: management-git-secret
 
 workload_secretRef:
   #! This file contains secrets for configuring workload clusters.

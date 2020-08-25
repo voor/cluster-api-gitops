@@ -26,6 +26,8 @@ spec:
       url: #@ data.values.git.url
       ref: #@ data.values.git.branch
       subPath: management-cluster/workload/manifests
+      secretRef:
+        name: #@ data.values.git.secretRef
   template:
   - ytt:
       ignoreUnknownComments: true

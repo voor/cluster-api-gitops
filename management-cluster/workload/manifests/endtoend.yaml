@@ -42,6 +42,8 @@ spec:
       url: https://github.com/voor/cluster-api-gitops
       ref: origin/default
       subPath: management-cluster/deploy/kapp-controller/manifests
+      secretRef:
+        name: management-git-secret
   template:
   - ytt:
       ignoreUnknownComments: true
@@ -78,6 +80,8 @@ spec:
       url: https://github.com/voor/cluster-api-gitops
       ref: origin/default
       subPath: workload/deploy
+      secretRef:
+        name: management-git-secret
   template:
   - ytt:
       ignoreUnknownComments: true
