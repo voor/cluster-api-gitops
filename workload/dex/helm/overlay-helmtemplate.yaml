@@ -12,3 +12,16 @@ metadata:
 
 ---
 
+#@overlay/match by=overlay.subset({"kind": "ClusterRoleBinding"})
+---
+subjects:
+#@overlay/match by=overlay.all,expects="1+"
+- 
+  namespace: sso
+
+#@overlay/match by=overlay.subset({"kind": "RoleBinding"})
+---
+subjects:
+#@overlay/match by=overlay.all,expects="1+"
+- 
+  namespace: sso
