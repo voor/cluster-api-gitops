@@ -70,7 +70,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: kiam
-    chart: kiam-5.8.1
+    chart: kiam-5.10.0
     component: agent
     heritage: Helm
     release: kiam
@@ -82,7 +82,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: kiam
-    chart: kiam-5.8.1
+    chart: kiam-5.10.0
     component: server
     heritage: Helm
     release: kiam
@@ -94,7 +94,7 @@ kind: ClusterRole
 metadata:
   labels:
     app: kiam
-    chart: kiam-5.8.1
+    chart: kiam-5.10.0
     component: agent
     heritage: Helm
     release: kiam
@@ -117,7 +117,7 @@ kind: ClusterRole
 metadata:
   labels:
     app: kiam
-    chart: kiam-5.8.1
+    chart: kiam-5.10.0
     component: server
     heritage: Helm
     release: kiam
@@ -140,7 +140,7 @@ kind: ClusterRole
 metadata:
   labels:
     app: kiam
-    chart: kiam-5.8.1
+    chart: kiam-5.10.0
     component: server
     heritage: Helm
     release: kiam
@@ -162,7 +162,7 @@ kind: ClusterRole
 metadata:
   labels:
     app: kiam
-    chart: kiam-5.8.1
+    chart: kiam-5.10.0
     component: server
     heritage: Helm
     release: kiam
@@ -182,7 +182,7 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     app: kiam
-    chart: kiam-5.8.1
+    chart: kiam-5.10.0
     component: server
     heritage: Helm
     release: kiam
@@ -202,7 +202,7 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     app: kiam
-    chart: kiam-5.8.1
+    chart: kiam-5.10.0
     component: server
     heritage: Helm
     release: kiam
@@ -222,7 +222,7 @@ kind: RoleBinding
 metadata:
   labels:
     app: kiam
-    chart: kiam-5.8.1
+    chart: kiam-5.10.0
     component: agent
     heritage: Helm
     release: kiam
@@ -241,7 +241,7 @@ kind: RoleBinding
 metadata:
   labels:
     app: kiam
-    chart: kiam-5.8.1
+    chart: kiam-5.10.0
     component: server
     heritage: Helm
     release: kiam
@@ -261,7 +261,7 @@ metadata:
   name: kiam-agent
   labels:
     app: kiam
-    chart: kiam-5.8.1
+    chart: kiam-5.10.0
     component: agent
     heritage: Helm
     release: kiam
@@ -287,7 +287,7 @@ metadata:
   name: kiam-server
   labels:
     app: kiam
-    chart: kiam-5.8.1
+    chart: kiam-5.10.0
     component: server
     heritage: Helm
     release: kiam
@@ -316,7 +316,7 @@ kind: DaemonSet
 metadata:
   labels:
     app: kiam
-    chart: kiam-5.8.1
+    chart: kiam-5.10.0
     component: agent
     heritage: Helm
     release: kiam
@@ -353,7 +353,7 @@ spec:
           capabilities:
             add:
             - NET_ADMIN
-        image: quay.io/uswitch/kiam:v3.5
+        image: quay.io/uswitch/kiam:v3.6
         imagePullPolicy: IfNotPresent
         command:
         - /kiam
@@ -409,7 +409,7 @@ kind: Deployment
 metadata:
   labels:
     app: kiam
-    chart: kiam-5.8.1
+    chart: kiam-5.10.0
     component: server
     heritage: Helm
     release: kiam
@@ -482,7 +482,7 @@ spec:
           path: /etc/ssl/certs
       containers:
       - name: kiam-server
-        image: quay.io/uswitch/kiam:v3.5
+        image: quay.io/uswitch/kiam:v3.6
         imagePullPolicy: IfNotPresent
         command:
         - /kiam
@@ -501,6 +501,7 @@ spec:
         - --prometheus-listen-addr=0.0.0.0:9620
         - --prometheus-sync-interval=5s
         - --region=$(AWS_REGION)
+        - --session=tanzu
         env:
         - name: AWS_REGION
           valueFrom:
