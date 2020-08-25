@@ -1,1 +1,52 @@
 #@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata": { "name": "monitoring-prometheus-oper-operator" }})
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by="name"
+      - name: prometheus-operator
+        args:
+        #@overlay/match by=lambda _,a,b: "--config-reloader-image=" in a, expects="0+"
+        - --config-reloader-image=$(CONFIG_RELOADER_IMAGE)
+        #@overlay/match by=lambda _,a,b: "--prometheus-config-reloader=" in a, expects="0+"
+        - --prometheus-config-reloader=$(PROMETHEUS_CONFIG_RELOADER)
+        #@overlay/match missing_ok=True
+        env:
+        #@overlay/match by="name",missing_ok=True
+        - name: CONFIG_RELOADER_IMAGE
+          valueFrom:
+            configMapKeyRef:
+              name: prometheus-operator-images
+              key: config-reloader-image
+        #@overlay/match by="name",missing_ok=True
+        - name: PROMETHEUS_CONFIG_RELOADER
+          valueFrom:
+            configMapKeyRef:
+              name: prometheus-operator-images
+              key: prometheus-config-reloader
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-operator-images
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: prometheus-operator
+    app.kubernetes.io/instance: monitoring
+    app.kubernetes.io/component: operator
+data:
+  config-reloader-image: docker.io/bitnami/configmap-reload:0.4.0-debian-10-r18
+  prometheus-config-reloader: docker.io/bitnami/prometheus-operator:0.41.0-debian-10-r5
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.24.0
+searchRules:
+- keyMatcher:
+    path: [data, config-reloader-image]
+- keyMatcher:
+    path: [data, prometheus-config-reloader]
