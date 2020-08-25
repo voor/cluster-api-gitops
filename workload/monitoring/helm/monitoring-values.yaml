@@ -6,6 +6,11 @@ operator:
     repository: bitnami/prometheus-operator
     tag: 0.41.0-debian-10-r5
 
+  configmapReload:
+    image:
+      repository: bitnami/configmap-reload
+      tag: 0.4.0-debian-10-r18
+
 prometheus:
   image:
     repository: bitnami/prometheus

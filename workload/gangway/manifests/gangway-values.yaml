@@ -1,19 +1,19 @@
 #@data/values
 ---
-domain:
+domain: ""
 
 auth:
-  clientID: 
-  clientSecret: 
-  sesssionKey: 
-  authorizeURL: 
-  tokenURL: 
-  audience: 
-  redirectURL:
-  usernameClaim: 
-  emailClaim: 
+  clientID: ""
+  clientSecret: "" 
+  sesssionKey: ""
+  authorizeURL: ""
+  tokenURL: ""
+  audience: ""
+  redirectURL: ""
+  usernameClaim: sub
+  emailClaim: email
 
 management:
-  cluster_name: 
-  apiServerURL: 
-  httpPath: 
+  cluster_name: ""
+  apiServerURL: ""
+  httpPath: ""

@@ -4,7 +4,7 @@ metadata:
   name: metrics-server
   labels:
     app.kubernetes.io/name: metrics-server
-    helm.sh/chart: metrics-server-4.3.0
+    helm.sh/chart: metrics-server-4.3.1
     app.kubernetes.io/instance: metrics-server
     app.kubernetes.io/managed-by: Helm
   namespace: kube-system
@@ -15,7 +15,7 @@ metadata:
   name: system:metrics-server
   labels:
     app.kubernetes.io/name: metrics-server
-    helm.sh/chart: metrics-server-4.3.0
+    helm.sh/chart: metrics-server-4.3.1
     app.kubernetes.io/instance: metrics-server
     app.kubernetes.io/managed-by: Helm
   namespace: kube-system
@@ -45,7 +45,7 @@ metadata:
   namespace: kube-system
   labels:
     app.kubernetes.io/name: metrics-server
-    helm.sh/chart: metrics-server-4.3.0
+    helm.sh/chart: metrics-server-4.3.1
     app.kubernetes.io/instance: metrics-server
     app.kubernetes.io/managed-by: Helm
 roleRef:
@@ -63,7 +63,7 @@ metadata:
   name: system:metrics-server
   labels:
     app.kubernetes.io/name: metrics-server
-    helm.sh/chart: metrics-server-4.3.0
+    helm.sh/chart: metrics-server-4.3.1
     app.kubernetes.io/instance: metrics-server
     app.kubernetes.io/managed-by: Helm
   namespace: kube-system
@@ -83,7 +83,7 @@ metadata:
   namespace: kube-system
   labels:
     app.kubernetes.io/name: metrics-server
-    helm.sh/chart: metrics-server-4.3.0
+    helm.sh/chart: metrics-server-4.3.1
     app.kubernetes.io/instance: metrics-server
     app.kubernetes.io/managed-by: Helm
 roleRef:
@@ -101,7 +101,7 @@ metadata:
   name: metrics-server
   labels:
     app.kubernetes.io/name: metrics-server
-    helm.sh/chart: metrics-server-4.3.0
+    helm.sh/chart: metrics-server-4.3.1
     app.kubernetes.io/instance: metrics-server
     app.kubernetes.io/managed-by: Helm
   namespace: kube-system
@@ -123,7 +123,7 @@ metadata:
   name: metrics-server
   labels:
     app.kubernetes.io/name: metrics-server
-    helm.sh/chart: metrics-server-4.3.0
+    helm.sh/chart: metrics-server-4.3.1
     app.kubernetes.io/instance: metrics-server
     app.kubernetes.io/managed-by: Helm
   namespace: kube-system
@@ -136,14 +136,14 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: metrics-server
-        helm.sh/chart: metrics-server-4.3.0
+        helm.sh/chart: metrics-server-4.3.1
         app.kubernetes.io/instance: metrics-server
         app.kubernetes.io/managed-by: Helm
     spec:
       serviceAccountName: metrics-server
       containers:
       - name: metrics-server
-        image: docker.io/bitnami/metrics-server:0.3.7-debian-10-r89
+        image: docker.io/bitnami/metrics-server:0.3.7-debian-10-r103
         imagePullPolicy: IfNotPresent
         ports:
         - name: https

@@ -3,9 +3,9 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/name: dex
-    helm.sh/chart: dex-2.10.0
+    helm.sh/chart: dex-2.13.0
     app.kubernetes.io/instance: dex
-    app.kubernetes.io/version: 2.23.0
+    app.kubernetes.io/version: 2.24.0
     app.kubernetes.io/managed-by: Helm
   name: dex
   namespace: sso
@@ -15,9 +15,9 @@ kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: dex
-    helm.sh/chart: dex-2.10.0
+    helm.sh/chart: dex-2.13.0
     app.kubernetes.io/instance: dex
-    app.kubernetes.io/version: 2.23.0
+    app.kubernetes.io/version: 2.24.0
     app.kubernetes.io/managed-by: Helm
   name: dex
   namespace: sso
@@ -40,9 +40,9 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     app.kubernetes.io/name: dex
-    helm.sh/chart: dex-2.10.0
+    helm.sh/chart: dex-2.13.0
     app.kubernetes.io/instance: dex
-    app.kubernetes.io/version: 2.23.0
+    app.kubernetes.io/version: 2.24.0
     app.kubernetes.io/managed-by: Helm
   name: dex
   namespace: sso
@@ -60,9 +60,9 @@ kind: Role
 metadata:
   labels:
     app.kubernetes.io/name: dex
-    helm.sh/chart: dex-2.10.0
+    helm.sh/chart: dex-2.13.0
     app.kubernetes.io/instance: dex
-    app.kubernetes.io/version: 2.23.0
+    app.kubernetes.io/version: 2.24.0
     app.kubernetes.io/managed-by: Helm
   name: dex
   namespace: sso
@@ -81,9 +81,9 @@ kind: RoleBinding
 metadata:
   labels:
     app.kubernetes.io/name: dex
-    helm.sh/chart: dex-2.10.0
+    helm.sh/chart: dex-2.13.0
     app.kubernetes.io/instance: dex
-    app.kubernetes.io/version: 2.23.0
+    app.kubernetes.io/version: 2.24.0
     app.kubernetes.io/managed-by: Helm
   name: dex
   namespace: sso
@@ -102,9 +102,9 @@ metadata:
   name: dex
   labels:
     app.kubernetes.io/name: dex
-    helm.sh/chart: dex-2.10.0
+    helm.sh/chart: dex-2.13.0
     app.kubernetes.io/instance: dex
-    app.kubernetes.io/version: 2.23.0
+    app.kubernetes.io/version: 2.24.0
     app.kubernetes.io/managed-by: Helm
   namespace: sso
 spec:
@@ -127,9 +127,9 @@ metadata:
   name: dex
   labels:
     app.kubernetes.io/name: dex
-    helm.sh/chart: dex-2.10.0
+    helm.sh/chart: dex-2.13.0
     app.kubernetes.io/instance: dex
-    app.kubernetes.io/version: 2.23.0
+    app.kubernetes.io/version: 2.24.0
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/component: dex
   namespace: sso
@@ -152,7 +152,7 @@ spec:
         app.kubernetes.io/instance: dex
         app.kubernetes.io/component: dex
       annotations:
-        checksum/config: e4bb6b690c7cd2e38f2cbc2e1f55d15f9024f609576a46c71ff0a6ea251281ad
+        checksum/config: f1dfa8323680bf4b237da40ab626fd265d3216a01f28860cc81fd672e98550bb
     spec:
       serviceAccountName: dex
       nodeSelector: {}

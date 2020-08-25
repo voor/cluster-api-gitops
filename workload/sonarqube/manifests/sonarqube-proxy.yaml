@@ -3,7 +3,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: oauth2-proxy
-    chart: oauth2-proxy-3.0.0
+    chart: oauth2-proxy-3.2.2
     release: sonarqube-proxy
     heritage: Helm
   name: sonarqube-proxy-oauth2-proxy
@@ -14,24 +14,20 @@ kind: ConfigMap
 metadata:
   labels:
     app: oauth2-proxy
-    chart: oauth2-proxy-3.0.0
+    chart: oauth2-proxy-3.2.2
     heritage: Helm
     release: sonarqube-proxy
   name: sonarqube-proxy-oauth2-proxy
   namespace: sonar
 data:
-  oauth2_proxy.cfg: "provider = \"oidc\"\nprovider_display_name = \"Dex\"\nredirect_url
-    = \"https://sonar.apps.tanzu.world/oauth2/callback\"\nupstreams = [ \"http://sonarqube-sonarqube:9000\"
-    ]\noidc_issuer_url = \"https://login.sso.tanzu.world\"\npass_basic_auth = true\npass_user_headers
-    = true\npass_host_header = true \nssl_insecure_skip_verify = true\nemail_domains
-    = [\n    \"*\"\n]"
+  oauth2_proxy.cfg: "provider = \"oidc\"\nprovider_display_name = \"Dex\"\nredirect_url = \"https://sonar.apps.tanzu.world/oauth2/callback\"\nupstreams = [ \"http://sonarqube-sonarqube:9000\" ]\noidc_issuer_url = \"https://login.sso.tanzu.world\"\npass_basic_auth = true\npass_user_headers = true\npass_host_header = true \nssl_insecure_skip_verify = true\nemail_domains = [\n    \"*\"\n]"
 ---
 apiVersion: v1
 kind: Service
 metadata:
   labels:
     app: oauth2-proxy
-    chart: oauth2-proxy-3.0.0
+    chart: oauth2-proxy-3.2.2
     release: sonarqube-proxy
     heritage: Helm
   name: sonarqube-proxy-oauth2-proxy
@@ -52,7 +48,7 @@ kind: Deployment
 metadata:
   labels:
     app: oauth2-proxy
-    chart: oauth2-proxy-3.0.0
+    chart: oauth2-proxy-3.2.2
     heritage: Helm
     release: sonarqube-proxy
   name: sonarqube-proxy-oauth2-proxy
@@ -66,7 +62,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 22ae6e28373cc89b36f39dacecc61c3fb96967ecefa1051deb89386514d1e583
+        checksum/config: 17884b10fdab6b8a15222151f511c403b0c0aadc783970aabb7e935a1056ee03
         checksum/config-emails: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
         checksum/secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
         checksum/google-secret: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855

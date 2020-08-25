@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: sonarqube-db-postgresql-headless
   labels:
-    app: postgresql
-    chart: postgresql-8.9.4
-    release: sonarqube-db
-    heritage: Helm
+    app.kubernetes.io/name: postgresql
+    helm.sh/chart: postgresql-9.3.2
+    app.kubernetes.io/instance: sonarqube-db
+    app.kubernetes.io/managed-by: Helm
   namespace: sonar
 spec:
   type: ClusterIP
@@ -16,18 +16,18 @@ spec:
     port: 5432
     targetPort: tcp-postgresql
   selector:
-    app: postgresql
-    release: sonarqube-db
+    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/instance: sonarqube-db
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: sonarqube-db-postgresql
   labels:
-    app: postgresql
-    chart: postgresql-8.9.4
-    release: sonarqube-db
-    heritage: Helm
+    app.kubernetes.io/name: postgresql
+    helm.sh/chart: postgresql-9.3.2
+    app.kubernetes.io/instance: sonarqube-db
+    app.kubernetes.io/managed-by: Helm
   annotations: null
   namespace: sonar
 spec:
@@ -37,8 +37,8 @@ spec:
     port: 5432
     targetPort: tcp-postgresql
   selector:
-    app: postgresql
-    release: sonarqube-db
+    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/instance: sonarqube-db
     role: master
 ---
 apiVersion: apps/v1
@@ -46,10 +46,10 @@ kind: StatefulSet
 metadata:
   name: sonarqube-db-postgresql
   labels:
-    app: postgresql
-    chart: postgresql-8.9.4
-    release: sonarqube-db
-    heritage: Helm
+    app.kubernetes.io/name: postgresql
+    helm.sh/chart: postgresql-9.3.2
+    app.kubernetes.io/instance: sonarqube-db
+    app.kubernetes.io/managed-by: Helm
   annotations: null
   namespace: sonar
 spec:
@@ -59,17 +59,17 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: postgresql
-      release: sonarqube-db
+      app.kubernetes.io/name: postgresql
+      app.kubernetes.io/instance: sonarqube-db
       role: master
   template:
     metadata:
       name: sonarqube-db-postgresql
       labels:
-        app: postgresql
-        chart: postgresql-8.9.4
-        release: sonarqube-db
-        heritage: Helm
+        app.kubernetes.io/name: postgresql
+        helm.sh/chart: postgresql-9.3.2
+        app.kubernetes.io/instance: sonarqube-db
+        app.kubernetes.io/managed-by: Helm
         role: master
     spec:
       securityContext:
@@ -93,6 +93,11 @@ spec:
           value: /bitnami/postgresql
         - name: PGDATA
           value: /bitnami/postgresql/data
+        - name: POSTGRES_POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sonarqube-passwords
+              key: postgresql-postgres-password
         - name: POSTGRES_USER
           value: sonarUser
         - name: POSTGRES_PASSWORD
@@ -104,6 +109,8 @@ spec:
           value: sonarDB
         - name: POSTGRESQL_ENABLE_LDAP
           value: "no"
+        - name: POSTGRESQL_ENABLE_TLS
+          value: "no"
         ports:
         - name: tcp-postgresql
           containerPort: 5432
@@ -112,7 +119,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - exec pg_isready -U "sonarUser" -d "sonarDB" -h 127.0.0.1 -p 5432
+            - exec pg_isready -U "sonarUser" -d "dbname=sonarDB" -h 127.0.0.1 -p 5432
           initialDelaySeconds: 30
           periodSeconds: 10
           timeoutSeconds: 5
@@ -125,7 +132,7 @@ spec:
             - -c
             - -e
             - |
-              exec pg_isready -U "sonarUser" -d "sonarDB" -h 127.0.0.1 -p 5432
+              exec pg_isready -U "sonarUser" -d "dbname=sonarDB" -h 127.0.0.1 -p 5432
               [ -f /opt/bitnami/postgresql/tmp/.initialized ] || [ -f /bitnami/postgresql/.initialized ]
           initialDelaySeconds: 5
           periodSeconds: 10
