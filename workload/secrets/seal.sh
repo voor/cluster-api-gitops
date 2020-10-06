@@ -9,5 +9,5 @@ do
     sealed=${nopath%.yaml} # Removes yaml at the end
     outputfolder=${sealed%.*} # Removes optional numbering
     output=${outputfolder%-config} # Remove config at the end.
-    kubectl create -f ${secret} --dry-run=client -o json | kubeseal --cert workload-secrets.pem -o yaml > ${output}/manifests/${sealed}.sealed.yaml
+    kubeseal --cert workload-secrets.pem -o yaml > ${output}/manifests/${sealed}.sealed.yaml < ${secret}
 done
