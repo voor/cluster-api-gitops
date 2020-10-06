@@ -114,6 +114,14 @@ spec:
 
 ---
 
+#@overlay/match by=overlay.subset({"kind":"AWSCluster"})
+---
+spec:
+  networkSpec:
+    #@overlay/match missing_ok=True
+    #@overlay/replace
+    subnets: []
+
 #@overlay/match by=overlay.subset({"kind":"KubeadmControlPlane"})
 ---
 spec:

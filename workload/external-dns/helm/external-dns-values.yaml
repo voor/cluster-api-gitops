@@ -7,7 +7,11 @@ provider: aws
 # provider: cloudflare
 
 sources:
+  - crd
   - service
+
+crd:
+  create: true
 
 aws:
   region: I-am-replaced-by-an-overlay-by-ytt

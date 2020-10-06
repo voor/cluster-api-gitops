@@ -48,12 +48,22 @@ rebaseRules:
   sources: [new, existing]
   resourceMatchers: *awscluster
 
+- path: [spec, networkSpec, subnets, {allIndexes: true}, cidrBlock]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers: *awscluster
+
 - path: [spec, networkSpec, vpc, id]
   type: copy
   sources: [new, existing]
   resourceMatchers: *awscluster
 
 - path: [spec, networkSpec, vpc, internetGatewayId]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers: *awscluster
+
+- path: [spec, networkSpec, vpc, cidrBlock]
   type: copy
   sources: [new, existing]
   resourceMatchers: *awscluster

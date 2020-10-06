@@ -8,7 +8,7 @@ spec:
   fetch:
   - git:
       url: https://github.com/voor/cluster-api-gitops
-      ref: origin/master
+      ref: origin/default
       subPath: workload/deploy
       secretRef:
         name: #@ data.values.git.secretRef
