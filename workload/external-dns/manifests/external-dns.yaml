@@ -311,16 +311,27 @@ spec:
         - --log-level=info
         - --log-format=text
         - --policy=upsert-only
-        - --provider=aws
+        - --provider=cloudflare
         - --registry=txt
         - --interval=1m
         - --txt-prefix=txt
         - --source=crd
         - --source=service
         - --source=contour-httpproxy
-        - --aws-batch-change-size=1000
         env:
-        - name: AWS_DEFAULT_REGION
+        - name: CF_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: cloudflare-api
+              key: cloudflare_api_token
+              optional: true
+        - name: CF_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: cloudflare-api
+              key: cloudflare_api_key
+              optional: true
+        - name: CF_API_EMAIL
           value: I-am-replaced-by-an-overlay-by-ytt
         ports:
         - name: http

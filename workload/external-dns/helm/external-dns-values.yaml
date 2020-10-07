@@ -3,8 +3,8 @@
 #   repository: bitnami/external-dns
 #   tag: 0.7.3-debian-10-r0
 
-provider: aws
-# provider: cloudflare
+# provider: aws
+provider: cloudflare
 
 sources:
   - crd
@@ -20,6 +20,7 @@ aws:
 cloudflare:
   secretName: cloudflare-api
   email: I-am-replaced-by-an-overlay-by-ytt
+  proxied: false
 
 txtPrefix: txt
 
