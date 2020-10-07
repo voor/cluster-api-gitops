@@ -1,7 +1,7 @@
-image:
-  registry: docker.io
-  repository: bitnami/external-dns
-  tag: 0.7.3-debian-10-r0
+# image:
+#   registry: docker.io
+#   repository: bitnami/external-dns
+#   tag: 0.7.3-debian-10-r0
 
 provider: aws
 # provider: cloudflare

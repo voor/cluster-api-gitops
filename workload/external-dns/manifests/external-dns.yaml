@@ -4,7 +4,7 @@ metadata:
   name: external-dns
   labels:
     app.kubernetes.io/name: external-dns
-    helm.sh/chart: external-dns-3.4.0
+    helm.sh/chart: external-dns-3.4.5
     app.kubernetes.io/instance: external-dns
     app.kubernetes.io/managed-by: Helm
   namespace: external-dns
@@ -47,7 +47,7 @@ metadata:
   name: external-dns
   labels:
     app.kubernetes.io/name: external-dns
-    helm.sh/chart: external-dns-3.4.0
+    helm.sh/chart: external-dns-3.4.5
     app.kubernetes.io/instance: external-dns
     app.kubernetes.io/managed-by: Helm
   namespace: external-dns
@@ -122,7 +122,7 @@ metadata:
   name: external-dns
   labels:
     app.kubernetes.io/name: external-dns
-    helm.sh/chart: external-dns-3.4.0
+    helm.sh/chart: external-dns-3.4.5
     app.kubernetes.io/instance: external-dns
     app.kubernetes.io/managed-by: Helm
   namespace: external-dns
@@ -192,7 +192,7 @@ metadata:
   name: external-dns-psp
   labels:
     app.kubernetes.io/name: external-dns
-    helm.sh/chart: external-dns-3.4.0
+    helm.sh/chart: external-dns-3.4.5
     app.kubernetes.io/instance: external-dns
     app.kubernetes.io/managed-by: Helm
   namespace: external-dns
@@ -212,7 +212,7 @@ metadata:
   name: external-dns
   labels:
     app.kubernetes.io/name: external-dns
-    helm.sh/chart: external-dns-3.4.0
+    helm.sh/chart: external-dns-3.4.5
     app.kubernetes.io/instance: external-dns
     app.kubernetes.io/managed-by: Helm
   namespace: external-dns
@@ -231,7 +231,7 @@ metadata:
   name: external-dns-psp
   labels:
     app.kubernetes.io/name: external-dns
-    helm.sh/chart: external-dns-3.4.0
+    helm.sh/chart: external-dns-3.4.5
     app.kubernetes.io/instance: external-dns
     app.kubernetes.io/managed-by: Helm
   namespace: external-dns
@@ -250,7 +250,7 @@ metadata:
   name: external-dns
   labels:
     app.kubernetes.io/name: external-dns
-    helm.sh/chart: external-dns-3.4.0
+    helm.sh/chart: external-dns-3.4.5
     app.kubernetes.io/instance: external-dns
     app.kubernetes.io/managed-by: Helm
   namespace: external-dns
@@ -271,7 +271,7 @@ metadata:
   name: external-dns
   labels:
     app.kubernetes.io/name: external-dns
-    helm.sh/chart: external-dns-3.4.0
+    helm.sh/chart: external-dns-3.4.5
     app.kubernetes.io/instance: external-dns
     app.kubernetes.io/managed-by: Helm
   namespace: external-dns
@@ -285,7 +285,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: external-dns
-        helm.sh/chart: external-dns-3.4.0
+        helm.sh/chart: external-dns-3.4.5
         app.kubernetes.io/instance: external-dns
         app.kubernetes.io/managed-by: Helm
       annotations:
@@ -297,7 +297,7 @@ spec:
       serviceAccountName: external-dns
       containers:
       - name: external-dns
-        image: docker.io/bitnami/external-dns:0.7.3-debian-10-r0
+        image: docker.io/bitnami/external-dns:0.7.4-debian-10-r0
         imagePullPolicy: IfNotPresent
         args:
         - --log-level=info
@@ -344,7 +344,7 @@ metadata:
   namespace: monitoring
   labels:
     app.kubernetes.io/name: external-dns
-    helm.sh/chart: external-dns-3.4.0
+    helm.sh/chart: external-dns-3.4.5
     app.kubernetes.io/instance: external-dns
     app.kubernetes.io/managed-by: Helm
 spec:
