@@ -1,3 +1,6 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
 ---
 apiVersion: projectcontour.io/v1
 kind: TLSCertificateDelegation
@@ -6,7 +9,7 @@ metadata:
   namespace: apps
 spec:
   delegations:
-    - secretName: apps.tanzu.world
+    - secretName: #@ "apps.{}".format(data.values.domain)
       targetNamespaces:
         - "*"
 ---
@@ -17,6 +20,6 @@ metadata:
   namespace: default
 spec:
   delegations:
-    - secretName: default.tanzu.world
+    - secretName: #@ "default.{}".format(data.values.domain)
       targetNamespaces:
         - "*"
