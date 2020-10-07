@@ -1,7 +1,7 @@
 apiVersion: kappctrl.k14s.io/v1alpha1
 kind: App
 metadata:
-  name: watersafety-postcreate
+  name: liquidsafety-postcreate
   namespace: workload-clusters
   annotations:
     kapp.k14s.io/change-group: gitops.tanzu.vmware.com/cni
@@ -10,13 +10,13 @@ spec:
   cluster:
     namespace: kube-system
     kubeconfigSecretRef:
-      name: watersafety-kubeconfig
+      name: liquidsafety-kubeconfig
       key: value
   fetch:
   - inline:
       pathsFrom:
       - secretRef:
-          name: watersafety-postcreate
+          name: liquidsafety-postcreate
   template:
   - ytt:
       ignoreUnknownComments: true
@@ -26,7 +26,7 @@ spec:
 apiVersion: kappctrl.k14s.io/v1alpha1
 kind: App
 metadata:
-  name: watersafety-kapp-controller
+  name: liquidsafety-kapp-controller
   namespace: workload-clusters
   annotations:
     kapp.k14s.io/change-group: gitops.tanzu.vmware.com/kapp-controller
@@ -35,7 +35,7 @@ spec:
   cluster:
     namespace: kube-system
     kubeconfigSecretRef:
-      name: watersafety-kubeconfig
+      name: liquidsafety-kubeconfig
       key: value
   fetch:
   - git:
@@ -62,7 +62,7 @@ spec:
 apiVersion: kappctrl.k14s.io/v1alpha1
 kind: App
 metadata:
-  name: watersafety-apps
+  name: liquidsafety-apps
   namespace: workload-clusters
   annotations:
     kapp.k14s.io/change-group: gitops.tanzu.vmware.com/remote-apps
@@ -73,7 +73,7 @@ spec:
   cluster:
     namespace: kapp-controller
     kubeconfigSecretRef:
-      name: watersafety-kubeconfig
+      name: liquidsafety-kubeconfig
       key: value
   fetch:
   - git:
@@ -91,7 +91,7 @@ spec:
 apiVersion: cluster.x-k8s.io/v1alpha3
 kind: Cluster
 metadata:
-  name: watersafety
+  name: liquidsafety
   namespace: workload-clusters
 spec:
   clusterNetwork:
@@ -101,16 +101,16 @@ spec:
   controlPlaneRef:
     apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
     kind: KubeadmControlPlane
-    name: watersafety-control-plane
+    name: liquidsafety-control-plane
   infrastructureRef:
     apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
     kind: AWSCluster
-    name: watersafety
+    name: liquidsafety
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
 kind: AWSCluster
 metadata:
-  name: watersafety
+  name: liquidsafety
   namespace: workload-clusters
 spec:
   bastion:
@@ -126,13 +126,13 @@ spec:
 apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
 kind: KubeadmControlPlane
 metadata:
-  name: watersafety-control-plane
+  name: liquidsafety-control-plane
   namespace: workload-clusters
 spec:
   infrastructureTemplate:
     apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
     kind: AWSMachineTemplate
-    name: watersafety-control-plane
+    name: liquidsafety-control-plane
   kubeadmConfigSpec:
     clusterConfiguration:
       apiServer:
@@ -141,7 +141,7 @@ spec:
           tls-cipher-suites: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384
         timeoutForControlPlane: 8m0s
         certSANs:
-        - watersafety.cluster.tanzu.world
+        - liquidsafety.cluster.tanzu.world
       controllerManager:
         extraArgs:
           cloud-provider: aws
@@ -181,7 +181,7 @@ spec:
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
 kind: AWSMachineTemplate
 metadata:
-  name: watersafety-control-plane
+  name: liquidsafety-control-plane
   namespace: workload-clusters
 spec:
   template:
@@ -197,7 +197,7 @@ spec:
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
 kind: AWSMachineTemplate
 metadata:
-  name: watersafety-md-0
+  name: liquidsafety-md-0
   namespace: workload-clusters
 spec:
   template:
@@ -213,7 +213,7 @@ spec:
 apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
 kind: KubeadmConfigTemplate
 metadata:
-  name: watersafety-md-0
+  name: liquidsafety-md-0
   namespace: workload-clusters
 spec:
   template:
@@ -229,42 +229,42 @@ spec:
 apiVersion: cluster.x-k8s.io/v1alpha3
 kind: MachineDeployment
 metadata:
-  name: watersafety-md-0
+  name: liquidsafety-md-0
   namespace: workload-clusters
 spec:
-  clusterName: watersafety
+  clusterName: liquidsafety
   replicas: 1
   selector:
     matchLabels:
-      node-pool: watersafety-worker-pool
+      node-pool: liquidsafety-worker-pool
   template:
     metadata:
       labels:
-        node-pool: watersafety-worker-pool
+        node-pool: liquidsafety-worker-pool
     spec:
       bootstrap:
         configRef:
           apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
           kind: KubeadmConfigTemplate
-          name: watersafety-md-0
-      clusterName: watersafety
+          name: liquidsafety-md-0
+      clusterName: liquidsafety
       infrastructureRef:
         apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
         kind: AWSMachineTemplate
-        name: watersafety-md-0
+        name: liquidsafety-md-0
       version: v1.18.6+vmware.1
 ---
 apiVersion: cluster.x-k8s.io/v1alpha3
 kind: MachineHealthCheck
 metadata:
-  name: watersafety
+  name: liquidsafety
   namespace: workload-clusters
 spec:
-  clusterName: watersafety
+  clusterName: liquidsafety
   nodeStartupTimeout: 20m
   selector:
     matchLabels:
-      node-pool: watersafety-worker-pool
+      node-pool: liquidsafety-worker-pool
   unhealthyConditions:
   - status: Unknown
     timeout: 5m
@@ -276,7 +276,7 @@ spec:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: watersafety-postcreate
+  name: liquidsafety-postcreate
   namespace: workload-clusters
 stringData:
   calico.yml: |
