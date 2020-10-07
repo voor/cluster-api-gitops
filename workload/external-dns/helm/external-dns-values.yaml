@@ -9,6 +9,7 @@ provider: aws
 sources:
   - crd
   - service
+  - contour-httpproxy
 
 crd:
   create: true

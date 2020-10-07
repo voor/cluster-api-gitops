@@ -179,6 +179,14 @@ rules:
   - get
   - list
   - watch
+- apiGroups: 
+  - projectcontour.io
+  resources:
+  - httpproxies
+  verbs: 
+  - get
+  - watch
+  - list
 - apiGroups:
   - externaldns.k8s.io
   resources:
@@ -309,6 +317,7 @@ spec:
         - --txt-prefix=txt
         - --source=crd
         - --source=service
+        - --source=contour-httpproxy
         - --aws-batch-change-size=1000
         env:
         - name: AWS_DEFAULT_REGION
