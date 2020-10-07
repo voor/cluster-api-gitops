@@ -20,6 +20,13 @@ spec:
     #@overlay/match missing_ok=True
     enabled: false
 
+#@overlay/match by=overlay.subset({"kind":"AWSMachineTemplate"}),expects="0+"
+---
+spec:
+  template:
+    spec:
+      sshKeyName: #@ data.values.aws.sshKeyName
+      
 #@overlay/match by=overlay.subset({"kind":"KubeadmControlPlane"}),expects="0+"
 ---
 spec:
