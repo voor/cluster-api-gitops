@@ -53,9 +53,6 @@ spec:
             #@data/values
             ---
             clusteradminrole: true
-        pathsFrom:
-        - secretRef:
-            name: workload-clusters-secrets
   deploy:
   - kapp: {}
 ---
@@ -83,6 +80,10 @@ spec:
       secretRef:
         name: management-git-secret
   template:
+  - sops:
+      pgp:
+        privateKeysSecretRef:
+          name: pgp-key
   - ytt:
       ignoreUnknownComments: true
   deploy:
