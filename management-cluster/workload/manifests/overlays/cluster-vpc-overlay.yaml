@@ -13,6 +13,8 @@ spec:
   region: #@ data.values.aws.region
   sshKeyName: #@ data.values.aws.sshKeyName
   networkSpec:
+    #@overlay/match missing_ok=True
+    subnets: #@ data.values.aws.subnets
     vpc:
       #@overlay/match missing_ok=True
       id: #@ data.values.aws.vpc.id
