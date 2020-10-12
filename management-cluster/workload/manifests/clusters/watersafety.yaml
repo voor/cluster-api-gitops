@@ -13,10 +13,12 @@ spec:
       name: watersafety-kubeconfig
       key: value
   fetch:
-  - inline:
-      pathsFrom:
-      - secretRef:
-          name: watersafety-postcreate
+  - git:
+      url: https://github.com/voor/cluster-api-gitops
+      ref: origin/default
+      subPath: workload/calico/manifests
+      secretRef:
+        name: management-git-secret
   template:
   - ytt:
       ignoreUnknownComments: true
