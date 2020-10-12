@@ -14,7 +14,12 @@ spec:
   sshKeyName: #@ data.values.aws.sshKeyName
   networkSpec:
     #@overlay/match missing_ok=True
-    subnets: #@ data.values.aws.subnets
+    subnets:
+    #@ for subnet in data.values.aws.subnets:
+    #@overlay/match by="id", missing_ok=True
+    #@overlay/match-child-defaults missing_ok=True
+    - #@ subnet
+    #@ end
     vpc:
       #@overlay/match missing_ok=True
       id: #@ data.values.aws.vpc.id
