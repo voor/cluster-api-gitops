@@ -178,7 +178,7 @@ spec:
           tls-cipher-suites: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
         name: '{{ ds.meta_data.local_hostname }}'
     useExperimentalRetryJoin: true
-  replicas: 3
+  replicas: 1
   version: v1.18.6+vmware.1
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
