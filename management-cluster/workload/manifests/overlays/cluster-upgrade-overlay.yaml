@@ -4,12 +4,11 @@
 #@overlay/match by=overlay.subset({"kind":"AWSMachineTemplate"}),expects="0+"
 ---
 metadata:
-  #@overlay/replace via=lambda old,new: old+"-"+new
-  name: #@ data.values.aws.ami.id
   #@overlay/match missing_ok=True
   annotations:
-    #@overlay/match missing_ok=True
     kapp.k14s.io/delete-strategy: "orphan"
+    kapp.k14s.io/versioned: ""
+    kapp.k14s.io/num-versions: "10"
 spec:
   template:
     spec:
@@ -23,12 +22,8 @@ spec:
 metadata:
   #@overlay/match missing_ok=True
   annotations:
-    #@overlay/match missing_ok=True
     kapp.k14s.io/delete-strategy: "orphan"
 spec:
-  infrastructureTemplate:
-    #@overlay/replace via=lambda old,new: old+"-"+new
-    name: #@ data.values.aws.ami.id
   kubeadmConfigSpec:
     clusterConfiguration:
       dns:
@@ -48,15 +43,12 @@ spec:
   template:
     spec:
       version: #@ data.values.kubeadmConfigSpec.kubernetesVersion
-      infrastructureRef:
-        #@overlay/match missing_ok=True
-        #@overlay/replace via=lambda old,new: old+"-"+new
-        name: #@ data.values.aws.ami.id
 
 #@overlay/match by=overlay.subset({"kind":"KubeadmConfigTemplate"}),expects="0+"
 ---
 metadata:
   #@overlay/match missing_ok=True
   annotations:
-    #@overlay/match missing_ok=True
     kapp.k14s.io/delete-strategy: "orphan"
+    kapp.k14s.io/versioned: ""
+    kapp.k14s.io/num-versions: "10"

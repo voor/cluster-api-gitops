@@ -115,13 +115,13 @@ kind: AWSCluster
 metadata:
   name: watersafety
   namespace: workload-clusters
+  annotations: {}
 spec:
   bastion:
     enabled: false
   networkSpec:
     subnets: []
     vpc:
-      cidrBlock: ""
       id: overriden
   region: us-gov-west-1
   sshKeyName: overridden

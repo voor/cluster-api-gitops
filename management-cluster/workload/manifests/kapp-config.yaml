@@ -1,6 +1,25 @@
 apiVersion: kapp.k14s.io/v1alpha1
 kind: Config
 
+templateRules:
+- resourceMatchers:
+  - apiVersionKindMatcher: {apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3, kind: AWSMachineTemplate}
+  affectedResources:
+    objectReferences:
+    - path: [spec, infrastructureTemplate]
+      resourceMatchers:
+      - apiVersionKindMatcher: {apiVersion: controlplane.cluster.x-k8s.io/v1alpha3, kind: KubeadmControlPlane}
+    - path: [spec, template, spec, infrastructureRef]
+      resourceMatchers:
+      - apiVersionKindMatcher: {apiVersion: cluster.x-k8s.io/v1alpha3, kind: MachineDeployment}
+- resourceMatchers:
+  - apiVersionKindMatcher: {apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3, kind: KubeadmConfigTemplate}
+  affectedResources:
+    objectReferences:
+    - path: [spec, template, spec, bootstrap, configRef]
+      resourceMatchers:
+      - apiVersionKindMatcher: {apiVersion: cluster.x-k8s.io/v1alpha3, kind: MachineDeployment}
+
 rebaseRules:
 
 # cluster
@@ -19,6 +38,11 @@ rebaseRules:
   - apiVersionKindMatcher: {apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3, kind: AWSCluster}
 
 - path: [metadata, labels, cluster.x-k8s.io/cluster-name]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers: *awscluster
+
+- path: [spec, bastion, allowedCIDRBlocks]
   type: copy
   sources: [new, existing]
   resourceMatchers: *awscluster
@@ -53,12 +77,27 @@ rebaseRules:
   sources: [new, existing]
   resourceMatchers: *awscluster
 
+- path: [spec, networkSpec, subnets, {allIndexes: true}, availabilityZone]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers: *awscluster
+
 - path: [spec, networkSpec, vpc, id]
   type: copy
   sources: [new, existing]
   resourceMatchers: *awscluster
 
 - path: [spec, networkSpec, vpc, internetGatewayId]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers: *awscluster
+
+- path: [spec, networkSpec, vpc, availabilityZoneSelection]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers: *awscluster
+
+- path: [spec, networkSpec, vpc, availabilityZoneUsageLimit]
   type: copy
   sources: [new, existing]
   resourceMatchers: *awscluster
@@ -72,6 +111,12 @@ rebaseRules:
   type: copy
   sources: [new, existing]
   resourceMatchers: *awscluster
+
+- path: [spec, networkSpec, cni, cniIngressRules]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers: *awscluster
+
 
 # control plane
 - path: [metadata, labels, cluster.x-k8s.io/cluster-name]
