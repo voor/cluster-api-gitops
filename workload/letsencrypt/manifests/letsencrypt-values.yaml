@@ -6,3 +6,5 @@ acme_url: ""
 domain: ""
 
 cloudflare_token: ""
+
+monitoring_enabled: false

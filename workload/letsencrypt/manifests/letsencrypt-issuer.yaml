@@ -71,6 +71,8 @@ spec:
     kind: ClusterIssuer
   dnsNames:
   - #@ "*.sso.{}".format(data.values.domain)
+
+#@ if data.values.monitoring_enabled:
 ---
 apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
@@ -84,6 +86,8 @@ spec:
     kind: ClusterIssuer
   dnsNames:
   - #@ "*.monitoring.{}".format(data.values.domain)
+#@ end
+
 ---
 apiVersion: v1
 kind: Secret
