@@ -1,0 +1,26 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind":"CustomResourceDefinition"}),expects="0+"
+---
+spec:
+  #@overlay/match missing_ok=True
+  conversion:
+    #@overlay/match missing_ok=True
+    webhook:
+      #@overlay/match missing_ok=True
+      clientConfig:
+        #@overlay/remove
+        caBundle:
+
+#@overlay/remove
+status:
+
+#@overlay/match by=overlay.subset({"kind":"ValidatingWebhookConfiguration"}),expects="0+"
+---
+#@overlay/match missing_ok=True
+webhooks:
+#@overlay/match by=overlay.all,expects="1+"
+- clientConfig:
+    #@overlay/remove
+    caBundle:
