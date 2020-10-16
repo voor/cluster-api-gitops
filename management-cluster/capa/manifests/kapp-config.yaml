@@ -4,92 +4,17 @@ kind: Config
 rebaseRules:
 
 # clusterctl label
-- path: [metadata, labels, clusterctl.cluster.x-k8s.io]
+- paths:
+  - [metadata, labels, clusterctl.cluster.x-k8s.io]
+  - [metadata, labels, clusterctl.cluster.x-k8s.io/lifecycle]
   type: copy
   sources: [new, existing]
-  resourceMatchers: &group
+  resourceMatchers:
   - allMatcher: {}
-  # - apiVersionKindMatcher: {apiVersion: apiextensions.k8s.io/v1beta1, kind: CustomResourceDefinition}
-  # - apiVersionKindMatcher: {apiVersion: apiextensions.k8s.io/v1, kind: CustomResourceDefinition}
-  # - apiVersionKindMatcher: {apiVersion: v1, kind: Namespace}
-  # - apiVersionKindMatcher: {apiVersion: rbac.authorization.k8s.io/v1, kind: ClusterRole}
-  # - apiVersionKindMatcher: {apiVersion: rbac.authorization.k8s.io/v1, kind: Role}
-  # - apiVersionKindMatcher: {apiVersion: rbac.authorization.k8s.io/v1, kind: ClusterRoleBinding}
-  # - apiVersionKindMatcher: {apiVersion: rbac.authorization.k8s.io/v1, kind: RoleBinding}
-
-- path: [metadata, labels, clusterctl.cluster.x-k8s.io/lifecycle]
-  type: copy
-  sources: [new, existing]
-  resourceMatchers: *group
-
-# crd conversions
-- path: [spec, conversion, conversionReviewVersions]
-  type: copy
-  sources: [new, existing]
-  resourceMatchers: &crd
-  - apiVersionKindMatcher: {apiVersion: apiextensions.k8s.io/v1, kind: CustomResourceDefinition}
-
-- path: [spec, conversion, webhookClientConfig, service, port]
-  type: copy
-  sources: [new, existing]
-  resourceMatchers: *crd
-
-- path: [spec, conversion, webhookClientConfig, caBundle]
-  type: copy
-  sources: [new, existing]
-  resourceMatchers: *crd
-
-- path: [spec, version]
-  type: copy
-  sources: [new, existing]
-  resourceMatchers: *crd
-
-- path: [spec, conversion, webhook, clientConfig, service, port]
-  type: copy
-  sources: [new, existing]
-  resourceMatchers: *crd
-
+  
 # ignore bootstrap credentials, they are dynamically updated
 - path: [data, credentials]
   type: copy
   sources: [existing]
   resourceMatchers:
   - kindNamespaceNameMatcher: {kind: Secret, namespace: capa-system, name: capa-manager-bootstrap-credentials}
-
-- path: [webhooks, {allIndexes: true}, admissionReviewVersions]
-  type: copy
-  sources: [new, existing]
-  resourceMatchers: &webhookconfiguration
-  - apiVersionKindMatcher: {apiVersion: admissionregistration.k8s.io/v1beta1, kind: ValidatingWebhookConfiguration}
-  - apiVersionKindMatcher: {apiVersion: admissionregistration.k8s.io/v1beta1, kind: MutatingWebhookConfiguration}
-
-- path: [webhooks, {allIndexes: true}, namespaceSelector]
-  type: copy
-  sources: [new, existing]
-  resourceMatchers: *webhookconfiguration
-
-- path: [webhooks, {allIndexes: true}, objectSelector]
-  type: copy
-  sources: [new, existing]
-  resourceMatchers: *webhookconfiguration
-
-- path: [webhooks, {allIndexes: true}, clientConfig, service, port]
-  type: copy
-  sources: [new, existing]
-  resourceMatchers: *webhookconfiguration
-
-- path: [webhooks, {allIndexes: true}, clientConfig, caBundle]
-  type: copy
-  sources: [new, existing]
-  resourceMatchers: *webhookconfiguration
-
-
-- path: [webhooks, {allIndexes: true}, rules, {allIndexes: true}, scope]
-  type: copy
-  sources: [new, existing]
-  resourceMatchers: *webhookconfiguration
-
-- path: [webhooks, {allIndexes: true}, timeoutSeconds]
-  type: copy
-  sources: [new, existing]
-  resourceMatchers: *webhookconfiguration
