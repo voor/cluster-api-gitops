@@ -18,9 +18,34 @@ status:
 
 #@overlay/match by=overlay.subset({"kind":"ValidatingWebhookConfiguration"}),expects="0+"
 ---
+metadata:
+  #@overlay/remove
+  creationTimestamp:
 #@overlay/match missing_ok=True
 webhooks:
 #@overlay/match by=overlay.all,expects="1+"
 - clientConfig:
     #@overlay/remove
     caBundle:
+
+#@overlay/match by=overlay.subset({"kind":"MutatingWebhookConfiguration"}),expects="0+"
+---
+metadata:
+  #@overlay/remove
+  creationTimestamp:
+#@overlay/match missing_ok=True
+webhooks:
+#@overlay/match by=overlay.all,expects="1+"
+- clientConfig:
+    #@overlay/remove
+    caBundle:
+
+
+#! #@overlay/match by=overlay.subset({"kind":"Deployment"}),expects="0+"
+#! ---
+#! spec:
+#!   template:
+#!     spec:
+#!       metadata:
+#!         #@overlay/remove
+#!         creationTimestamp:
