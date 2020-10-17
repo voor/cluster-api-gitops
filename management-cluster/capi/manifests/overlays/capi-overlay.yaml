@@ -4,11 +4,11 @@
 #@overlay/match by=overlay.subset({"kind":"CustomResourceDefinition"}),expects="0+"
 ---
 spec:
-  #@overlay/match missing_ok=True
+  #@overlay/match when=1
   conversion:
-    #@overlay/match missing_ok=True
+    #@overlay/match when=1
     webhook:
-      #@overlay/match missing_ok=True
+      #@overlay/match when=1
       clientConfig:
         #@overlay/remove
         caBundle:
@@ -24,3 +24,73 @@ webhooks:
 - clientConfig:
     #@overlay/remove
     caBundle:
+
+#@overlay/match by=overlay.subset({"kind":"MutatingWebhookConfiguration"}),expects="0+"
+---
+metadata:
+  #@overlay/remove
+  creationTimestamp:
+#@overlay/match missing_ok=True
+webhooks:
+#@overlay/match by=overlay.all,expects="1+"
+- clientConfig:
+    #@overlay/remove
+    caBundle:
+
+#@ def capi_kubeadm_bootstrap():
+kind: Deployment
+metadata:
+  name: capi-kubeadm-bootstrap-controller-manager
+  namespace: capi-kubeadm-bootstrap-system
+#@ end
+
+#@ def capi_kubeadm_bootstrap_webhook():
+kind: Deployment
+metadata:
+  name: capi-kubeadm-bootstrap-controller-manager
+  namespace: capi-webhook-system
+#@ end
+
+#@ kubeadm_bootstrap = overlay.subset(capi_kubeadm_bootstrap())
+#@ kubeadm_bootstrap_webhook = overlay.subset(capi_kubeadm_bootstrap_webhook())
+
+#@overlay/match by=overlay.or_op(kubeadm_bootstrap, kubeadm_bootstrap_webhook),expects=2
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by="name"
+      - name: manager
+        args:
+        #@overlay/match by=lambda _,a,b: "--feature-gates=" in a, expects="0+"
+        - --feature-gates=MachinePool=false
+
+#@ def capi_controller():
+kind: Deployment
+metadata:
+  name: capi-controller-manager
+  namespace: capi-system
+#@ end
+
+#@ def capi_controller_webhook():
+kind: Deployment
+metadata:
+  name: capi-controller-manager
+  namespace: capi-webhook-system
+#@ end
+
+#@ capi_controller_manager = overlay.subset(capi_controller())
+#@ capi_controller_webhook = overlay.subset(capi_controller_webhook())
+
+#@overlay/match by=overlay.or_op(capi_controller_manager, capi_controller_webhook),expects=2
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by="name"
+      - name: manager
+        args:
+        #@overlay/match by=lambda _,a,b: "--feature-gates=" in a, expects="0+"
+        - --feature-gates=ClusterResourceSet=true,MachinePool=false

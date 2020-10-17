@@ -14,3 +14,13 @@ rebaseRules:
   type: copy
   sources: [new, existing]
   resourceMatchers: *group
+
+# ignore cluster role with aggregationRule
+- path: [rules]
+  type: copy
+  sources: [existing, new]
+  resourceMatchers:
+  - notMatcher:
+      matcher:
+        emptyFieldMatcher:
+          path: [aggregationRule]
