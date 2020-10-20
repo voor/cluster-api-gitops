@@ -23,8 +23,8 @@ aws:
   vpc:
     id: "vpc-077617e1cf2cfb9ac"
   subnets:
-  - id: subnet-0b9f0a52213fb7d93
-  - id: subnet-01f5b8ce2d88cfcce
+  - subnet-0b9f0a52213fb7d93
+  - subnet-01f5b8ce2d88cfcce
   ami:
     id: "ami-09cf13117b7a1e195"
 
