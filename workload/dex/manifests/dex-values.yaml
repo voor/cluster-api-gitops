@@ -1,6 +1,9 @@
 #@data/values
 ---
 
+foundation:
+  name: local
+  
 #! This is overridded by kapp controller.
 domain: ""
 

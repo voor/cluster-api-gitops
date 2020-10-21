@@ -1,4 +1,36 @@
+#@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:data", "data")
+#@ load("@ytt:struct", "struct")
+#@ load("@ytt:yaml", "yaml")
+#@ load("@ytt:library", "library")
+#@ load("@ytt:template", "template")
+
+#@ foundation = "dev"
+
+#@ secretConfig = "#@data/values\n---\n" + yaml.encode(library.get(foundation).eval())
+#@ 
+#@ config = overlay.apply(data.values, secretConfig)
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sso
+---
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: dex
+  namespace: sso
+spec:
+  virtualhost:
+    fqdn: #@ "login.sso.{}".format(config.domain)
+    tls:
+      secretName: #@ "sso/sso.{}".format(config.domain)
+  routes:
+    - services:
+        - name: dex
+          port: 32000
 
 ---
 apiVersion: v1
@@ -18,7 +50,7 @@ metadata:
 stringData:
   #@yaml/text-templated-strings
   config.yaml: |
-    issuer: https://login.sso.(@= data.values.domain @)
+    issuer: https://login.sso.(@= config.domain @)
     frontend:
       theme: tkg
     web:
@@ -40,37 +72,37 @@ stringData:
       id: github
       name: GitHub
       config:
-        clientID: (@= data.values.github_client_id @)
-        clientSecret: (@= data.values.github_client_secret @)
-        redirectURI: https://login.sso.(@= data.values.domain @)/callback
+        clientID: (@= config.github_client_id @)
+        clientSecret: (@= config.github_client_secret @)
+        redirectURI: https://login.sso.(@= config.domain @)/callback
         orgs: 
-        - name: (@= data.values.github_org @)
-        - name: (@= data.values.github_org @)-Teams
+        - name: (@= config.github_org @)
+        - name: (@= config.github_org @)-Teams
           teams:
-          - (@= data.values.github_team @)
+          - (@= config.github_team @)
     - type: saml
       id: saml
       name: SAML
       config:
-        ssoURL: (@= data.values.saml_url @)
-        caData: (@= data.values.saml_caData @)
+        ssoURL: (@= config.saml_url @)
+        caData: (@= config.saml_caData @)
         usernameAttr: name
         emailAttr: email
         groupsAttr: groups
-        redirectURI: https://login.sso.(@= data.values.domain @)/callback
+        redirectURI: https://login.sso.(@= config.domain @)/callback
     staticClients:
-    - id: (@= data.values.sonarqube_client_id @)
-      secret: (@= data.values.sonarqube_client_secret @)
+    - id: (@= config.sonarqube_client_id @)
+      secret: (@= config.sonarqube_client_secret @)
       name: 'SonarQube'
       redirectURIs:
-      - 'https://sonar.apps.(@= data.values.domain @)/oauth2/callback'
-    - id: (@= data.values.kuard_client_id @)
-      secret: (@= data.values.kuard_client_secret @)
+      - 'https://sonar.apps.(@= config.domain @)/oauth2/callback'
+    - id: (@= config.kuard_client_id @)
+      secret: (@= config.kuard_client_secret @)
       name: 'Kuard'
       redirectURIs:
-      - 'https://kuard.apps.(@= data.values.domain @)/oauth2/callback'
-    - id: (@= data.values.grafana_client_id @)
-      secret: (@= data.values.grafana_client_secret @)
+      - 'https://kuard.apps.(@= config.domain @)/oauth2/callback'
+    - id: (@= config.grafana_client_id @)
+      secret: (@= config.grafana_client_secret @)
       name: 'Grafana'
       redirectURIs:
-      - 'https://grafana.monitoring.(@= data.values.domain @)/login/generic_oauth'
+      - 'https://grafana.monitoring.(@= config.domain @)/login/generic_oauth'
