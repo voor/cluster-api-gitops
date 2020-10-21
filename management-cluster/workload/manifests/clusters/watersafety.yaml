@@ -208,7 +208,7 @@ spec:
       ami:
         id: ignored
       iamInstanceProfile: nodes.cluster-api-provider-aws.sigs.k8s.io
-      instanceType: m5.xlarge
+      instanceType: m5.large
       rootVolume:
         size: 80
       sshKeyName: overridden
