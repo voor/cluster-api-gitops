@@ -7,9 +7,10 @@
 
 #@ foundation = "dev"
 
-#@ secretConfig = "#@data/values\n---\n" + yaml.encode(library.get(foundation).eval())
+#@ secretConfig = library.get(foundation).eval()[0]
 #@ 
 #@ config = overlay.apply(data.values, secretConfig)
+#@ config = struct.encode(yaml.decode(yaml.encode(config)))
 
 ---
 apiVersion: v1
