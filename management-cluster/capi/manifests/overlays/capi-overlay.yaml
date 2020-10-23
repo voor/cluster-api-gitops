@@ -94,3 +94,16 @@ spec:
         args:
         #@overlay/match by=lambda _,a,b: "--feature-gates=" in a, expects="0+"
         - --feature-gates=ClusterResourceSet=true,MachinePool=false
+
+#@overlay/match by=overlay.subset({"kind":"Deployment"}),expects="0+"
+---
+spec:
+  template:
+    spec:
+      #@overlay/match when=1
+      tolerations:
+        #@overlay/match by="key"
+        #@overlay/remove
+      - 
+        effect: NoSchedule
+        key: node-role.kubernetes.io/master
