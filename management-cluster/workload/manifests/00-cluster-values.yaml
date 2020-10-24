@@ -26,7 +26,7 @@ aws:
   - subnet-0b9f0a52213fb7d93
   - subnet-01f5b8ce2d88cfcce
   ami:
-    id: "ami-09cf13117b7a1e195"
+    id: "ami-0f64743070b359864"
 
 oidc:
   client_id: ""
