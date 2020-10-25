@@ -1,0 +1,28 @@
+#@ load("@ytt:data", "data")
+
+---
+apiVersion: kappctrl.k14s.io/v1alpha1
+kind: App
+metadata:
+  name: gitlab-runner
+  namespace: kapp-controller
+spec:
+  serviceAccountName: kapp-controller-clusteradmin
+  fetch:
+  - git:
+      url: #@ data.values.git_url
+      ref: #@ data.values.git_branch
+      subPath: workload/gitlab-runner/manifests
+      secretRef:
+        name: #@ data.values.git.secretRef
+  template:
+  - ytt:
+      ignoreUnknownComments: true
+      inline:
+        pathsFrom:
+        #@ for secretRef in data.values.gitlab_runner_secretRef:
+        - secretRef:
+            name: #@ secretRef
+        #@ end 
+  deploy:
+  - kapp: {}

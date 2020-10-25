@@ -43,3 +43,6 @@ gangway_secretRef:
 kiam_secretRef:
 - kiam-values
 - aws-values
+
+gitlab_runner_secretRef:
+- gitlab-runner-values
