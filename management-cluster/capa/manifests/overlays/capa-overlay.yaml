@@ -4,11 +4,11 @@
 #@overlay/match by=overlay.subset({"kind":"CustomResourceDefinition"}),expects="0+"
 ---
 spec:
-  #@overlay/match missing_ok=True
+  #@overlay/match when=1
   conversion:
-    #@overlay/match missing_ok=True
+    #@overlay/match when=1
     webhook:
-      #@overlay/match missing_ok=True
+      #@overlay/match when=1
       clientConfig:
         #@overlay/remove
         caBundle:
@@ -43,6 +43,10 @@ webhooks:
 
 #@overlay/match by=overlay.subset({"kind":"Deployment"}),expects="0+"
 ---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    kapp.k14s.io/update-strategy: "fallback-on-replace"
 spec:
   template:
     spec:
@@ -53,3 +57,32 @@ spec:
       - 
         effect: NoSchedule
         key: node-role.kubernetes.io/master
+
+#@ def capa_controller():
+kind: Deployment
+metadata:
+  name: capa-controller-manager
+  namespace: capa-system
+#@ end
+
+#@ def capa_controller_webhook():
+kind: Deployment
+metadata:
+  name: capa-controller-manager
+  namespace: capi-webhook-system
+#@ end
+
+#@ capi_controller_manager = overlay.subset(capa_controller())
+#@ capi_controller_webhook = overlay.subset(capa_controller_webhook())
+
+#@overlay/match by=overlay.or_op(capi_controller_manager, capi_controller_webhook),expects=2
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by="name"
+      - name: manager
+        args:
+        #@overlay/match by=lambda _,a,b: "--feature-gates=" in a, expects="0+"
+        - --feature-gates=EKS=false,MachinePool=false

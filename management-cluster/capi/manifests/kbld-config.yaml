@@ -1,0 +1,16 @@
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.25.0
+overrides:
+- image: registry.tkg.vmware.run/cluster-api/cluster-api-controller:v0.3.10_vmware.1
+  newImage: registry.tkg.vmware.run/cluster-api/cluster-api-controller@sha256:b54e71f46eedf8ce14f82edb95552f9e5b9165ce925adfd926421a1059441906
+  preresolved: true
+- image: registry.tkg.vmware.run/cluster-api/kube-rbac-proxy:v0.4.1_vmware.2
+  newImage: registry.tkg.vmware.run/cluster-api/kube-rbac-proxy@sha256:6b83d791388546ce66372f621435d55bea57d892675c3180d85a4d9dc7bb818f
+  preresolved: true
+- image: registry.tkg.vmware.run/cluster-api/kubeadm-bootstrap-controller:v0.3.10_vmware.1
+  newImage: registry.tkg.vmware.run/cluster-api/kubeadm-bootstrap-controller@sha256:c640191c7604ef15f82a45bf0d91844cb98a0b6e4ddce960e8d7a5156f80904c
+  preresolved: true
+- image: registry.tkg.vmware.run/cluster-api/kubeadm-control-plane-controller:v0.3.10_vmware.1
+  newImage: registry.tkg.vmware.run/cluster-api/kubeadm-control-plane-controller@sha256:c232b7632f59a991e2c9d36e4ca4c59c330338bcceba9424abda296acc8ddd55
+  preresolved: true

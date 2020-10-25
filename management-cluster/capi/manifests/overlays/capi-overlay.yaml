@@ -97,6 +97,10 @@ spec:
 
 #@overlay/match by=overlay.subset({"kind":"Deployment"}),expects="0+"
 ---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    kapp.k14s.io/update-strategy: "fallback-on-replace"
 spec:
   template:
     spec:
