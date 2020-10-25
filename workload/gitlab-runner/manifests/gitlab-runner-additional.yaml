@@ -1,0 +1,45 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gitlab-runner
+  annotations:
+    iam.amazonaws.com/permitted: ".*"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gitlab-runner
+  namespace: gitlab-runner
+type: Opaque
+stringData:
+  runner-registration-token: #@ data.values.registration_token
+  runner-token: 
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata":{"name":"gitlab-runner"}})
+---
+spec:
+  template:
+    metadata:
+      #@overlay/match missing_ok=True
+      annotations:
+        #@overlay/match missing_ok=True
+        iam.amazonaws.com/role: #@ data.values.pod_role
+    spec:
+      initContainers:
+        #@overlay/match by="name"
+      - name: configure
+        env:
+          #@overlay/match by="name"
+        - name: CI_SERVER_URL
+          value: #@ data.values.CI_SERVER_URL
+      containers:
+        #@overlay/match by="name"
+      - name: gitlab-runner
+        env:
+          #@overlay/match by="name"
+        - name: CI_SERVER_URL
+          value: #@ data.values.CI_SERVER_URL
