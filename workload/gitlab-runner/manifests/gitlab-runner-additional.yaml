@@ -23,11 +23,13 @@ stringData:
 ---
 spec:
   template:
+    #@ if data.values.pod_role:
     metadata:
       #@overlay/match missing_ok=True
       annotations:
         #@overlay/match missing_ok=True
         iam.amazonaws.com/role: #@ data.values.pod_role
+    #@ end
     spec:
       initContainers:
         #@overlay/match by="name"
