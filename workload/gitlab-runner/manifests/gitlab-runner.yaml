@@ -179,7 +179,7 @@ spec:
         command:
         - sh
         - /config/configure
-        image: registry.govcloud.futures.army/gitlab/gitlab-runner:ubuntu-v13.5.0
+        image: gitlab/gitlab-runner:ubuntu-v13.5.0
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
@@ -256,7 +256,7 @@ spec:
       serviceAccountName: gitlab-runner
       containers:
       - name: gitlab-runner
-        image: registry.govcloud.futures.army/gitlab/gitlab-runner:ubuntu-v13.5.0
+        image: gitlab/gitlab-runner:ubuntu-v13.5.0
         imagePullPolicy: IfNotPresent
         securityContext:
           allowPrivilegeEscalation: false
