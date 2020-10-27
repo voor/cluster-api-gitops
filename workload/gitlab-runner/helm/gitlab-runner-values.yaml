@@ -78,3 +78,7 @@ runners:
     # memoryLimit: 256Mi
     cpuRequests: 100m
     memoryRequests: 128Mi
+
+securityContext:
+  runAsUser: 999
+  fsGroup: 999
