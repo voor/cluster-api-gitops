@@ -123,7 +123,3 @@ spec:
       rootVolume:
         #@overlay/match missing_ok=True
         encrypted: true
-      #@overlay/match missing_ok=True
-      cloudInit:
-        #@overlay/match missing_ok=True
-        insecureSkipSecretsManager: true
