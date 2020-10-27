@@ -1,20 +1,2 @@
-domain: ""
-
-github_org: Pivotal-Field-Engineering
+github_org: Tanzu-Solutions-Engineering
 github_team: pa-federal
-
-github_client_id: "github-client-id"
-github_client_secret: "fake-secret"
-
-grafana_client_id: ""
-grafana_client_secret: "fake-grafana_client_secret"
-
-sonarqube_client_id: ""
-sonarqube_client_secret: "fake-sonarqube_client_secret"
-
-kuard_cookie_secret: ""
-kuard_client_id: ""
-kuard_client_secret: "fake-kuard_client_secret"
-
-saml_url: ""
-saml_caData: ""

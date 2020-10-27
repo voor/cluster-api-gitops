@@ -3,7 +3,6 @@
 #@ load("@ytt:struct", "struct")
 #@ load("@ytt:yaml", "yaml")
 #@ load("@ytt:library", "library")
-#@ load("@ytt:template", "template")
 
 #@ foundation = "dev"
 
@@ -11,6 +10,66 @@
 #@ 
 #@ config = overlay.apply(data.values, secretConfig)
 #@ config = struct.encode(yaml.decode(yaml.encode(config)))
+
+
+#@ def dex_config():
+issuer: #@ "https://login.sso.{}".format(config.domain)
+frontend:
+  theme: tkg
+web:
+  http: 0.0.0.0:5556
+expiry:
+  signingKeys: "10m"
+  idTokens: "5m"
+logger:
+  level: "debug"
+  format: "json"
+oauth2:
+  skipApprovalScreen: true
+storage:
+  type: kubernetes
+  config:
+    inCluster: true
+connectors:
+- type: github
+  id: github
+  name: GitHub
+  config:
+    clientID: #@ config.github_client_id
+    clientSecret: #@ config.github_client_secret
+    redirectURI: #@ "https://login.sso.{}/callback".format(config.domain)
+    orgs: 
+    - name: #@ config.github_org
+    - name: #@ "{}-Teams".format(config.github_org)
+      teams:
+      - #@ config.github_team
+- type: saml
+  id: saml
+  name: SAML
+  config:
+    ssoURL: #@ config.saml_url
+    caData: #@ config.saml_caData
+    usernameAttr: name
+    emailAttr: email
+    groupsAttr: groups
+    redirectURI: #@ "https://login.sso.{}/callback".format(config.domain)
+staticClients:
+- id: #@ config.sonarqube_client_id
+  secret: #@ config.sonarqube_client_secret
+  name: 'SonarQube'
+  redirectURIs:
+  - #@ "https://sonar.apps.{}/oauth2/callback".format(config.domain)
+- id: (@= config.kuard_client_id @)
+  secret: #@ config.kuard_client_secret
+  name: 'Kuard'
+  redirectURIs:
+  - #@ "https://kuard.apps.{}/oauth2/callback".format(config.domain)
+- id: (@= config.grafana_client_id @)
+  secret: #@ config.grafana_client_secret
+  name: 'Grafana'
+  redirectURIs:
+  - #@ "https://grafana.monitoring.{}/login/generic_oauth".format(config.domain)
+#@ end
 
 ---
 apiVersion: v1
@@ -49,61 +108,4 @@ metadata:
   name: dex
   namespace: sso
 stringData:
-  #@yaml/text-templated-strings
-  config.yaml: |
-    issuer: https://login.sso.(@= config.domain @)
-    frontend:
-      theme: tkg
-    web:
-      http: 0.0.0.0:5556
-    expiry:
-      signingKeys: "10m"
-      idTokens: "5m"
-    logger:
-      level: "debug"
-      format: "json"
-    oauth2:
-      skipApprovalScreen: true
-    storage:
-      type: kubernetes
-      config:
-        inCluster: true
-    connectors:
-    - type: github
-      id: github
-      name: GitHub
-      config:
-        clientID: (@= config.github_client_id @)
-        clientSecret: (@= config.github_client_secret @)
-        redirectURI: https://login.sso.(@= config.domain @)/callback
-        orgs: 
-        - name: (@= config.github_org @)
-        - name: (@= config.github_org @)-Teams
-          teams:
-          - (@= config.github_team @)
-    - type: saml
-      id: saml
-      name: SAML
-      config:
-        ssoURL: (@= config.saml_url @)
-        caData: (@= config.saml_caData @)
-        usernameAttr: name
-        emailAttr: email
-        groupsAttr: groups
-        redirectURI: https://login.sso.(@= config.domain @)/callback
-    staticClients:
-    - id: (@= config.sonarqube_client_id @)
-      secret: (@= config.sonarqube_client_secret @)
-      name: 'SonarQube'
-      redirectURIs:
-      - 'https://sonar.apps.(@= config.domain @)/oauth2/callback'
-    - id: (@= config.kuard_client_id @)
-      secret: (@= config.kuard_client_secret @)
-      name: 'Kuard'
-      redirectURIs:
-      - 'https://kuard.apps.(@= config.domain @)/oauth2/callback'
-    - id: (@= config.grafana_client_id @)
-      secret: (@= config.grafana_client_secret @)
-      name: 'Grafana'
-      redirectURIs:
-      - 'https://grafana.monitoring.(@= config.domain @)/login/generic_oauth'
+  config.yaml: #@ yaml.encode(dex_config())
