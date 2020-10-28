@@ -4,7 +4,7 @@
 #! This is overridded by kapp controller.
 domain: ""
 
-github_org: Pivotal-Field-Engineering
+github_org: Tanzu-Solutions-Engineering
 github_team: pa-federal
 
 github_client_id: ""
