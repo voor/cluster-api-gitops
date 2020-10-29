@@ -35,7 +35,6 @@ spec:
           imageRepository: #@ data.values.kubeadmConfigSpec.etcd.local.imageRepository
           imageTag: #@ data.values.kubeadmConfigSpec.etcd.local.imageTag
       imageRepository: #@ data.values.kubeadmConfigSpec.imageRepository
-      kubernetesVersion: #@ data.values.kubeadmConfigSpec.kubernetesVersion
   version: #@ data.values.kubeadmConfigSpec.kubernetesVersion
 
 #@overlay/match by=overlay.subset({"kind":"MachineDeployment"}),expects="0+"
