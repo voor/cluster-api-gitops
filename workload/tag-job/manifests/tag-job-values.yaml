@@ -1,0 +1,12 @@
+#@data/values
+---
+
+aws_region: us-east-1
+resources:
+- subnet-XXXX
+- subnet-XXX
+tags:
+- key: kubernetes.io/cluster/watersafety
+  value: shared
+- key: kubernetes.io/role/internal-elb
+  value: 1

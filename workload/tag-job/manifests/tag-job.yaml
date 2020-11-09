@@ -1,0 +1,30 @@
+#@ load("@ytt:data", "data")
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-tags
+  annotations:
+    kapp.k14s.io/versioned: ""
+    kapp.k14s.io/num-versions: "4"
+spec:
+  template:
+    spec:
+      containers:
+      - image: amazon/aws-cli
+        name: create-tags
+        env:
+        - name: AWS_DEFAULT_REGION
+          value: #@ data.values.aws_region
+        args:
+        - ec2
+        - create-tags
+        - --resources
+        #@ for resource in data.values.resources:
+        - #@ resource
+        #@ end
+        - --tags
+        #@ for item in data.values.tags:
+        - #@ "Key={},Value={}".format(item.key, item.value)
+        #@ end
+      restartPolicy: Never
