@@ -1,6 +1,5 @@
 fullnameOverride: gitlab-runner
 
-# registry.govcloud.futures.army/
 image: gitlab/gitlab-runner:ubuntu-v13.5.0
 
 ## The GitLab Server URL (with protocol) that want to register the runner against
