@@ -1,0 +1,13 @@
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.25.0
+overrides:
+- image: quay.io/jetstack/cert-manager-cainjector:v0.16.1
+  newImage: registry.tkg.vmware.run/cert-manager/cert-manager-cainjector:v0.16.1_vmware.1
+  preresolved: true
+- image: quay.io/jetstack/cert-manager-controller:v0.16.1
+  newImage: registry.tkg.vmware.run/cert-manager/cert-manager-controller:v0.16.1_vmware.1
+  preresolved: true
+- image: quay.io/jetstack/cert-manager-webhook:v0.16.1
+  newImage: registry.tkg.vmware.run/cert-manager/cert-manager-webhook:v0.16.1_vmware.1
+  preresolved: true

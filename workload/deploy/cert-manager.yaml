@@ -20,6 +20,7 @@ spec:
   template:
   - ytt:
       ignoreUnknownComments: true
+  - kbld: {}
   deploy:
   - kapp:
       delete:
