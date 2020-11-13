@@ -1,7 +1,7 @@
 apiVersion: kappctrl.k14s.io/v1alpha1
 kind: App
 metadata:
-  name: watersafety-postcreate
+  name: watersafety-cni
   namespace: workload-clusters
   annotations:
     kapp.k14s.io/change-group: gitops.tanzu.vmware.com/cni
