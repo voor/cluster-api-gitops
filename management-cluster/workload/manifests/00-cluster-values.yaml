@@ -34,7 +34,7 @@ aws:
   ami:
     id: "ami-0b67bd0ee39c2cba5"
   controlPlaneLoadBalancer:
-    scheme: public
+    scheme: internet-facing
 
 oidc:
   client_id: ""
