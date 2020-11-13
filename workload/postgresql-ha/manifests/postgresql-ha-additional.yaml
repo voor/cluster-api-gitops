@@ -1,0 +1,64 @@
+#@ load("@ytt:data", "data")
+
+#@ def labels():
+app.kubernetes.io/name: postgresql-ha
+app.kubernetes.io/instance: postgresql-ha
+app.kubernetes.io/managed-by: kapp-controller
+app.kubernetes.io/component: pgpool
+#@ end
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: #@ data.values.postgres.namespace
+  annotations:
+    iam.amazonaws.com/permitted: ".*"
+---
+#! Source: postgresql-ha/templates/postgresql/secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-password-secret
+  labels: #@ labels()
+type: Opaque
+stringData:
+  postgresql-password: #@ data.values.postgres.password
+  repmgr-password: #@ data.values.repmgr.password
+---
+#! Source: postgresql-ha/templates/pgpool/secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pgpool-password-secret
+  labels: #@ labels()
+type: Opaque
+stringData:
+  admin-password: #@ data.values.pgpool.password
+
+#! FIXME Add in SSL support for assessments -- this should be SSL in POSTGRES NOT PGPOOL
+#! ---
+#! apiVersion: cert-manager.io/v1alpha2
+#! kind: Certificate
+#! metadata:
+#!   labels: #@ labels()
+#!   name: database-tls-cert
+#! spec:
+#!   dnsNames:
+#!     - postgresql-ha-pgpool
+#!     - postgresql-ha-postgresql-headless
+#!     - postgresql-ha-postgresql
+#!     - capa-webhook-service.capi-webhook-system.svc
+#!     - capa-webhook-service.capi-webhook-system.svc.cluster.local
+#!   issuerRef:
+#!     kind: Issuer
+#!     name: database-tls-issuer
+#!   secretName: database-tls-certificate
+#! ---
+#! apiVersion: cert-manager.io/v1alpha2
+#! kind: Issuer
+#! metadata:
+#!   labels: #@ labels()
+#!   name: database-tls-issuer
+#! spec:
+#!   selfSigned: {}

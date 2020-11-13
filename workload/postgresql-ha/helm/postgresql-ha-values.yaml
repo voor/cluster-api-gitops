@@ -1,0 +1,86 @@
+global:
+    imageRegistry: myRegistryName
+
+## PostgreSQL parameters
+##
+postgresql:
+  existingSecret: postgres-password-secret
+  resources:
+    limits: {}
+    #   cpu: 250m
+    #   memory: 256Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  ## Audit settings
+  ## https://github.com/bitnami/bitnami-docker-postgresql#auditing
+  ##
+  audit:
+    ## Log client hostnames
+    ##
+    logHostname: false
+    ## Log connections to the server
+    ##
+    logConnections: false
+    ## Log disconnections
+    ##
+    logDisconnections: false
+
+  ## Pod disruption budget configuration
+  ##
+  pdb:
+    ## Specifies whether a Pod disruption budget should be created
+    ##
+    create: true
+    minAvailable: 1
+
+pgpool:
+  existingSecret: pgpool-password-secret
+
+  resources:
+    limits: {}
+    #   cpu: 250m
+    #   memory: 256Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+
+  ## Pod disruption budget configuration
+  ##
+  pdb:
+    ## Specifies whether a Pod disruption budget should be created
+    ##
+    create: true
+    minAvailable: 1
+
+  replicaCount: 2
+
+## PostgreSQL Prometheus exporter parameters
+##
+metrics:
+  enabled: true
+
+networkPolicy:
+  enabled: true
+
+  ## The Policy model to apply. When set to false, only pods with the correct
+  ## client labels will have network access to the port PostgreSQL is listening
+  ## on. When true, PostgreSQL will accept connections from any source
+  ## (with the correct destination port).
+  ##
+  allowExternal: false
+
+persistence:
+  enabled: true
+  ## A manually managed Persistent Volume and Claim
+  ## If defined, PVC must be created manually before volume will be bound
+  ## The value is evaluated as a template
+  ##
+  # existingClaim:
+  ## Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ## set, choosing the default provisioner.
+  ##
+  storageClass: "generic"

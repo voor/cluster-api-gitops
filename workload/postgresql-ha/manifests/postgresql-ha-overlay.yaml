@@ -1,0 +1,9 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.not_op(overlay.or_op(overlay.subset({"kind": "ServiceMonitor"}),overlay.subset({"kind": "Namespace"}))),expects="0+"
+---
+#@overlay/match missing_ok=True
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: #@ data.values.postgres.namespace

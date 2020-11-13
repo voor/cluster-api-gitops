@@ -1,0 +1,7 @@
+apiVersion: kapp.k14s.io/v1alpha1
+kind: Config
+ownershipLabelRules:
+  - path: [spec, template, metadata, labels]
+    resourceMatchers:
+      - apiVersionKindMatcher:
+          { apiVersion: bitnami.com/v1alpha1, kind: SealedSecret }

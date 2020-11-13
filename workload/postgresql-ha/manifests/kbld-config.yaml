@@ -1,0 +1,18 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.24.0
+overrides:
+- image: myRegistryName/bitnami/pgpool:4.1.4-debian-10-r48
+  newImage: gcr.io/sys-2b0109it/demo/bitnami/pgpool:4
+  preresolved: true
+- image: myRegistryName/bitnami/postgres-exporter:0.8.0-debian-10-r269
+  newImage: gcr.io/sys-2b0109it/demo/bitnami/postgres-exporter:0
+  preresolved: true
+- image: myRegistryName/bitnami/postgresql-repmgr:11.9.0-debian-10-r82
+  newImage: gcr.io/sys-2b0109it/demo/bitnami/postgresql-repmgr:11
+  preresolved: true
+
+---

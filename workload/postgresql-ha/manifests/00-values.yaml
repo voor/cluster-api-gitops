@@ -1,0 +1,12 @@
+#@data/values
+---
+
+postgres:
+    namespace:
+    password:
+    
+repmgr:
+    password:
+
+pgpool:
+    password:
