@@ -3,6 +3,8 @@
 
 domain: ""
 
+team: demo
+
 kubeadmConfigSpec:
   apiVersion: kubeadm.k8s.io/v1beta2
   kind: ClusterConfiguration
@@ -16,17 +18,23 @@ kubeadmConfigSpec:
     type: CoreDNS
     imageRepository: registry.tkg.vmware.run
     imageTag: v1.6.7_vmware.1
+  ntp:
+    servers:
+    - 169.254.169.123
 
 aws:
   region: us-gov-east-1
   sshKeyName: default
   vpc:
+    name: workload-clusters
     id: "vpc-077617e1cf2cfb9ac"
   subnets:
   - subnet-0b9f0a52213fb7d93
   - subnet-01f5b8ce2d88cfcce
   ami:
     id: "ami-0b67bd0ee39c2cba5"
+  controlPlaneLoadBalancer:
+    scheme: public
 
 oidc:
   client_id: ""

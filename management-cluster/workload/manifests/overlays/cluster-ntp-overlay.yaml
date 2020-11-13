@@ -1,0 +1,35 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:yaml", "yaml")
+#@ load("@ytt:data", "data")
+
+#@ def ntp_config():
+enabled: true
+servers: #@ data.values.kubeadmConfigSpec.ntp.servers
+#@ end
+
+#@ def is_kubeadmcontrolplane():
+kind: KubeadmControlPlane
+#@ end
+
+#@ def has_ntp_label():
+metadata:
+  labels:
+    ntp: disabled
+#@ end
+
+#@ overlay_kubeadmcontrolplane = overlay.subset(is_kubeadmcontrolplane())
+#@ not_has_ntp_label = overlay.not_op(overlay.subset(has_ntp_label()))
+#@overlay/match by=overlay.and_op(overlay_kubeadmcontrolplane, not_has_ntp_label),expects="0+"
+---
+spec:
+  kubeadmConfigSpec:
+    #@overlay/match missing_ok=True
+    ntp: #@ ntp_config()
+
+#@overlay/match by=overlay.subset({"kind":"KubeadmConfigTemplate"}),expects="0+"
+---
+spec:
+  template:
+    spec:
+      #@overlay/match missing_ok=True
+      ntp: #@ ntp_config()

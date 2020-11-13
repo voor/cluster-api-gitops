@@ -17,6 +17,14 @@ spec:
         #@overlay/match missing_ok=True
         id: #@ data.values.aws.ami.id
 
+#@overlay/match by=overlay.subset({"kind":"AWSCluster"}),expects="0+"
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/delete-strategy: "orphan"
+
 #@overlay/match by=overlay.subset({"kind":"KubeadmControlPlane"}),expects="0+"
 ---
 metadata:
@@ -35,6 +43,7 @@ spec:
           imageRepository: #@ data.values.kubeadmConfigSpec.etcd.local.imageRepository
           imageTag: #@ data.values.kubeadmConfigSpec.etcd.local.imageTag
       imageRepository: #@ data.values.kubeadmConfigSpec.imageRepository
+  #@overlay/match missing_ok=True
   version: #@ data.values.kubeadmConfigSpec.kubernetesVersion
 
 #@overlay/match by=overlay.subset({"kind":"MachineDeployment"}),expects="0+"
@@ -42,6 +51,7 @@ spec:
 spec:
   template:
     spec:
+      #@overlay/match missing_ok=True
       version: #@ data.values.kubeadmConfigSpec.kubernetesVersion
 
 #@overlay/match by=overlay.subset({"kind":"KubeadmConfigTemplate"}),expects="0+"

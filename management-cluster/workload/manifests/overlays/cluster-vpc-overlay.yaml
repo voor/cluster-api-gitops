@@ -5,13 +5,27 @@
 ---
 #@overlay/match missing_ok=True
 metadata:
-  namespace: workload-clusters
+  #@overlay/match missing_ok=True
+  namespace: #@ data.values.aws.vpc.name
+
+#@overlay/match by=overlay.subset({"kind":"Cluster"}),expects="0+"
+---
+spec:
+  controlPlaneRef:
+    #@overlay/match missing_ok=True
+    namespace: #@ data.values.aws.vpc.name
+  infrastructureRef:
+    #@overlay/match missing_ok=True
+    namespace: #@ data.values.aws.vpc.name
 
 #@overlay/match by=overlay.subset({"kind":"AWSCluster"}),expects="0+"
 ---
 spec:
+  #@overlay/match missing_ok=True
   region: #@ data.values.aws.region
+  #@overlay/match missing_ok=True
   sshKeyName: #@ data.values.aws.sshKeyName
+  #@overlay/match missing_ok=True
   networkSpec:
     #@overlay/match missing_ok=True
     subnets:
@@ -22,18 +36,30 @@ spec:
     #@ end
     vpc:
       #@overlay/match missing_ok=True
+      #@overlay/remove
+      cidrBlock:
+      #@overlay/match missing_ok=True
       id: #@ data.values.aws.vpc.id
+  #@overlay/match missing_ok=True
   bastion:
     #@overlay/match missing_ok=True
     enabled: false
+  #@overlay/match missing_ok=True
+  additionalTags:
+    #@overlay/match missing_ok=True
+    Environment: #@ data.values.aws.vpc.name
+    #@overlay/match missing_ok=True
+    Responsibility: #@ data.values.team
 
 #@overlay/match by=overlay.subset({"kind":"AWSMachineTemplate"}),expects="0+"
 ---
 spec:
   template:
     spec:
+      #@overlay/match missing_ok=True
       sshKeyName: #@ data.values.aws.sshKeyName
-      
+
+
 #@overlay/match by=overlay.subset({"kind":"KubeadmControlPlane"}),expects="0+"
 ---
 spec:

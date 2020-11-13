@@ -1,4 +1,9 @@
 #@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:yaml", "yaml")
+
+#@ def host_config():
+- hostnamectl set-hostname {{ v1.local_hostname }}.{{ v1.region }}.compute.internal
+#@ end
 
 #@overlay/match by=overlay.subset({"kind":"KubeadmControlPlane"}),expects="0+"
 ---
@@ -6,6 +11,7 @@ spec:
   kubeadmConfigSpec:
     initConfiguration:
       nodeRegistration:
+        #@overlay/match missing_ok=True
         name: '{{ v1.local_hostname }}.{{ v1.region }}.compute.internal'
     clusterConfiguration:
       controllerManager:
@@ -14,10 +20,10 @@ spec:
           configure-cloud-routes: "false"
     joinConfiguration:
       nodeRegistration:
+        #@overlay/match missing_ok=True
         name: '{{ v1.local_hostname }}.{{ v1.region }}.compute.internal'
     #@overlay/match missing_ok=True
-    preKubeadmCommands:
-    - "hostnamectl set-hostname {{ v1.local_hostname }}.{{ v1.region }}.compute.internal"
+    preKubeadmCommands: #@ host_config()
 
 #@overlay/match by=overlay.subset({"kind":"KubeadmConfigTemplate"}),expects="0+"
 ---
@@ -26,7 +32,7 @@ spec:
     spec:
       joinConfiguration:
         nodeRegistration:
+          #@overlay/match missing_ok=True
           name: '{{ v1.local_hostname }}.{{ v1.region }}.compute.internal'
       #@overlay/match missing_ok=True
-      preKubeadmCommands:
-      - "hostnamectl set-hostname {{ v1.local_hostname }}.{{ v1.region }}.compute.internal"
+      preKubeadmCommands: #@ host_config()

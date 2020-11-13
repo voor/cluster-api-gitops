@@ -2,7 +2,6 @@ apiVersion: kappctrl.k14s.io/v1alpha1
 kind: App
 metadata:
   name: watersafety-cni
-  namespace: workload-clusters
   annotations:
     kapp.k14s.io/change-group: gitops.tanzu.vmware.com/cni
     kapp.k14s.io/change-rule: upsert before upserting gitops.tanzu.vmware.com/kapp-controller
@@ -29,7 +28,6 @@ apiVersion: kappctrl.k14s.io/v1alpha1
 kind: App
 metadata:
   name: watersafety-kapp-controller
-  namespace: workload-clusters
   annotations:
     kapp.k14s.io/change-group: gitops.tanzu.vmware.com/kapp-controller
     kapp.k14s.io/change-rule.1: delete before deleting gitops.tanzu.vmware.com/cni
@@ -62,7 +60,6 @@ apiVersion: kappctrl.k14s.io/v1alpha1
 kind: App
 metadata:
   name: watersafety-apps
-  namespace: workload-clusters
   annotations:
     kapp.k14s.io/change-group: gitops.tanzu.vmware.com/remote-apps
     kapp.k14s.io/change-rule.1: delete before deleting gitops.tanzu.vmware.com/kapp-controller
@@ -95,7 +92,6 @@ apiVersion: cluster.x-k8s.io/v1alpha3
 kind: Cluster
 metadata:
   name: watersafety
-  namespace: workload-clusters
 spec:
   clusterNetwork:
     pods:
@@ -114,7 +110,6 @@ apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
 kind: AWSCluster
 metadata:
   name: watersafety
-  namespace: workload-clusters
   annotations: {}
 spec:
   bastion:
@@ -130,7 +125,6 @@ apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
 kind: KubeadmControlPlane
 metadata:
   name: watersafety-control-plane
-  namespace: workload-clusters
 spec:
   infrastructureTemplate:
     apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
@@ -183,7 +177,6 @@ apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
 kind: AWSMachineTemplate
 metadata:
   name: watersafety-control-plane
-  namespace: workload-clusters
 spec:
   template:
     spec:
@@ -197,7 +190,6 @@ apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
 kind: AWSMachineTemplate
 metadata:
   name: watersafety-md-0
-  namespace: workload-clusters
 spec:
   template:
     spec:
@@ -211,7 +203,6 @@ apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
 kind: KubeadmConfigTemplate
 metadata:
   name: watersafety-md-0
-  namespace: workload-clusters
 spec:
   template:
     spec:
@@ -227,7 +218,6 @@ apiVersion: cluster.x-k8s.io/v1alpha3
 kind: MachineDeployment
 metadata:
   name: watersafety-md-0
-  namespace: workload-clusters
 spec:
   clusterName: watersafety
   replicas: 2
@@ -254,7 +244,6 @@ apiVersion: cluster.x-k8s.io/v1alpha3
 kind: MachineHealthCheck
 metadata:
   name: watersafety
-  namespace: workload-clusters
 spec:
   clusterName: watersafety
   nodeStartupTimeout: 20m
