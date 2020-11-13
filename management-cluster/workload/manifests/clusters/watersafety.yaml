@@ -1,0 +1,277 @@
+apiVersion: kappctrl.k14s.io/v1alpha1
+kind: App
+metadata:
+  name: watersafety-postcreate
+  namespace: workload-clusters
+  annotations:
+    kapp.k14s.io/change-group: gitops.tanzu.vmware.com/cni
+    kapp.k14s.io/change-rule: upsert before upserting gitops.tanzu.vmware.com/kapp-controller
+spec:
+  cluster:
+    namespace: kube-system
+    kubeconfigSecretRef:
+      name: watersafety-kubeconfig
+      key: value
+  fetch:
+  - git:
+      url: https://github.com/voor/cluster-api-gitops
+      ref: origin/default
+      subPath: workload/calico/manifests
+      secretRef:
+        name: management-git-secret
+  template:
+  - ytt:
+      ignoreUnknownComments: true
+  deploy:
+  - kapp: {}
+---
+apiVersion: kappctrl.k14s.io/v1alpha1
+kind: App
+metadata:
+  name: watersafety-kapp-controller
+  namespace: workload-clusters
+  annotations:
+    kapp.k14s.io/change-group: gitops.tanzu.vmware.com/kapp-controller
+    kapp.k14s.io/change-rule.1: delete before deleting gitops.tanzu.vmware.com/cni
+spec:
+  cluster:
+    namespace: kube-system
+    kubeconfigSecretRef:
+      name: watersafety-kubeconfig
+      key: value
+  fetch:
+  - git:
+      url: https://github.com/voor/cluster-api-gitops
+      ref: origin/default
+      subPath: management-cluster/deploy/kapp-controller/manifests
+      secretRef:
+        name: management-git-secret
+  template:
+  - ytt:
+      ignoreUnknownComments: true
+      inline:
+        paths:
+          clusteradmin-values.yaml: |
+            #@data/values
+            ---
+            clusteradminrole: true
+  deploy:
+  - kapp: {}
+---
+apiVersion: kappctrl.k14s.io/v1alpha1
+kind: App
+metadata:
+  name: watersafety-apps
+  namespace: workload-clusters
+  annotations:
+    kapp.k14s.io/change-group: gitops.tanzu.vmware.com/remote-apps
+    kapp.k14s.io/change-rule.1: delete before deleting gitops.tanzu.vmware.com/kapp-controller
+    kapp.k14s.io/change-rule.2: upsert after upserting gitops.tanzu.vmware.com/kapp-controller
+    kapp.k14s.io/disable-wait: "true"
+spec:
+  cluster:
+    namespace: kapp-controller
+    kubeconfigSecretRef:
+      name: watersafety-kubeconfig
+      key: value
+  fetch:
+  - git:
+      url: https://github.com/voor/cluster-api-gitops
+      ref: origin/default
+      subPath: workload/deploy
+      secretRef:
+        name: management-git-secret
+  template:
+  - sops:
+      pgp:
+        privateKeysSecretRef:
+          name: pgp-key
+  - ytt:
+      ignoreUnknownComments: true
+  deploy:
+  - kapp: {}
+---
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: Cluster
+metadata:
+  name: watersafety
+  namespace: workload-clusters
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks:
+      - 100.96.0.0/11
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+    kind: KubeadmControlPlane
+    name: watersafety-control-plane
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: AWSCluster
+    name: watersafety
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: AWSCluster
+metadata:
+  name: watersafety
+  namespace: workload-clusters
+  annotations: {}
+spec:
+  bastion:
+    enabled: false
+  networkSpec:
+    subnets: []
+    vpc:
+      id: overriden
+  region: us-gov-west-1
+  sshKeyName: overridden
+---
+apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+kind: KubeadmControlPlane
+metadata:
+  name: watersafety-control-plane
+  namespace: workload-clusters
+spec:
+  infrastructureTemplate:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+    kind: AWSMachineTemplate
+    name: watersafety-control-plane
+  kubeadmConfigSpec:
+    clusterConfiguration:
+      apiServer:
+        extraArgs:
+          cloud-provider: aws
+          tls-cipher-suites: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384
+        timeoutForControlPlane: 8m0s
+        certSANs:
+        - watersafety.cluster.tanzu.world
+      controllerManager:
+        extraArgs:
+          cloud-provider: aws
+          tls-cipher-suites: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+      dns:
+        imageRepository: registry.tkg.vmware.run
+        imageTag: v1.6.7_vmware.2
+        type: CoreDNS
+      etcd:
+        local:
+          dataDir: /var/lib/etcd
+          extraArgs:
+            cipher-suites: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+          imageRepository: registry.tkg.vmware.run
+          imageTag: v3.4.3_vmware.6
+      imageRepository: registry.tkg.vmware.run
+      kubernetesVersion: v1.18.6+vmware.1
+      scheduler:
+        extraArgs:
+          tls-cipher-suites: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+    initConfiguration:
+      nodeRegistration:
+        kubeletExtraArgs:
+          cloud-provider: aws
+          tls-cipher-suites: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+        name: '{{ ds.meta_data.local_hostname }}'
+    joinConfiguration:
+      nodeRegistration:
+        kubeletExtraArgs:
+          cloud-provider: aws
+          tls-cipher-suites: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+        name: '{{ ds.meta_data.local_hostname }}'
+    useExperimentalRetryJoin: true
+  replicas: 3
+  version: v1.18.6+vmware.1
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: AWSMachineTemplate
+metadata:
+  name: watersafety-control-plane
+  namespace: workload-clusters
+spec:
+  template:
+    spec:
+      ami:
+        id: ignored
+      iamInstanceProfile: control-plane.cluster-api-provider-aws.sigs.k8s.io
+      instanceType: m5.xlarge
+      rootVolume:
+        size: 80
+      sshKeyName: overridden
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+kind: AWSMachineTemplate
+metadata:
+  name: watersafety-md-0
+  namespace: workload-clusters
+spec:
+  template:
+    spec:
+      ami:
+        id: ignored
+      iamInstanceProfile: nodes.cluster-api-provider-aws.sigs.k8s.io
+      instanceType: m5.xlarge
+      rootVolume:
+        size: 80
+      sshKeyName: overridden
+---
+apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+kind: KubeadmConfigTemplate
+metadata:
+  name: watersafety-md-0
+  namespace: workload-clusters
+spec:
+  template:
+    spec:
+      joinConfiguration:
+        nodeRegistration:
+          kubeletExtraArgs:
+            cloud-provider: aws
+            tls-cipher-suites: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+          name: '{{ ds.meta_data.local_hostname }}'
+      useExperimentalRetryJoin: true
+---
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineDeployment
+metadata:
+  name: watersafety-md-0
+  namespace: workload-clusters
+spec:
+  clusterName: watersafety
+  replicas: 2
+  selector:
+    matchLabels:
+      node-pool: watersafety-worker-pool
+  template:
+    metadata:
+      labels:
+        node-pool: watersafety-worker-pool
+    spec:
+      bootstrap:
+        configRef:
+          apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
+          kind: KubeadmConfigTemplate
+          name: watersafety-md-0
+      clusterName: watersafety
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
+        kind: AWSMachineTemplate
+        name: watersafety-md-0
+      version: v1.18.6+vmware.1
+---
+apiVersion: cluster.x-k8s.io/v1alpha3
+kind: MachineHealthCheck
+metadata:
+  name: watersafety
+  namespace: workload-clusters
+spec:
+  clusterName: watersafety
+  nodeStartupTimeout: 20m
+  selector:
+    matchLabels:
+      node-pool: watersafety-worker-pool
+  unhealthyConditions:
+  - status: Unknown
+    timeout: 5m
+    type: Ready
+  - status: "False"
+    timeout: 5m
+    type: Ready
