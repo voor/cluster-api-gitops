@@ -1,6 +1,6 @@
 apiVersion: kbld.k14s.io/v1alpha1
 kind: Config
-minimumRequiredVersion: 0.25.0
+minimumRequiredVersion: 0.24.0
 overrides:
 - image: quay.io/jetstack/cert-manager-cainjector:v0.16.1
   newImage: registry.tkg.vmware.run/cert-manager/cert-manager-cainjector:v0.16.1_vmware.1
