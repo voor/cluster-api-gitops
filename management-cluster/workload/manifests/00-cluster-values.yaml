@@ -9,15 +9,16 @@ kubeadmConfigSpec:
   apiVersion: kubeadm.k8s.io/v1beta2
   kind: ClusterConfiguration
   imageRepository: registry.tkg.vmware.run
-  kubernetesVersion: v1.18.6+vmware.1
+  kubernetesVersion: v1.19.1+vmware.3
   etcd:
     local:
+      dataDir: /var/lib/etcd
       imageRepository: registry.tkg.vmware.run
-      imageTag: v3.4.3_vmware.5
+      imageTag: v3.4.13_vmware.2
   dns:
     type: CoreDNS
     imageRepository: registry.tkg.vmware.run
-    imageTag: v1.6.7_vmware.1
+    imageTag: v1.7.0_vmware.3
   ntp:
     servers:
     - 169.254.169.123
