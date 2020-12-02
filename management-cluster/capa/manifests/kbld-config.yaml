@@ -5,8 +5,8 @@ apiVersion: kbld.k14s.io/v1alpha1
 kind: Config
 minimumRequiredVersion: 0.25.0
 overrides:
-- image: registry.tkg.vmware.run/cluster-api-aws/cluster-api-aws-controller:v0.6.1_vmware.1
-  newImage: gcr.io/kubernetes-development-244305/cluster-api/cluster-api-aws-controller:v0.6.1_vmware.1
+- image: registry.tkg.vmware.run/cluster-api-aws/cluster-api-aws-controller:v0.6.2_vmware.1
+  newImage: gcr.io/kubernetes-development-244305/cluster-api/cluster-api-aws-controller:v0.6.2_vmware.1
   preresolved: true
 - image: registry.tkg.vmware.run/cluster-api/kube-rbac-proxy:v0.4.1_vmware.2  
   newImage: gcr.io/kubernetes-development-244305/cluster-api/kube-rbac-proxy:v0.4.1_vmware.2  
