@@ -39,8 +39,14 @@ spec:
         ports:
         - name: http
           containerPort: 8181
+        - name: auth
+          containerPort: 9191
         args:
         - "run"
+        - "--addr=0.0.0.0:8181"
+        - "--set=plugins.envoy_ext_authz_grpc.addr=:9191"
+        - "--set=plugins.envoy_ext_authz_grpc.query=data.envoy.authz.allow"
+        - "--h2c"
         - "--ignore=.*"  #! exclude hidden dirs created by Kubernetes
         - "--log-level"
         - "debug"
@@ -60,17 +66,17 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: opa
+  name: opa-auth
   labels:
     app: opa
   namespace: apps
 spec:
   type: ClusterIP
   ports:
-  - port: 8181
-    targetPort: http
+  - port: 9191
+    targetPort: auth
     protocol: TCP
-    name: http
+    name: auth
   selector:
     app: opa
 ---
@@ -80,9 +86,10 @@ metadata:
   name: opa
   namespace: apps
 spec:
+  protocol: h2c
   services:
-  - name: opa
-    port: 8181
+  - name: opa-auth
+    port: 9191
 ---
 apiVersion: apps/v1
 kind: Deployment
