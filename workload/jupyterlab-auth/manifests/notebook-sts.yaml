@@ -1,0 +1,189 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:base64", "base64")
+#@ load("@ytt:yaml", "yaml")
+
+#@ def labels():
+app: datascience-notebook
+heritage: kapp
+#@ end
+
+#@ def namespace():
+#@ return "apps"
+#@ end
+
+#@ def proxy_config():
+upstreams:
+- id: notebook
+  uri: http://localhost:8888
+  path: "/"
+injectRequestHeaders:
+- name: Authorization
+  values:
+  #! Not actually necessary, current container has no token.
+  - value: dG9rZW4gNTk0YTBkYjc0NWZhNmMzNjZlNDIzYzg1NzU5MGQxMTEzNzg2N2JlNw==
+#@ end
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels: #@ labels()
+  name: datascience-notebook-sa
+  namespace: #@ namespace()
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  labels: #@ labels()
+  name: datascience-notebook-proxy-config
+  namespace: #@ namespace()
+  annotations:
+    kapp.k14s.io/versioned: ""
+data:
+  oauth2_proxy.yaml: #@ base64.encode(yaml.encode(proxy_config()))
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  labels: #@ labels()
+  name: datascience-notebook-proxy-secrets
+  namespace: #@ namespace()
+  annotations:
+    kapp.k14s.io/versioned: ""
+data:
+  OAUTH2_PROXY_CLIENT_ID: #@ base64.encode(data.values.proxy.env.OAUTH2_PROXY_CLIENT_ID)
+  OAUTH2_PROXY_CLIENT_SECRET: #@ base64.encode(data.values.proxy.env.OAUTH2_PROXY_CLIENT_SECRET)
+  OAUTH2_PROXY_COOKIE_SECRET: #@ base64.encode(data.values.proxy.env.OAUTH2_PROXY_COOKIE_SECRET)
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels: #@ labels()
+  name: datascience-notebook
+  namespace: #@ namespace()
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+  selector: #@ labels()
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels: #@ labels()
+  name: datascience-notebook
+  namespace: #@ namespace()
+spec:
+  serviceAccountName: datascience-notebook-sa
+  replicas: 1
+  selector:
+    matchLabels: #@ labels()
+  template:
+    metadata:
+      labels: #@ labels()
+    spec:
+      containers:
+      - name: datascience-notebook
+        image: datascience-notebook
+        imagePullPolicy: Always
+        securityContext:
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          runAsUser: 1000
+          runAsGroup: 100
+          fsGroup: 100
+        volumeMounts:
+        - name: data
+          mountPath: /home/jovyan/work
+        env:
+        - name: JPY_PORT
+          value: "8888"
+        - name: JUPYTER_ENABLE_LAB
+          value: "yes"
+      - name: oauth2-proxy
+        image: oauth2-proxy
+        imagePullPolicy: Always
+        args:
+        - --http-address=0.0.0.0:4180
+        - --alpha-config=/etc/oauth2_proxy/oauth2_proxy.yaml
+        - #@ "--gitlab-group='{}'".format(data.values.groups)
+        - --provider=gitlab
+        - --email-domain=*
+        #! - --scope="openid email profile read_api"
+        - --silence-ping-logging
+        - #@ "--redirect-url=https://{}/oauth2/callback".format(data.values.fqdn)
+        #! - --oidc-issuer-url="<your gitlab url>"
+        envFrom:
+        - secretRef:
+            name: datascience-notebook-proxy-secrets
+        ports:
+        - containerPort: 4180
+          name: http
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 0
+          timeoutSeconds: 1
+          successThreshold: 1
+          periodSeconds: 10
+        resources: {}
+        volumeMounts:
+        - mountPath: /etc/oauth2_proxy
+          name: alphaconfig
+        securityContext:
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsUser: 1001
+          runAsGroup: 1001
+          fsGroup: 1000
+      volumes:
+      - secret:
+          defaultMode: 420
+          secretName: datascience-notebook-proxy-config
+        name: alphaconfig
+      tolerations: []
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: "8Gi"
+        storageClassName: generic
+---
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: datascience-notebook
+  labels: #@ labels()
+  namespace: #@ namespace()
+spec:
+  virtualhost:
+    fqdn: #@ data.values.fqdn
+    tls:
+      secretName: #@ data.values.certSecretName
+  routes:
+  - services:
+    - name: datascience-notebook
+      port: 80
+  - conditions:
+    - prefix: /terminals/websocket
+    enableWebsockets: true
+    services:
+    - name: datascience-notebook
+      port: 80

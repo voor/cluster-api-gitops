@@ -1,0 +1,11 @@
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.24.0
+overrides:
+- image: datascience-notebook
+  newImage: gcr.io/pa-rvanvoorhees/datascience-notebook:notebook-6.2.0-notoken
+  preresolved: true
+- image: oauth2-proxy
+  newImage: gcr.io/pa-rvanvoorhees/bitnami/oauth2-proxy:7
+  preresolved: true
